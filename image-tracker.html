@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lucky7AI Image Tracker</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#FFD700;--gold2:#FFA500;--red2:#FF3333;
+  --dark:#05070D;--card:#0C1020;--border:#1A2035;
+  --text:#E8E8E8;--muted:#8a93a8;--green:#00FF66;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--dark);color:var(--text);font-family:'Rajdhani',sans-serif;line-height:1.7;padding:30px 20px;}
+.container{max-width:1100px;margin:0 auto;}
+h1{font-family:'Cinzel',serif;color:var(--gold);font-size:32px;margin-bottom:8px;}
+.subtitle{color:var(--muted);font-size:14px;margin-bottom:30px;}
+h2{font-family:'Cinzel',serif;color:var(--gold);font-size:22px;margin:30px 0 14px;border-bottom:1px solid var(--border);padding-bottom:8px;}
+.note{background:linear-gradient(90deg,#12101c,#0c1020);border-left:3px solid var(--gold);
+  border-radius:6px;padding:12px 16px;margin:14px 0;font-size:14px;}
+.note strong{color:var(--gold);}
+table{width:100%;border-collapse:collapse;margin:14px 0;background:var(--card);border-radius:8px;overflow:hidden;border:1px solid var(--border);}
+th{background:#1a1305;color:var(--gold);font-family:'Cinzel',serif;text-align:left;padding:12px 14px;font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--border);}
+td{padding:12px 14px;font-size:14px;border-bottom:1px solid var(--border);vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+td.filename{color:var(--gold);font-family:'Courier New',monospace;font-size:13px;white-space:nowrap;}
+td.path{color:var(--muted);font-family:'Courier New',monospace;font-size:12px;}
+td.status{font-weight:700;text-align:center;}
+.status-live{color:var(--green);}
+.status-pending{color:var(--gold2);}
+.status-missing{color:var(--red2);}
+code{background:#02030a;padding:2px 6px;border-radius:3px;color:var(--gold);font-size:13px;font-family:'Courier New',monospace;}
+.legend{display:flex;gap:18px;flex-wrap:wrap;margin:14px 0;font-size:13px;}
+.legend span{display:flex;align-items:center;gap:6px;}
+.legend .dot{width:10px;height:10px;border-radius:50%;}
+.url-box{background:#02030a;border:1px solid var(--border);border-radius:6px;padding:10px 14px;
+  font-family:'Courier New',monospace;font-size:12px;color:var(--text);overflow-x:auto;margin:8px 0;}
+ul{margin:0 0 16px 22px;}
+li{margin-bottom:6px;font-size:14px;}
+</style>
+</head>
+<body>
+<div class="container">
+
+<h1>Lucky7AI Image Tracker</h1>
+<p class="subtitle">Asset manifest for all images in the Lucky7Ai-Data public repo. Update this file every time you add or move an image.</p>
+
+<div class="note">
+  <strong>Base URL pattern:</strong> <code>https://raw.githubusercontent.com/Lucky7Aiapp/Lucky7Ai-Data/main/[path]</code>
+</div>
+
+<div class="legend">
+  <span><div class="dot" style="background:#00FF66"></div>LIVE — uploaded and in use</span>
+  <span><div class="dot" style="background:#FFA500"></div>PENDING — planned but not uploaded</span>
+  <span><div class="dot" style="background:#FF3333"></div>MISSING — referenced but file not found</span>
+</div>
+
+<!-- ============================================================ -->
+<h2>Folder Structure</h2>
+<div class="url-box">
+Lucky7Ai-Data/
+├── avatars/                    ← bot avatars (used on Meet the Bots article + future bot pages)
+├── article-heros/              ← hero images for individual articles
+├── article-inline/             ← inline images used inside article body
+└── [root level legacy files]   ← older files not yet organized into folders
+</div>
+
+<!-- ============================================================ -->
+<h2>Bot Avatars (/avatars/)</h2>
+<table>
+<thead><tr><th>Filename</th><th>Used For</th><th>Status</th></tr></thead>
+<tbody>
+  <tr>
+    <td class="filename">Apex.png</td>
+    <td>APEX bot avatar — Meet the Bots article, future bot detail pages</td>
+    <td class="status status-live">LIVE</td>
+  </tr>
+  <tr>
+    <td class="filename">Aria.png</td>
+    <td>ARIA bot avatar</td>
+    <td class="status status-live">LIVE</td>
+  </tr>
+  <tr>
+    <td class="filename">Luna.png</td>
+    <td>LUNA bot avatar</td>
+    <td class="status status-live">LIVE</td>
+  </tr>
+  <tr>
+    <td class="filename">Oracle.png</td>
+    <td>ORACLE bot avatar</td>
+    <td class="status status-live">LIVE</td>
+  </tr>
+  <tr>
+    <td class="filename">Viper.png</td>
+    <td>VIPER bot avatar</td>
+    <td class="status status-live">LIVE</td>
+  </tr>
+  <tr>
+    <td class="filename">Zeus.png</td>
+    <td>ZEUS bot avatar</td>
+    <td class="status status-live">LIVE</td>
+  </tr>
+</tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2>Article Hero Images (/article-heros/)</h2>
+<table>
+<thead><tr><th>Filename</th><th>Article</th><th>Status</th></tr></thead>
+<tbody>
+  <tr>
+    <td class="filename">mcmillion-scratch-off-hero.png</td>
+    <td>The McMillion Win — And Why Some Scratch-Offs Have Better Odds <br><code>mcmillion-scratch-off.html</code></td>
+    <td class="status status-pending">PENDING UPLOAD</td>
+  </tr>
+</tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2>Article Inline Images (/article-inline/)</h2>
+<table>
+<thead><tr><th>Filename</th><th>Used In</th><th>Status</th></tr></thead>
+<tbody>
+  <tr>
+    <td class="filename">viper-alert-casino-millions-2689.png</td>
+    <td>Section 2 of <code>mcmillion-scratch-off.html</code> — VIPER scratch-off alert showing Game #2689 data</td>
+    <td class="status status-pending">PENDING UPLOAD</td>
+  </tr>
+</tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2>Legacy Root-Level Files (move to folders later)</h2>
+<table>
+<thead><tr><th>Filename</th><th>Used For</th><th>Status</th><th>Should Move To</th></tr></thead>
+<tbody>
+  <tr>
+    <td class="filename">meet-the-bots-hero.png</td>
+    <td>Hero of Meet the Bots article</td>
+    <td class="status status-live">LIVE</td>
+    <td>/article-heros/ (move later, don't break the live article)</td>
+  </tr>
+</tbody>
+</table>
+
+<!-- ============================================================ -->
+<h2>Naming Conventions</h2>
+<ul>
+  <li><strong>All lowercase, hyphens between words</strong> (e.g., <code>mcmillion-scratch-off-hero.png</code>, not <code>McMillion_Scratch_Off_Hero.png</code>)</li>
+  <li><strong>Exception:</strong> Bot avatars use capitalized names (<code>Apex.png</code>, <code>Zeus.png</code>) for legacy reasons</li>
+  <li><strong>Hero images</strong> always end with <code>-hero.png</code></li>
+  <li><strong>Inline images</strong> describe what they show: <code>[topic]-[detail].png</code></li>
+  <li><strong>PNG preferred</strong> over JPG for transparency support and quality</li>
+  <li><strong>Hero image ratio:</strong> 16:7 ideal, 16:9 acceptable</li>
+  <li><strong>Avatar ratio:</strong> 1:1 square</li>
+  <li><strong>Inline image ratio:</strong> flexible — match the source content</li>
+</ul>
+
+<!-- ============================================================ -->
+<h2>How to Add a New Image</h2>
+<ol>
+  <li>Pick a destination folder: <code>/avatars/</code>, <code>/article-heros/</code>, or <code>/article-inline/</code></li>
+  <li>Name the file using the conventions above</li>
+  <li>Upload to <code>Lucky7Ai-Data</code> public repo (via GitHub web or github.dev)</li>
+  <li>Test the URL in a browser: <code>https://raw.githubusercontent.com/Lucky7Aiapp/Lucky7Ai-Data/main/[path]/[filename]</code></li>
+  <li>Add a row to the appropriate table in this tracker</li>
+  <li>Commit this tracker file with a message like "Track new image: [filename]"</li>
+</ol>
+
+<!-- ============================================================ -->
+<h2>Quick URL Reference for Current Images</h2>
+
+<h3 style="color:#fff;font-family:'Cinzel',serif;margin-top:20px;">Bot avatars:</h3>
+<div class="url-box">
+https://raw.githubusercontent.com/Lucky7Aiapp/Lucky7Ai-Data/main/avatars/Apex.png
+https://raw.githubusercontent.com/Lucky7Aiapp/Lucky7Ai-Data/main/avatars/Aria.png
+https://raw.githubusercontent.com/Lucky7Aiapp/Lucky7Ai-Data/main/avatars/Luna.png
+https://raw.githubusercontent.com/Lucky7Aiapp/Lucky7Ai-Data/main/avatars/Oracle.png
+https://raw.githubusercontent.com/Lucky7Aiapp/Lucky7Ai-Data/main/avatars/Viper.png
+https://raw.githubusercontent.com/Lucky7Aiapp/Lucky7Ai-Data/main/avatars/Zeus.png
+</div>
+
+<h3 style="color:#fff;font-family:'Cinzel',serif;margin-top:20px;">Meet the Bots article:</h3>
+<div class="url-box">
+https://raw.githubusercontent.com/Lucky7Aiapp/Lucky7Ai-Data/main/meet-the-bots-hero.png
+</div>
+
+<h3 style="color:#fff;font-family:'Cinzel',serif;margin-top:20px;">McMillion scratch-off article:</h3>
+<div class="url-box">
+https://raw.githubusercontent.com/Lucky7Aiapp/Lucky7Ai-Data/main/article-heros/mcmillion-scratch-off-hero.png
+https://raw.githubusercontent.com/Lucky7Aiapp/Lucky7Ai-Data/main/article-inline/viper-alert-casino-millions-2689.png
+</div>
+
+<p style="margin-top:40px;color:var(--muted);font-size:13px;text-align:center;">Last updated: 2026-05-31 · Lucky7AI Asset Manifest</p>
+
+</div>
+</body>
+</html>
