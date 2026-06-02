@@ -1,0 +1,81 @@
+{
+  "base_url": "https://raw.githubusercontent.com/Lucky7AIapp/Lucky7Ai-Data/main",
+  "avatars": {
+    "analysts": {
+      "apex":   "avatars/analysts/Apex.png",
+      "zeus":   "avatars/analysts/Zeus.png",
+      "viper":  "avatars/analysts/Viper.png",
+      "aria":   "avatars/analysts/Aria.png",
+      "luna":   "avatars/analysts/Luna.png",
+      "pythia": "avatars/analysts/Pythia.png"
+    },
+    "politicians": {
+      "baldie":    "avatars/politicians/Baldie.png",
+      "ron":       "avatars/politicians/Ron.png",
+      "buff":      "avatars/politicians/Buff.png",
+      "ladybird":  "avatars/politicians/LadyBird.png",
+      "rosa":      "avatars/politicians/Rosa.png",
+      "duke":      "avatars/politicians/Duke.png"
+    },
+    "legacy": {
+      "apex":   "avatars/Apex.png",
+      "zeus":   "avatars/Zeus.png",
+      "viper":  "avatars/Viper.png",
+      "aria":   "avatars/Aria.png",
+      "luna":   "avatars/Luna.png",
+      "oracle": "avatars/Oracle.png"
+    }
+  },
+  "logos": {
+    "lucky7ai":          "logos/lucky7ai-logo.png",
+    "crash-site":        "logos/crash-site-logo.png",
+    "political-arena":   "logos/political-arena-logo.png"
+  },
+  "article_heros": {
+    "lucky7ai": {
+      "biggest-mistakes":    "article-heros/lucky7ai/biggest-mistakes-hero.png",
+      "mcmillion":           "article-heros/lucky7ai/mcmillion-scratch-off-hero.png",
+      "meet-the-bots":       "meet-the-bots-hero.png",
+      "golden-ratio":        "golden-ratio-hero.png",
+      "scientist-mandel":    "scientist-mandel-hero.png",
+      "won-twice":           "won-twice-hero.png",
+      "powerball-winner":    "powerball-winner.png"
+    },
+    "crash-site": {
+      "2008-crash":          "article-heros/crash-site/2008-crash-hero.png",
+      "vix-explained":       "article-heros/crash-site/vix-explained-hero.png",
+      "yield-curve":         "article-heros/crash-site/yield-curve-hero.png",
+      "buffett-indicator":   "article-heros/crash-site/buffett-indicator-hero.png",
+      "ai-bubble":           "article-heros/crash-site/ai-bubble-hero.png",
+      "dotcom-bubble":       "article-heros/crash-site/dotcom-hero.png",
+      "how-to-prepare":      "article-heros/crash-site/how-to-prepare-hero.png"
+    }
+  },
+  "article_inline": {
+    "lucky7ai": {
+      "viper-alert":         "article-inline/lucky7ai/viper-alert-casino-millions-2689.png",
+      "golden-ratio-diagram":"golden-ratio-diagram.png",
+      "golden-ratio-balls":  "golden-ratio-lottery-balls.png",
+      "golden-ratio-nature": "golden-ratio-nature.png",
+      "golden-ratio-og":     "golden-ratio-og.png",
+      "golden-ratio-parthenon": "golden-ratio-parthenon.png",
+      "scientist-process":   "scientist-mandel-process.png"
+    },
+    "crash-site": {}
+  },
+  "sector_heros": {
+    "tech-ai":                "sector-heros/tech-ai-hero.png",
+    "commercial-real-estate": "sector-heros/cre-hero.png",
+    "consumer-discretionary": "sector-heros/consumer-hero.png",
+    "private-credit":         "sector-heros/private-credit-hero.png",
+    "utilities":              "sector-heros/utilities-hero.png",
+    "safe-havens":            "sector-heros/safe-havens-hero.png"
+  },
+  "misc": {
+    "bot-arena":        "Bot-arena.png",
+    "hero":             "hero.png",
+    "who-wins":         "Who-wins.png",
+    "play-predictor":   "Play-predictor.png",
+    "lucky7ai-data":    "Lucky7Ai-Data.png"
+  }
+}

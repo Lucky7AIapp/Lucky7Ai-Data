@@ -1,0 +1,136 @@
+{
+  "articles": [
+    {
+      "id": "biggest-mistakes-winners",
+      "site": "lucky7ai",
+      "category": "Lottery Guides",
+      "title": "Biggest Mistakes Lottery Winners Make",
+      "excerpt": "Most lottery winners are broke within 5 years. Here is what they did wrong.",
+      "date": "2026-05-01",
+      "readTime": 5,
+      "hero": "article-heros/lucky7ai/biggest-mistakes-hero.png",
+      "url": "/biggest-mistakes-winners.html"
+    },
+    {
+      "id": "mcmillion-scratch-off",
+      "site": "lucky7ai",
+      "category": "Lottery Guides",
+      "title": "The McMillion Scratch Off Scandal",
+      "excerpt": "How one family rigged scratch off lottery tickets for years before getting caught.",
+      "date": "2026-05-10",
+      "readTime": 6,
+      "hero": "article-heros/lucky7ai/mcmillion-scratch-off-hero.png",
+      "url": "/mcmillion-scratch-off.html"
+    },
+    {
+      "id": "golden-ratio-lottery",
+      "site": "lucky7ai",
+      "category": "AI Strategy",
+      "title": "Can the Golden Ratio Predict Lottery Numbers?",
+      "excerpt": "We ran the golden ratio against 10 years of lottery data. Here is what we found.",
+      "date": "2026-05-15",
+      "readTime": 7,
+      "hero": "golden-ratio-hero.png",
+      "url": "/golden-ratio-lottery.html"
+    },
+    {
+      "id": "scientist-beat-lottery",
+      "site": "lucky7ai",
+      "category": "AI Strategy",
+      "title": "The Scientist Who Beat the Lottery",
+      "excerpt": "Stefan Mandel won the lottery 14 times using a mathematical formula.",
+      "date": "2026-05-20",
+      "readTime": 8,
+      "hero": "scientist-mandel-hero.png",
+      "url": "/scientist-beat-lottery.html"
+    },
+    {
+      "id": "won-twice-one-day",
+      "site": "lucky7ai",
+      "category": "Lottery Guides",
+      "title": "What To Do If You Win Powerball Tomorrow",
+      "excerpt": "The first 48 hours after winning the lottery are the most important.",
+      "date": "2026-05-25",
+      "readTime": 6,
+      "hero": "won-twice-hero.png",
+      "url": "/won-twice-one-day.html"
+    },
+    {
+      "id": "2008-crash",
+      "site": "crash-site",
+      "category": "Historical Crashes",
+      "title": "What Actually Happened the Day the Market Crashed in 2008",
+      "excerpt": "A minute-by-minute breakdown of the signals that preceded the worst financial crisis since 1929.",
+      "date": "2026-06-01",
+      "readTime": 5,
+      "hero": "article-heros/crash-site/2008-crash-hero.png",
+      "url": "/articles/2008-crash.html"
+    },
+    {
+      "id": "vix-explained",
+      "site": "crash-site",
+      "category": "Indicator Explainers",
+      "title": "What Is the VIX and Why Does It Predict Market Fear?",
+      "excerpt": "The fear index explained in plain English. What it measures and what to watch for.",
+      "date": "2026-06-01",
+      "readTime": 4,
+      "hero": "article-heros/crash-site/vix-explained-hero.png",
+      "url": "/articles/vix-explained.html"
+    },
+    {
+      "id": "yield-curve",
+      "site": "crash-site",
+      "category": "Indicator Explainers",
+      "title": "The Yield Curve Inverted. Here Is What That Actually Means.",
+      "excerpt": "Every recession since 1970 was preceded by an inverted yield curve.",
+      "date": "2026-06-01",
+      "readTime": 6,
+      "hero": "article-heros/crash-site/yield-curve-hero.png",
+      "url": "/articles/yield-curve.html"
+    },
+    {
+      "id": "buffett-indicator",
+      "site": "crash-site",
+      "category": "Indicator Explainers",
+      "title": "The Buffett Indicator Is Flashing Red. Here Is Why It Matters.",
+      "excerpt": "Warren Buffett favorite valuation metric is at its second highest level in 150 years.",
+      "date": "2026-06-01",
+      "readTime": 5,
+      "hero": "article-heros/crash-site/buffett-indicator-hero.png",
+      "url": "/articles/buffett-indicator.html"
+    },
+    {
+      "id": "dotcom-bubble",
+      "site": "crash-site",
+      "category": "Historical Crashes",
+      "title": "The Dot-Com Bubble: What the Indicators Were Saying",
+      "excerpt": "In 2000 everyone thought the internet would change everything. The stocks were just 10 years too early.",
+      "date": "2026-06-01",
+      "readTime": 7,
+      "hero": "article-heros/crash-site/dotcom-hero.png",
+      "url": "/articles/dotcom-bubble.html"
+    },
+    {
+      "id": "ai-bubble",
+      "site": "crash-site",
+      "category": "Current Market",
+      "title": "Is AI a Bubble? What the Data Actually Says.",
+      "excerpt": "57% of institutional investors say AI is the biggest market risk of 2026.",
+      "date": "2026-06-02",
+      "readTime": 6,
+      "hero": "article-heros/crash-site/ai-bubble-hero.png",
+      "url": "/articles/ai-bubble.html"
+    },
+    {
+      "id": "how-to-prepare",
+      "site": "crash-site",
+      "category": "Investor Psychology",
+      "title": "How to Prepare Your Portfolio for a Market Crash",
+      "excerpt": "You cannot predict the exact date. But you can make sure you are not panic selling at the bottom.",
+      "date": "2026-06-02",
+      "readTime": 5,
+      "hero": "article-heros/crash-site/how-to-prepare-hero.png",
+      "url": "/articles/how-to-prepare.html"
+    }
+  ]
+}
