@@ -1970,19 +1970,19 @@ async function generateNumbers() {
   sndComplete();
   setTimeout(sndCoinEarn, 700);
 
-  // Unlock MEGA PICK after 5 generates
+  // Unlock MEGA PICK every 3 generates
   const mb = document.getElementById('megaPickBtn');
-  if (genTotal >= 3 && mb.style.display === 'none') {
+  if (genTotal % 3 === 0 && mb.style.display === 'none') {
     mb.style.display = 'block';
     setTimeout(() => {
       playTone({type:'sine',freq:600,freq2:900,duration:0.3,gain:0.2,attack:0.01});
       playTone({type:'sine',freq:900,freq2:1200,duration:0.3,gain:0.15,delay:0.25,attack:0.01});
     }, 400);
   }
-  const remaining = Math.max(0, 3 - genTotal);
-  const countMsg = remaining > 0
-    ? `✦ Pick #${genTotal} · ${remaining} more to unlock MEGA PICK ✦`
-    : `✦ Pick #${genTotal} · +50 coins earned ✦`;
+  const toNext = 3 - (genTotal % 3);
+  const countMsg = toNext === 3
+    ? `✦ Pick #${genTotal} · MEGA PICK UNLOCKED! ✦`
+    : `✦ Pick #${genTotal} · ${toNext} more to recharge MEGA PICK ✦`;
   document.getElementById('genCount').textContent = countMsg;
 
   btn.classList.remove('loading');
@@ -2304,6 +2304,7 @@ async function triggerMegaPick() {
 
 function closeMegaPick() {
   document.getElementById('megaOverlay').style.display='none';
+  document.getElementById('megaPickBtn').style.display='none'; // recharge — needs 3 more
   if (megaRAF){cancelAnimationFrame(megaRAF);megaRAF=null;}
   if (megaCtx) megaCtx.clearRect(0,0,megaCtx.canvas.width,megaCtx.canvas.height);
   megaParticles=[]; megaRunning=false; sndClose();
