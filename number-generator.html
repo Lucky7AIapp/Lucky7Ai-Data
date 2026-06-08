@@ -1493,11 +1493,11 @@ function buildGames() {
 function buildRecentPicks() {
   const container = document.getElementById('recentPicks');
   const samples = [
-    { bot: BOTS[4], game: GAMES[0], date:'Jun 7, 2025', nums:[5,17,22,34,61],  spec:6,   matched:2, prize:'$10' },
-    { bot: BOTS[1], game: GAMES[1], date:'Jun 6, 2025', nums:[12,28,33,41,47], spec:7,   matched:3, prize:'$25' },
-    { bot: BOTS[2], game: GAMES[2], date:'Jun 5, 2025', nums:[3,11,24,32,50],  spec:9,   matched:2, prize:'€15' },
-    { bot: BOTS[3], game: GAMES[3], date:'Jun 4, 2025', nums:[7,23,45,62,76,81],spec:null,matched:1, prize:'€5'  },
-    { bot: BOTS[5], game: GAMES[4], date:'Jun 3, 2025', nums:[2,11,38,44,55,60],spec:null,matched:1, prize:'R$4' },
+    { bot: BOTS[4], game: GAMES[0], date:'Jun 7, 2025', nums:[5,17,22,34,61],   spec:6    },
+    { bot: BOTS[1], game: GAMES[1], date:'Jun 6, 2025', nums:[12,28,33,41,47],  spec:7    },
+    { bot: BOTS[2], game: GAMES[2], date:'Jun 5, 2025', nums:[3,11,24,32,50],   spec:9    },
+    { bot: BOTS[3], game: GAMES[3], date:'Jun 4, 2025', nums:[7,23,45,62,76,81],spec:null },
+    { bot: BOTS[5], game: GAMES[4], date:'Jun 3, 2025', nums:[2,11,38,44,55,60],spec:null },
   ];
   container.innerHTML = samples.map(s => `
     <div class="pick-card">
@@ -1514,10 +1514,7 @@ function buildRecentPicks() {
         ${s.nums.map(n => `<div class="mini-ball mini-main">${n}</div>`).join('')}
         ${s.spec !== null ? `<div class="mini-ball mini-special">${s.spec}</div>` : ''}
       </div>
-      <div class="pick-footer">
-        <div class="pick-stat">Matched <strong>${s.matched}</strong></div>
-        <div class="pick-prize">${s.prize}</div>
-      </div>
+      <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-top:6px;letter-spacing:1px;">FOR ENTERTAINMENT ONLY</div>
     </div>
   `).join('');
 }
@@ -1810,10 +1807,7 @@ function addToPicks(nums, spec) {
       ${nums.map(n => `<div class="mini-ball mini-main">${n}</div>`).join('')}
       ${spec !== null ? `<div class="mini-ball mini-special">${spec}</div>` : ''}
     </div>
-    <div class="pick-footer">
-      <div class="pick-stat">Matched <strong>?</strong></div>
-      <div class="pick-prize">Pending</div>
-    </div>
+    <div style="font-size:9px;color:rgba(255,255,255,0.2);margin-top:6px;letter-spacing:1px;">FOR ENTERTAINMENT ONLY</div>
   `;
   container.prepend(newCard);
 }
