@@ -412,6 +412,15 @@ body::before {
   color: var(--gold);
   box-shadow: 0 0 12px rgba(245,197,24,0.2);
 }
+.chip-group-label {
+  flex-shrink: 0;
+  font-size: 8px; font-weight: 700; letter-spacing: 2px;
+  color: rgba(255,255,255,0.2); text-transform: uppercase;
+  align-self: center; white-space: nowrap;
+  padding: 0 4px 0 8px;
+  border-left: 1px solid rgba(255,255,255,0.08);
+}
+.chip-group-label:first-child { border-left: none; padding-left: 0; }
 
 /* ============================================================
    LOTTERY GAME CARDS
@@ -1356,15 +1365,32 @@ const BOTS = [
 ];
 
 const GAMES = [
-  { id:'pb',  name:'POWERBALL',         banner:'pb-banner',  emoji:'🔴', jackpot:'$134 Million', currency:'$', mainCount:5, mainMax:69, specMax:26,  specName:'Powerball' },
-  { id:'mm',  name:'MEGA MILLIONS',     banner:'mm-banner',  emoji:'🔵', jackpot:'$256 Million', currency:'$', mainCount:5, mainMax:70, specMax:25,  specName:'Mega Ball' },
-  { id:'em',  name:'EURO MILLIONS',     banner:'em-banner',  emoji:'⭐', jackpot:'€72 Million',  currency:'€', mainCount:5, mainMax:50, specMax:12,  specName:'Lucky Star' },
-  { id:'se',  name:'SUPERENALOTTO',     banner:'se-banner',  emoji:'🍀', jackpot:'€60.1 Million',currency:'€', mainCount:6, mainMax:90, specMax:0,   specName:null },
-  { id:'ms',  name:'MEGA-SENA',         banner:'ms-banner',  emoji:'🇧🇷', jackpot:'R$45 Million', currency:'R$',mainCount:6, mainMax:60, specMax:0,   specName:null },
-  { id:'la',  name:'LOTTO AMERICA',     banner:'la-banner',  emoji:'🇺🇸', jackpot:'$22 Million',  currency:'$', mainCount:5, mainMax:52, specMax:10,  specName:'Star Ball' },
-  { id:'ml',  name:'MILLIONAIRE 4 LIFE',banner:'ml-banner',  emoji:'💎', jackpot:'$7M/Life',     currency:'$', mainCount:5, mainMax:43, specMax:43,  specName:'Life Ball' },
-  { id:'tl',  name:'TEXAS LOTTO',       banner:'tl-banner',  emoji:'⭐', jackpot:'$16 Million',  currency:'$', mainCount:6, mainMax:54, specMax:0,   specName:null },
-  { id:'cs',  name:'CA SUPERLOTTO',     banner:'cs-banner',  emoji:'🐻', jackpot:'$8 Million',   currency:'$', mainCount:5, mainMax:47, specMax:27,  specName:'Mega' },
+  // ── MULTISTATE ──────────────────────────────────────────────
+  { id:'pb',  name:'POWERBALL',        emoji:'🔴', group:'Multistate', mainCount:5, mainMax:69, specMax:26, specName:'Powerball',  color:'#8b0000' },
+  { id:'mm',  name:'MEGA MILLIONS',    emoji:'🔵', group:'Multistate', mainCount:5, mainMax:70, specMax:25, specName:'Mega Ball',  color:'#00148b' },
+  { id:'lfl', name:'LUCKY FOR LIFE',   emoji:'🍀', group:'Multistate', mainCount:5, mainMax:48, specMax:18, specName:'Lucky Ball', color:'#004400' },
+  { id:'c4l', name:'CASH4LIFE',        emoji:'💵', group:'Multistate', mainCount:5, mainMax:60, specMax:4,  specName:'Cash Ball',  color:'#004d00' },
+  { id:'la',  name:'LOTTO AMERICA',    emoji:'🇺🇸', group:'Multistate', mainCount:5, mainMax:52, specMax:10, specName:'Star Ball',  color:'#8b0000' },
+  { id:'ml',  name:'MILLIONAIRE LIFE', emoji:'💎', group:'Multistate', mainCount:5, mainMax:43, specMax:43, specName:'Life Ball',  color:'#003300' },
+  { id:'2x2', name:'2BY2',             emoji:'✌️', group:'Multistate', mainCount:2, mainMax:26, specMax:26, specName:'White',      color:'#440044' },
+  { id:'tsm', name:'TRI-STATE MEGA',   emoji:'⭐', group:'Multistate', mainCount:6, mainMax:41, specMax:0,  specName:null,         color:'#003366' },
+  // ── STATE GAMES ─────────────────────────────────────────────
+  { id:'cs',  name:'CA SUPERLOTTO+',   emoji:'🐻', group:'California', mainCount:5, mainMax:47, specMax:27, specName:'Mega',       color:'#660033' },
+  { id:'tl',  name:'TEXAS LOTTO',      emoji:'⭐', group:'Texas',      mainCount:6, mainMax:54, specMax:0,  specName:null,         color:'#003366' },
+  { id:'fll', name:'FLORIDA LOTTO',    emoji:'🌴', group:'Florida',    mainCount:6, mainMax:53, specMax:0,  specName:null,         color:'#cc5500' },
+  { id:'nyl', name:'NY LOTTO',         emoji:'🗽', group:'New York',   mainCount:6, mainMax:59, specMax:0,  specName:null,         color:'#00008b' },
+  { id:'oh',  name:'OHIO CLASSIC',     emoji:'🎯', group:'Ohio',       mainCount:6, mainMax:49, specMax:0,  specName:null,         color:'#8b0000' },
+  { id:'mi',  name:'MICHIGAN LOTTO 47',emoji:'🏔️', group:'Michigan',   mainCount:6, mainMax:47, specMax:0,  specName:null,         color:'#004488' },
+  { id:'il',  name:'ILLINOIS LOTTO',   emoji:'🌾', group:'Illinois',   mainCount:6, mainMax:52, specMax:0,  specName:null,         color:'#003300' },
+  { id:'nj',  name:'NJ PICK-6',        emoji:'🌟', group:'New Jersey', mainCount:6, mainMax:49, specMax:0,  specName:null,         color:'#005500' },
+  { id:'gaf', name:'GEORGIA FANTASY 5',emoji:'🍑', group:'Georgia',    mainCount:5, mainMax:42, specMax:0,  specName:null,         color:'#884400' },
+  { id:'co',  name:'COLORADO LOTTO+',  emoji:'🏔️', group:'Colorado',   mainCount:6, mainMax:40, specMax:40, specName:'Plus',       color:'#003366' },
+  { id:'az',  name:'ARIZONA THE PICK', emoji:'🌵', group:'Arizona',    mainCount:6, mainMax:44, specMax:0,  specName:null,         color:'#8b4500' },
+  { id:'or',  name:'OREGON MEGABUCKS', emoji:'🌲', group:'Oregon',     mainCount:6, mainMax:48, specMax:0,  specName:null,         color:'#004400' },
+  // ── INTERNATIONAL ───────────────────────────────────────────
+  { id:'em',  name:'EURO MILLIONS',    emoji:'🌍', group:'Europe',     mainCount:5, mainMax:50, specMax:12, specName:'Lucky Star', color:'#003399' },
+  { id:'se',  name:'SUPERENALOTTO',    emoji:'🇮🇹', group:'Italy',      mainCount:6, mainMax:90, specMax:0,  specName:null,         color:'#008800' },
+  { id:'ms',  name:'MEGA-SENA',        emoji:'🇧🇷', group:'Brazil',     mainCount:6, mainMax:60, specMax:0,  specName:null,         color:'#005500' },
 ];
 
 /* ============================================================
@@ -1444,30 +1470,24 @@ function buildBots() {
 }
 
 function buildGames() {
-  const grid = document.getElementById('gamesGrid');
-  grid.innerHTML = GAMES.slice(0,6).map(g => `
-    <div class="game-card ${g.id === selectedGame.id ? 'selected' : ''}"
-         id="gameCard_${g.id}"
-         onclick="selectGame('${g.id}')">
-      <div class="game-banner ${g.banner}">
-        <div class="game-logo-text">${g.emoji}<br>${g.name}</div>
-      </div>
-      <div class="game-info">
-        <div class="jackpot-label">JACKPOT</div>
-        <div class="jackpot-amount">${g.jackpot}</div>
-      </div>
-    </div>
-  `).join('');
+  // Hidden grid (kept for JS compat)
+  document.getElementById('gamesGrid').innerHTML = '';
 
-  // Game strip
+  // Game strip — grouped with divider labels
   const strip = document.getElementById('gameStrip');
-  strip.innerHTML = GAMES.map(g => `
-    <div class="game-chip ${g.id === selectedGame.id ? 'active' : ''}"
-         id="chip_${g.id}"
-         onclick="selectGame('${g.id}')">
-      ${g.emoji} ${g.name}
-    </div>
-  `).join('');
+  const groups = [...new Set(GAMES.map(g => g.group))];
+  let html = '';
+  groups.forEach(grp => {
+    html += `<div class="chip-group-label">${grp}</div>`;
+    GAMES.filter(g => g.group === grp).forEach(g => {
+      html += `<div class="game-chip ${g.id === selectedGame.id ? 'active' : ''}"
+        id="chip_${g.id}" onclick="selectGame('${g.id}')"
+        style="${g.id === selectedGame.id ? `border-color:${g.color};background:${g.color}33;` : ''}">
+        ${g.emoji} ${g.name}
+      </div>`;
+    });
+  });
+  strip.innerHTML = html;
 }
 
 function buildRecentPicks() {
@@ -1579,12 +1599,18 @@ function selectBot(id) {
 function selectGame(id) {
   playTone({ type:'sine', freq:440, freq2:520, duration:0.10, gain:0.10, attack:0.004 });
   selectedGame = GAMES.find(g => g.id === id);
-  // Update game cards
   GAMES.forEach(g => {
-    const card = document.getElementById(`gameCard_${g.id}`);
-    if (card) card.classList.toggle('selected', g.id === id);
     const chip = document.getElementById(`chip_${g.id}`);
-    if (chip) chip.classList.toggle('active', g.id === id);
+    if (!chip) return;
+    if (g.id === id) {
+      chip.classList.add('active');
+      chip.style.borderColor = g.color;
+      chip.style.background = g.color + '33';
+    } else {
+      chip.classList.remove('active');
+      chip.style.borderColor = '';
+      chip.style.background = '';
+    }
   });
   updateGenPanel();
 }
@@ -1825,25 +1851,7 @@ function toggleMenu() {
   setTimeout(() => { btn.style.borderColor = ''; }, 300);
 }
 
-function showAllGames() {
-  // Expand to show all games
-  const grid = document.getElementById('gamesGrid');
-  if (grid.innerHTML.includes('data-all')) return;
-  grid.setAttribute('data-all', '1');
-  grid.innerHTML = GAMES.map(g => `
-    <div class="game-card ${g.id === selectedGame.id ? 'selected' : ''}"
-         id="gameCard_${g.id}"
-         onclick="selectGame('${g.id}')">
-      <div class="game-banner ${g.banner}">
-        <div class="game-logo-text">${g.emoji}<br>${g.name}</div>
-      </div>
-      <div class="game-info">
-        <div class="jackpot-label">JACKPOT</div>
-        <div class="jackpot-amount">${g.jackpot}</div>
-      </div>
-    </div>
-  `).join('');
-}
+function showAllGames() { /* games shown in strip */ }
 
 /* ============================================================
    PROMO POPUP
