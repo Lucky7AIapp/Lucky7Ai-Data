@@ -1971,16 +1971,19 @@ async function generateNumbers() {
   setTimeout(sndCoinEarn, 700);
 
   // Unlock MEGA PICK after 5 generates
-  if (genTotal === 5) {
-    const mb = document.getElementById('megaPickBtn');
+  const mb = document.getElementById('megaPickBtn');
+  if (genTotal >= 3 && mb.style.display === 'none') {
     mb.style.display = 'block';
-    mb.style.animation = 'megaBtnPulse 1.2s ease-in-out infinite';
     setTimeout(() => {
       playTone({type:'sine',freq:600,freq2:900,duration:0.3,gain:0.2,attack:0.01});
       playTone({type:'sine',freq:900,freq2:1200,duration:0.3,gain:0.15,delay:0.25,attack:0.01});
     }, 400);
   }
-  document.getElementById('genCount').textContent = `✦ Pick #${genTotal} · +50 coins earned ✦`;
+  const remaining = Math.max(0, 3 - genTotal);
+  const countMsg = remaining > 0
+    ? `✦ Pick #${genTotal} · ${remaining} more to unlock MEGA PICK ✦`
+    : `✦ Pick #${genTotal} · +50 coins earned ✦`;
+  document.getElementById('genCount').textContent = countMsg;
 
   btn.classList.remove('loading');
   btn.innerHTML = 'GENERATE NUMBERS <span class="sparkle">✦</span>';
