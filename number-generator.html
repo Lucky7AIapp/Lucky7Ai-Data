@@ -1,0 +1,1933 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Lucky7.Ai — AI Powered Lottery Picks</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Orbitron:wght@400;700;900&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ============================================================
+   RESET & BASE
+   ============================================================ */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:          #060010;
+  --bg2:         #0d0020;
+  --purple:      #7c00e0;
+  --purple-glow: #a044ff;
+  --gold:        #f5c518;
+  --gold2:       #ffde6a;
+  --pink:        #ff5ca8;
+  --green:       #00e87a;
+  --blue:        #3390ff;
+  --red:         #ff3c3c;
+  --card:        rgba(255,255,255,0.04);
+  --border:      rgba(255,255,255,0.08);
+  --text:        #e8d5ff;
+  --muted:       rgba(232,213,255,0.5);
+  --r:           14px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* ============================================================
+   NOISE LAYER
+   ============================================================ */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  pointer-events: none;
+  opacity: 0.035;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 180px 180px;
+  animation: noiseAnim 0.12s steps(1) infinite;
+}
+@keyframes noiseAnim {
+  0%   { background-position: 0 0; }
+  10%  { background-position: -5% -10%; }
+  20%  { background-position: -15% 5%; }
+  30%  { background-position: 7% -25%; }
+  40%  { background-position: 20% 15%; }
+  50%  { background-position: -25% 10%; }
+  60%  { background-position: 15% 25%; }
+  70%  { background-position: 0 65%; }
+  80%  { background-position: -8% 34%; }
+  90%  { background-position: 35% 18%; }
+  100% { background-position: 0 0; }
+}
+
+/* ============================================================
+   AMBIENT BG GRADIENTS
+   ============================================================ */
+.bg-glow {
+  position: fixed; inset: 0; z-index: 0; pointer-events: none;
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(124,0,224,0.22) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 35% at 80% 80%, rgba(51,0,140,0.28) 0%, transparent 70%),
+    radial-gradient(ellipse 80% 60% at 50% 50%, rgba(10,0,30,0.95) 0%, transparent 100%);
+  animation: bgPulse 8s ease-in-out infinite alternate;
+}
+@keyframes bgPulse {
+  0%   { opacity: 1; }
+  100% { opacity: 0.7; }
+}
+
+/* ============================================================
+   LAYOUT WRAPPER
+   ============================================================ */
+.app {
+  position: relative; z-index: 1;
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  padding-bottom: 90px;
+}
+
+/* ============================================================
+   HEADER
+   ============================================================ */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 18px 20px 14px;
+  position: sticky; top: 0; z-index: 100;
+  background: linear-gradient(to bottom, rgba(6,0,16,0.97) 80%, transparent);
+  backdrop-filter: blur(12px);
+}
+
+.menu-btn {
+  width: 42px; height: 42px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer; gap: 0; flex-direction: column;
+  transition: border-color 0.2s;
+}
+.menu-btn:hover { border-color: var(--purple-glow); }
+.menu-btn span {
+  display: block; width: 16px; height: 2px;
+  background: var(--text); border-radius: 2px; margin: 2px 0;
+}
+
+.logo {
+  font-family: 'Cinzel', serif;
+  font-size: 26px; font-weight: 900;
+  background: linear-gradient(135deg, #f5c518 0%, #ffde6a 40%, #ff9900 70%, #f5c518 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-shadow: none;
+  letter-spacing: 1px;
+  filter: drop-shadow(0 0 12px rgba(245,197,24,0.5));
+}
+.logo span { color: #ff3c3c; -webkit-text-fill-color: #ff3c3c; }
+
+.coin-badge {
+  display: flex; align-items: center; gap: 6px;
+  background: rgba(30,10,60,0.9);
+  border: 1px solid var(--gold);
+  border-radius: 999px;
+  padding: 6px 12px 6px 8px;
+  cursor: pointer;
+  box-shadow: 0 0 12px rgba(245,197,24,0.2);
+}
+.coin-badge .star { font-size: 16px; filter: drop-shadow(0 0 4px gold); }
+.coin-badge .amount {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px; font-weight: 700; color: var(--gold);
+}
+.coin-badge .plus {
+  width: 20px; height: 20px; border-radius: 50%;
+  background: var(--purple);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 14px; color: white; font-weight: 700;
+  margin-left: 2px;
+}
+
+.tagline {
+  text-align: center;
+  font-size: 10px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+  margin-top: -8px;
+  padding-bottom: 8px;
+}
+
+/* ============================================================
+   SECTION HEADERS
+   ============================================================ */
+.section-title {
+  text-align: center;
+  font-family: 'Cinzel', serif;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: var(--purple-glow);
+  text-transform: uppercase;
+  margin: 20px 0 14px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.section-title::before, .section-title::after {
+  content: '✦'; font-size: 8px; color: var(--purple);
+}
+
+/* ============================================================
+   BOT CAROUSEL
+   ============================================================ */
+.bot-scroll {
+  display: flex; gap: 12px;
+  overflow-x: auto; padding: 4px 20px 12px;
+  scrollbar-width: none;
+}
+.bot-scroll::-webkit-scrollbar { display: none; }
+
+.bot-card {
+  flex-shrink: 0;
+  width: 110px;
+  border-radius: var(--r);
+  border: 2px solid rgba(255,255,255,0.1);
+  background: var(--card);
+  padding: 0;
+  cursor: pointer;
+  transition: all 0.25s;
+  overflow: hidden;
+  position: relative;
+}
+.bot-card:hover { transform: translateY(-3px); }
+.bot-card.active { border-color: var(--gold); box-shadow: 0 0 20px rgba(245,197,24,0.3); }
+
+.bot-avatar {
+  width: 100%; height: 100px;
+  position: relative; overflow: hidden;
+}
+.bot-avatar-inner {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 48px;
+  position: relative;
+}
+/* Bot-specific gradients */
+.bot-luna   .bot-avatar { background: linear-gradient(135deg, #1a0030 0%, #3d0050 50%, #ff5ca820 100%); }
+.bot-oracle .bot-avatar { background: linear-gradient(135deg, #1a0030 0%, #5c0080 50%, #ffd70020 100%); }
+.bot-apex   .bot-avatar { background: linear-gradient(135deg, #1a0010 0%, #400020 50%, #ff330020 100%); }
+.bot-viper  .bot-avatar { background: linear-gradient(135deg, #001a0a 0%, #00400a 50%, #00ff4420 100%); }
+.bot-zeus   .bot-avatar { background: linear-gradient(135deg, #00102a 0%, #003080 50%, #3390ff20 100%); }
+.bot-aria   .bot-avatar { background: linear-gradient(135deg, #2a0010 0%, #5c0030 50%, #ff5ca820 100%); }
+
+.bot-avatar canvas { position: absolute; inset: 0; pointer-events: none; }
+
+.bot-info { padding: 8px 8px 10px; }
+.bot-name {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--gold);
+  display: block; margin-bottom: 2px;
+}
+.bot-title { font-size: 9px; color: var(--muted); line-height: 1.3; }
+
+.bot-glow-ring {
+  position: absolute; inset: -2px;
+  border-radius: calc(var(--r) + 2px);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.bot-card.active .bot-glow-ring { opacity: 1; }
+
+/* ============================================================
+   GENERATE PANEL
+   ============================================================ */
+.generate-panel {
+  margin: 8px 20px 0;
+  border-radius: 20px;
+  border: 1px solid rgba(245,197,24,0.25);
+  background: linear-gradient(135deg, rgba(20,0,50,0.9) 0%, rgba(40,0,80,0.8) 100%);
+  overflow: hidden;
+  position: relative;
+  padding: 20px;
+  box-shadow: 0 0 40px rgba(124,0,224,0.2), inset 0 1px 0 rgba(255,255,255,0.06);
+}
+.generate-panel::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 70% 50% at 80% 50%, rgba(124,0,224,0.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.gen-top { display: flex; gap: 16px; align-items: flex-start; }
+
+.gen-text { flex: 1; }
+.gen-text .let {
+  font-size: 13px; color: var(--muted); margin-bottom: 2px;
+}
+.gen-text .let strong { color: var(--gold); font-weight: 600; }
+.gen-text .sub { font-size: 11px; color: var(--muted); }
+
+.gen-bot-portrait {
+  width: 80px; height: 80px;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid rgba(245,197,24,0.3);
+  flex-shrink: 0;
+}
+.gen-bot-portrait-inner {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 44px;
+}
+
+/* Number balls */
+.balls-row {
+  display: flex; gap: 8px; justify-content: center;
+  margin: 18px 0 20px; flex-wrap: wrap;
+}
+.ball {
+  width: 48px; height: 48px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 14px; font-weight: 900;
+  position: relative;
+  cursor: default;
+  transform: scale(0);
+  opacity: 0;
+  transition: transform 0.4s cubic-bezier(0.34,1.56,0.64,1), opacity 0.3s;
+}
+.ball.visible { transform: scale(1); opacity: 1; }
+.ball.bounce { animation: ballBounce 0.5s cubic-bezier(0.34,1.56,0.64,1) forwards; }
+
+.ball-main {
+  background: radial-gradient(circle at 35% 30%, #f0c030, #c87a00 80%);
+  box-shadow: 0 0 16px rgba(245,197,24,0.5), inset 0 2px 4px rgba(255,255,255,0.3);
+  color: #1a0a00;
+}
+.ball-special {
+  background: radial-gradient(circle at 35% 30%, #ff6060, #cc1010 80%);
+  box-shadow: 0 0 16px rgba(255,60,60,0.5), inset 0 2px 4px rgba(255,255,255,0.3);
+  color: white;
+}
+
+@keyframes ballBounce {
+  0%   { transform: scale(0) rotate(-20deg); opacity: 0; }
+  60%  { transform: scale(1.15) rotate(5deg); opacity: 1; }
+  80%  { transform: scale(0.95); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Generate button */
+.gen-btn {
+  width: 100%;
+  padding: 16px;
+  border-radius: 12px;
+  border: none;
+  background: linear-gradient(135deg, #7c00e0 0%, #a044ff 50%, #7c00e0 100%);
+  background-size: 200% 100%;
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 13px; font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  position: relative; overflow: hidden;
+  transition: all 0.3s;
+  box-shadow: 0 4px 20px rgba(124,0,224,0.4);
+}
+.gen-btn:hover {
+  background-position: right center;
+  box-shadow: 0 6px 30px rgba(124,0,224,0.6);
+  transform: translateY(-1px);
+}
+.gen-btn:active { transform: translateY(1px); }
+.gen-btn.loading { pointer-events: none; opacity: 0.8; }
+.gen-btn .sparkle { margin-left: 6px; }
+
+.gen-btn::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.15) 50%, transparent 100%);
+  transform: translateX(-100%);
+}
+.gen-btn:hover::after { animation: shimmer 0.6s forwards; }
+@keyframes shimmer {
+  to { transform: translateX(100%); }
+}
+
+/* Strategy badge */
+.strategy-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  background: rgba(124,0,224,0.2);
+  border: 1px solid rgba(124,0,224,0.4);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font-size: 10px; color: var(--purple-glow);
+  margin-bottom: 16px;
+  letter-spacing: 1px;
+}
+
+/* Game selector strip */
+.game-strip {
+  display: flex; gap: 8px;
+  overflow-x: auto; padding: 4px 20px 8px;
+  scrollbar-width: none; margin-top: 4px;
+}
+.game-strip::-webkit-scrollbar { display: none; }
+.game-chip {
+  flex-shrink: 0;
+  padding: 8px 14px;
+  border-radius: 999px;
+  border: 1.5px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.04);
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1px; color: var(--muted);
+  cursor: pointer; white-space: nowrap;
+  transition: all 0.2s;
+  display: flex; align-items: center; gap: 5px;
+}
+.game-chip:hover { border-color: var(--gold); color: var(--gold); }
+.game-chip.active {
+  border-color: var(--gold);
+  background: rgba(245,197,24,0.1);
+  color: var(--gold);
+  box-shadow: 0 0 12px rgba(245,197,24,0.2);
+}
+
+/* ============================================================
+   LOTTERY GAME CARDS
+   ============================================================ */
+.games-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 0 20px;
+}
+.game-card {
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: var(--card);
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.25s;
+  position: relative;
+}
+.game-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-2px); }
+.game-card.selected { border-color: var(--gold); box-shadow: 0 0 16px rgba(245,197,24,0.25); }
+
+.game-banner {
+  width: 100%; height: 70px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; font-weight: 900;
+  letter-spacing: 1px;
+  position: relative;
+  overflow: hidden;
+}
+.game-banner::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 40%, rgba(0,0,0,0.5) 100%);
+}
+
+.pb-banner  { background: linear-gradient(135deg, #8b0000, #cc0000); }
+.mm-banner  { background: linear-gradient(135deg, #00148b, #0033cc); }
+.em-banner  { background: linear-gradient(135deg, #003300, #006600); }
+.se-banner  { background: linear-gradient(135deg, #003300, #00aa00); }
+.ms-banner  { background: linear-gradient(135deg, #003300, #009933); }
+.la-banner  { background: linear-gradient(135deg, #660000, #990000); }
+.ml-banner  { background: linear-gradient(135deg, #004400, #007700); }
+.tl-banner  { background: linear-gradient(135deg, #003366, #005599); }
+.cs-banner  { background: linear-gradient(135deg, #660033, #990055); }
+
+.game-logo-text {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 12px; font-weight: 900;
+  color: white; text-align: center;
+  line-height: 1.2; position: relative; z-index: 1;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.5);
+}
+
+.game-info { display: none; }
+.jackpot-label { display: none; }
+.jackpot-amount { display: none; }
+
+.browse-btn {
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+  margin: 16px 20px 0;
+  padding: 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.15);
+  background: rgba(255,255,255,0.03);
+  color: var(--text); font-size: 12px; font-weight: 600;
+  cursor: pointer; letter-spacing: 1px;
+  transition: all 0.2s;
+}
+.browse-btn:hover { border-color: var(--purple-glow); color: var(--purple-glow); }
+
+/* ============================================================
+   RECENT PICKS
+   ============================================================ */
+.picks-scroll {
+  display: flex; gap: 10px;
+  overflow-x: auto; padding: 4px 20px 12px;
+  scrollbar-width: none;
+}
+.picks-scroll::-webkit-scrollbar { display: none; }
+
+.pick-card {
+  flex-shrink: 0; width: 160px;
+  border-radius: var(--r);
+  border: 1px solid var(--border);
+  background: var(--card);
+  padding: 12px;
+  position: relative; overflow: hidden;
+}
+.pick-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+}
+.pick-luna   ::before { background: var(--pink); }
+.pick-oracle ::before { background: var(--gold); }
+.pick-apex   ::before { background: var(--red); }
+.pick-viper  ::before { background: var(--green); }
+.pick-zeus   ::before { background: var(--blue); }
+.pick-aria   ::before { background: var(--pink); }
+
+.pick-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.pick-avatar { font-size: 22px; }
+.pick-meta { flex: 1; }
+.pick-bot-name { font-size: 9px; font-weight: 700; color: var(--gold); letter-spacing: 1px; }
+.pick-game { font-size: 8px; color: var(--muted); }
+.pick-date { font-size: 8px; color: var(--muted); margin-left: auto; }
+
+.pick-balls {
+  display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 8px;
+}
+.mini-ball {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 8px; font-weight: 700;
+}
+.mini-main {
+  background: radial-gradient(circle at 35% 30%, #f0c030, #c87a00 80%);
+  color: #1a0a00;
+}
+.mini-special {
+  background: radial-gradient(circle at 35% 30%, #ff6060, #cc1010 80%);
+  color: white;
+}
+
+.pick-footer { display: flex; justify-content: space-between; }
+.pick-stat { font-size: 9px; color: var(--muted); }
+.pick-stat strong { color: var(--text); font-size: 10px; }
+.pick-prize { font-size: 10px; color: var(--gold); font-weight: 700; }
+
+/* ============================================================
+   DAILY BONUS BANNER
+   ============================================================ */
+.daily-banner {
+  margin: 8px 20px 0;
+  border-radius: 16px;
+  background: linear-gradient(135deg, rgba(30,0,60,0.9) 0%, rgba(60,0,100,0.9) 100%);
+  border: 1px solid rgba(245,197,24,0.2);
+  padding: 18px;
+  display: flex; align-items: center; gap: 14px;
+  position: relative; overflow: hidden;
+}
+.daily-banner::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: radial-gradient(ellipse 60% 80% at 10% 50%, rgba(245,197,24,0.06) 0%, transparent 70%);
+}
+.daily-icon { font-size: 42px; filter: drop-shadow(0 0 8px gold); flex-shrink: 0; }
+.daily-text { flex: 1; }
+.daily-text h3 {
+  font-family: 'Cinzel', serif;
+  font-size: 14px; color: var(--gold);
+  margin-bottom: 4px;
+}
+.daily-text p { font-size: 11px; color: var(--muted); line-height: 1.5; }
+.daily-btn {
+  padding: 10px 16px;
+  border-radius: 10px;
+  border: none;
+  background: linear-gradient(135deg, #7c00e0, #a044ff);
+  color: white;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 10px; font-weight: 700;
+  letter-spacing: 1px;
+  cursor: pointer; white-space: nowrap;
+  box-shadow: 0 4px 16px rgba(124,0,224,0.4);
+  transition: all 0.2s;
+}
+.daily-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,0,224,0.6); }
+
+/* ============================================================
+   BOTTOM NAV
+   ============================================================ */
+.bottom-nav {
+  position: fixed; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: 100%; max-width: 480px;
+  background: rgba(6,0,16,0.95);
+  backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+  display: flex; z-index: 200;
+  padding: 8px 0 env(safe-area-inset-bottom, 8px);
+}
+.nav-item {
+  flex: 1; display: flex; flex-direction: column;
+  align-items: center; gap: 4px;
+  padding: 8px 0;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 10px; letter-spacing: 0.5px;
+  transition: color 0.2s;
+  text-decoration: none;
+}
+.nav-item.active { color: var(--purple-glow); }
+.nav-item .nav-icon { font-size: 20px; line-height: 1; }
+.nav-item.active .nav-icon { filter: drop-shadow(0 0 6px var(--purple-glow)); }
+
+/* ============================================================
+   BOT DESCRIPTION PANEL
+   ============================================================ */
+.bot-desc-panel {
+  margin: 0 20px 0;
+  padding: 14px 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.02);
+  display: flex; align-items: flex-start; gap: 12px;
+}
+.bot-desc-tag {
+  padding: 3px 8px;
+  border-radius: 999px;
+  font-size: 8px; font-weight: 700;
+  letter-spacing: 2px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+.bot-desc-text { font-size: 11px; color: var(--muted); line-height: 1.5; font-style: italic; }
+.bot-desc-text strong { color: var(--text); font-style: normal; }
+
+/* ============================================================
+   PARTICLE CANVAS
+   ============================================================ */
+#particleCanvas {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+  opacity: 0.4;
+}
+
+/* ============================================================
+   ANIMATIONS
+   ============================================================ */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 0 8px rgba(124,0,224,0.3); }
+  50%       { box-shadow: 0 0 24px rgba(124,0,224,0.7); }
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50%       { transform: translateY(-6px); }
+}
+@keyframes spinIn {
+  from { transform: rotate(-180deg) scale(0); opacity: 0; }
+  to   { transform: rotate(0deg) scale(1); opacity: 1; }
+}
+@keyframes countUp {
+  from { transform: translateY(10px); opacity: 0; }
+  to   { transform: translateY(0); opacity: 1; }
+}
+@keyframes goldPulse {
+  0%, 100% { filter: drop-shadow(0 0 4px rgba(245,197,24,0.4)); }
+  50%       { filter: drop-shadow(0 0 12px rgba(245,197,24,0.9)); }
+}
+
+.float { animation: float 3s ease-in-out infinite; }
+.gold-pulse { animation: goldPulse 2s ease-in-out infinite; }
+
+/* ============================================================
+   PROMO POPUP
+   ============================================================ */
+.popup-overlay {
+  position: fixed; inset: 0; z-index: 9000;
+  background: rgba(0,0,0,0.78);
+  backdrop-filter: blur(10px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 24px;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.popup-overlay.show { opacity: 1; pointer-events: all; }
+
+.popup-box {
+  width: 100%; max-width: 360px;
+  border-radius: 24px;
+  border: 1px solid rgba(245,197,24,0.35);
+  background: linear-gradient(160deg, #0e0025 0%, #1c0040 50%, #0a0018 100%);
+  box-shadow:
+    0 0 0 1px rgba(245,197,24,0.1),
+    0 0 60px rgba(124,0,224,0.4),
+    0 30px 80px rgba(0,0,0,0.7);
+  overflow: hidden;
+  position: relative;
+  transform: scale(0.88) translateY(20px);
+  transition: transform 0.45s cubic-bezier(0.34,1.56,0.64,1);
+}
+.popup-overlay.show .popup-box { transform: scale(1) translateY(0); }
+
+/* top shimmer bar */
+.popup-box::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, #f5c518, #ff6600, #f5c518, transparent);
+  animation: shimmerBar 2.5s linear infinite;
+}
+@keyframes shimmerBar {
+  0%   { background-position: -400px 0; }
+  100% { background-position: 400px 0; }
+}
+
+/* star burst corners */
+.popup-box::after {
+  content: '✦';
+  position: absolute; top: 14px; right: 18px;
+  font-size: 12px; color: rgba(245,197,24,0.4);
+  animation: rotateStar 6s linear infinite;
+}
+@keyframes rotateStar { to { transform: rotate(360deg); } }
+
+.popup-close {
+  position: absolute; top: 14px; left: 16px;
+  width: 28px; height: 28px; border-radius: 50%;
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  color: rgba(255,255,255,0.5); font-size: 14px;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; z-index: 1;
+}
+.popup-close:hover { background: rgba(255,255,255,0.15); color: white; }
+
+/* CSS Logo */
+.popup-logo-wrap {
+  padding: 36px 24px 10px;
+  display: flex; justify-content: center;
+  position: relative;
+}
+.popup-logo {
+  font-family: 'Cinzel', serif;
+  font-size: 52px; font-weight: 900;
+  line-height: 1;
+  position: relative;
+  display: flex; align-items: center; gap: 2px;
+  filter: drop-shadow(0 6px 24px rgba(200,120,0,0.5));
+  animation: logoBob 3s ease-in-out infinite;
+}
+@keyframes logoBob {
+  0%, 100% { filter: drop-shadow(0 6px 24px rgba(200,120,0,0.5)); transform: translateY(0); }
+  50%       { filter: drop-shadow(0 10px 32px rgba(200,120,0,0.8)); transform: translateY(-4px); }
+}
+
+.logo-lucky {
+  background: linear-gradient(180deg, #ffe566 0%, #f5c518 35%, #c87a00 70%, #f5c518 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-text-stroke: 3px transparent;
+  text-shadow: none;
+  position: relative;
+}
+.logo-lucky::after {
+  content: 'Lucky';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, #ffe566 0%, #f5c518 35%, #c87a00 70%, #f5c518 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: blur(8px);
+  opacity: 0.5;
+}
+
+.logo-seven {
+  font-size: 76px; line-height: 0.9;
+  background: linear-gradient(180deg, #ff8888 0%, #ff2020 40%, #aa0000 80%, #ff4444 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  -webkit-text-stroke: 3px #c87a00;
+  margin: 0 2px;
+  position: relative; z-index: 1;
+}
+.logo-seven::before {
+  content: '7';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, #ff8888 0%, #ff2020 40%, #aa0000 80%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  filter: blur(10px); opacity: 0.6;
+}
+
+.logo-ai {
+  background: linear-gradient(180deg, #ffe566 0%, #f5c518 35%, #c87a00 70%, #f5c518 100%);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-size: 46px;
+}
+
+/* gold border stroke effect */
+.popup-logo-stroke {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif; font-size: 52px; font-weight: 900;
+  color: transparent;
+  -webkit-text-stroke: 5px rgba(200,120,0,0.4);
+  pointer-events: none;
+}
+
+.popup-tagline {
+  text-align: center;
+  font-size: 9px; letter-spacing: 4px;
+  color: rgba(245,197,24,0.5);
+  text-transform: uppercase;
+  margin: 2px 0 20px;
+}
+
+.popup-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(245,197,24,0.25), transparent);
+  margin: 0 24px;
+}
+
+.popup-body {
+  padding: 24px 28px 30px;
+  text-align: center;
+}
+
+.popup-eyebrow {
+  font-size: 10px; letter-spacing: 3px; color: var(--purple-glow);
+  text-transform: uppercase; margin-bottom: 10px;
+  display: flex; align-items: center; justify-content: center; gap: 8px;
+}
+.popup-eyebrow::before, .popup-eyebrow::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(to right, transparent, var(--purple));
+}
+.popup-eyebrow::after { background: linear-gradient(to left, transparent, var(--purple)); }
+
+.popup-headline {
+  font-family: 'Cinzel', serif;
+  font-size: 20px; font-weight: 700;
+  color: white; line-height: 1.3;
+  margin-bottom: 6px;
+}
+.popup-headline span { color: var(--gold); }
+
+.popup-sub {
+  font-size: 12px; color: var(--muted); line-height: 1.6;
+  margin-bottom: 24px;
+}
+
+.popup-cta {
+  display: block; width: 100%;
+  padding: 16px;
+  border-radius: 14px;
+  border: none;
+  background: linear-gradient(135deg, #c87a00 0%, #f5c518 40%, #ffde6a 60%, #f5c518 80%, #c87a00 100%);
+  background-size: 200% 100%;
+  color: #1a0a00;
+  font-family: 'Cinzel', serif;
+  font-size: 15px; font-weight: 900;
+  letter-spacing: 1px;
+  cursor: pointer;
+  text-decoration: none;
+  box-shadow: 0 4px 24px rgba(245,197,24,0.4), 0 0 0 1px rgba(245,197,24,0.2);
+  transition: all 0.3s;
+  position: relative; overflow: hidden;
+  animation: ctaPulse 2.5s ease-in-out infinite;
+}
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 4px 24px rgba(245,197,24,0.4), 0 0 0 1px rgba(245,197,24,0.2); }
+  50%       { box-shadow: 0 4px 36px rgba(245,197,24,0.7), 0 0 0 1px rgba(245,197,24,0.5); }
+}
+.popup-cta:hover {
+  background-position: right center;
+  transform: translateY(-2px);
+}
+.popup-cta-url {
+  display: block; font-family: 'Orbitron', sans-serif;
+  font-size: 10px; font-weight: 400; letter-spacing: 2px;
+  margin-top: 2px; opacity: 0.7;
+}
+
+.popup-dismiss {
+  display: block; margin-top: 14px;
+  font-size: 10px; color: var(--muted);
+  cursor: pointer; letter-spacing: 1px;
+  background: none; border: none; color: rgba(255,255,255,0.3);
+  width: 100%;
+}
+.popup-dismiss:hover { color: rgba(255,255,255,0.6); }
+
+/* confetti dots */
+.popup-confetti {
+  position: absolute; top: 0; left: 0; right: 0; height: 100%;
+  pointer-events: none; overflow: hidden; border-radius: 24px;
+}
+.confetti-dot {
+  position: absolute; border-radius: 50%;
+  animation: confettiFall linear infinite;
+}
+@keyframes confettiFall {
+  0%   { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(500px) rotate(720deg); opacity: 0; }
+}
+
+/* Scroll fade-in */
+.fade-section {
+  animation: fadeInUp 0.5s ease both;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (min-width: 480px) {
+  .app { border-left: 1px solid var(--border); border-right: 1px solid var(--border); }
+}
+
+/* ============================================================
+   DISCLAIMER
+   ============================================================ */
+.disclaimer {
+  margin: 16px 20px 8px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.05);
+  font-size: 9px; color: rgba(255,255,255,0.3);
+  text-align: center; line-height: 1.5;
+}
+.disclaimer a { color: rgba(245,197,24,0.5); text-decoration: none; }
+
+/* Loading spinner */
+.spinner {
+  display: inline-block; width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white; border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* Number generation counter */
+.gen-count {
+  text-align: center; font-size: 9px; color: var(--muted);
+  margin-top: 8px; letter-spacing: 1px;
+}
+</style>
+</head>
+<body>
+
+<!-- PASSWORD GATE -->
+<div id="gate" style="
+  position:fixed;inset:0;z-index:99999;
+  background:radial-gradient(ellipse 80% 60% at 50% 40%,#1a0040 0%,#060010 100%);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:0;padding:32px;
+">
+  <div style="
+    background:rgba(255,255,255,0.03);border:1px solid rgba(245,197,24,0.2);
+    border-radius:24px;padding:40px 32px 36px;max-width:340px;width:100%;
+    box-shadow:0 0 60px rgba(124,0,224,0.3);text-align:center;
+  ">
+    <div style="font-family:'Cinzel',serif;font-size:38px;font-weight:900;line-height:1;margin-bottom:6px;
+      background:linear-gradient(135deg,#ffe566,#f5c518,#c87a00,#f5c518);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+      filter:drop-shadow(0 0 16px rgba(245,197,24,0.4));">
+      Lucky<span style="-webkit-text-fill-color:#ff3333;font-size:52px;">7</span>Ai
+    </div>
+    <div style="font-size:9px;letter-spacing:3px;color:rgba(245,197,24,0.4);margin-bottom:28px;">AI POWERED LOTTERY PICKS</div>
+    <div style="font-size:11px;color:rgba(232,213,255,0.5);margin-bottom:16px;letter-spacing:1px;">ENTER ACCESS CODE</div>
+    <input id="pwInput" type="password" placeholder="••••••••"
+      style="
+        width:100%;padding:14px 18px;border-radius:12px;
+        background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.15);
+        color:white;font-family:'Orbitron',sans-serif;font-size:16px;letter-spacing:4px;
+        text-align:center;outline:none;margin-bottom:12px;
+      "
+      onkeydown="if(event.key==='Enter')checkPass()"
+    />
+    <button onclick="checkPass()" style="
+      width:100%;padding:14px;border-radius:12px;border:none;cursor:pointer;
+      background:linear-gradient(135deg,#7c00e0,#a044ff);
+      color:white;font-family:'Orbitron',sans-serif;font-size:12px;font-weight:700;letter-spacing:2px;
+      box-shadow:0 4px 20px rgba(124,0,224,0.4);transition:opacity 0.2s;
+    " onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+      UNLOCK ✦
+    </button>
+    <div id="gateErr" style="margin-top:12px;font-size:11px;color:#ff5c5c;min-height:16px;"></div>
+  </div>
+</div>
+
+<div class="bg-glow"></div>
+<canvas id="particleCanvas"></canvas>
+
+<div class="app">
+
+  <!-- HEADER -->
+  <header class="header">
+    <div class="menu-btn" onclick="toggleMenu()">
+      <span></span><span></span><span></span>
+    </div>
+    <div>
+      <div class="logo">Lucky<span>7</span>.Ai</div>
+    </div>
+    <div class="coin-badge gold-pulse">
+      <span class="star">⭐</span>
+      <span class="amount" id="coinCount">7,777</span>
+      <div class="plus">+</div>
+    </div>
+  </header>
+  <div class="tagline">AI Powered Lottery Picks</div>
+
+  <!-- BOT SELECTOR -->
+  <div class="section-title">Choose Your AI Bot</div>
+  <div class="bot-scroll" id="botScroll">
+    <!-- Bot cards injected by JS -->
+  </div>
+
+  <!-- BOT DESCRIPTION -->
+  <div class="bot-desc-panel" id="botDesc"></div>
+
+  <!-- GENERATE PANEL -->
+  <div class="generate-panel" style="margin-top:16px;">
+    <div class="gen-top">
+      <div class="gen-text">
+        <div class="let">Let <strong id="genBotName">APEX</strong></div>
+        <div class="sub">generate lucky numbers for you!</div>
+        <div id="genDate" style="
+          margin-top:6px;font-size:10px;letter-spacing:1px;
+          color:rgba(245,197,24,0.7);font-family:'Orbitron',sans-serif;
+        "></div>
+      </div>
+      <div class="gen-bot-portrait">
+        <div class="gen-bot-portrait-inner float" id="genPortrait">🤖</div>
+      </div>
+    </div>
+
+    <div class="strategy-badge" id="strategyBadge">
+      <span>⚡</span> <span id="strategyText">Advanced Predictive Engine</span>
+    </div>
+
+    <div class="balls-row" id="ballsRow">
+      <div class="ball ball-main" id="b1">?</div>
+      <div class="ball ball-main" id="b2">?</div>
+      <div class="ball ball-main" id="b3">?</div>
+      <div class="ball ball-main" id="b4">?</div>
+      <div class="ball ball-main" id="b5">?</div>
+      <div class="ball ball-special" id="b6">?</div>
+    </div>
+
+    <button class="gen-btn" id="genBtn" onclick="generateNumbers()">
+      GENERATE NUMBERS <span class="sparkle">✦</span>
+    </button>
+    <div class="gen-count" id="genCount">✦ Pick a lottery game below ✦</div>
+  </div>
+
+  <!-- LOTTERY GAME FILTER -->
+  <div class="game-strip" id="gameStrip">
+    <!-- Injected by JS -->
+  </div>
+
+  <div id="gamesGrid" style="display:none"></div>
+
+  <!-- RECENT PICKS -->
+  <div class="section-title" style="margin-top:28px;">Recent AI Picks</div>
+  <div class="picks-scroll" id="recentPicks">
+    <!-- Injected by JS -->
+  </div>
+
+  <!-- DAILY BONUS -->
+  <div class="daily-banner">
+    <div class="daily-icon">🎰</div>
+    <div class="daily-text">
+      <h3>TRY YOUR LUCK DAILY!</h3>
+      <p>Come back every day for bonus picks and exclusive rewards!</p>
+    </div>
+    <button class="daily-btn" onclick="claimBonus()">DAILY<br>BONUS</button>
+  </div>
+
+  <!-- DISCLAIMER -->
+  <div class="disclaimer">
+    For entertainment purposes only. No guarantees of winning. Play responsibly.<br>
+    <a href="https://www.Lucky7ai.com">www.Lucky7ai.com</a>
+  </div>
+
+</div>
+
+<!-- PROMO POPUP -->
+<div class="popup-overlay" id="promoPopup" onclick="handleOverlayClick(event)">
+  <div class="popup-box">
+    <div class="popup-confetti" id="popupConfetti"></div>
+    <button class="popup-close" onclick="closePopup()">✕</button>
+
+    <div class="popup-logo-wrap">
+      <div class="popup-logo">
+        <span class="logo-lucky">Lucky</span>
+        <span class="logo-seven">7</span>
+        <span class="logo-ai">Ai</span>
+      </div>
+    </div>
+    <div class="popup-tagline">✦ AI Powered Lottery Picks ✦</div>
+
+    <div class="popup-divider"></div>
+
+    <div class="popup-body">
+      <div class="popup-eyebrow">Today's Full Picks</div>
+      <div class="popup-headline">Get <span>ALL</span> of Today's<br>AI-Generated Numbers</div>
+      <div class="popup-sub">Every bot. Every lottery. Full picks, hot numbers, and strategy breakdowns — updated before each drawing.</div>
+      <a class="popup-cta" href="https://www.Lucky7ai.com" target="_blank">
+        VISIT LUCKY7AI.COM
+        <span class="popup-cta-url">www.Lucky7ai.com</span>
+      </a>
+      <button class="popup-dismiss" onclick="closePopup()">Maybe later</button>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<nav class="bottom-nav">
+  <a class="nav-item active" href="#">
+    <span class="nav-icon">🏠</span>
+    <span>Home</span>
+  </a>
+  <a class="nav-item" href="#">
+    <span class="nav-icon">🤖</span>
+    <span>AI Bots</span>
+  </a>
+  <a class="nav-item" href="#">
+    <span class="nav-icon">📋</span>
+    <span>My Picks</span>
+  </a>
+  <a class="nav-item" href="#">
+    <span class="nav-icon">🏆</span>
+    <span>Results</span>
+  </a>
+  <a class="nav-item" href="#">
+    <span class="nav-icon">👤</span>
+    <span>Profile</span>
+  </a>
+</nav>
+
+<script>
+/* ============================================================
+   PASSWORD GATE
+   ============================================================ */
+const PW_HASH = '20a562d86035a21b0a080aa705260f1a89bbe08b7bcedbf0b42fa5315ad839f5';
+
+async function sha256(str) {
+  const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(str));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+async function checkPass() {
+  const val = document.getElementById('pwInput').value;
+  const hash = await sha256(val);
+  if (hash === PW_HASH) {
+    localStorage.setItem('l7a_auth', PW_HASH);
+    document.getElementById('gate').style.display = 'none';
+    playTone({ type:'sine', freq:880, freq2:1200, duration:0.3, gain:0.15, attack:0.01 });
+  } else {
+    const err = document.getElementById('gateErr');
+    err.textContent = 'Incorrect code. Try again.';
+    document.getElementById('pwInput').style.borderColor = '#ff5c5c';
+    setTimeout(() => { err.textContent=''; document.getElementById('pwInput').style.borderColor='rgba(255,255,255,0.15)'; }, 2000);
+  }
+}
+
+// Auto-unlock if already authenticated this session
+(function() {
+  if (localStorage.getItem('l7a_auth') === PW_HASH) {
+    document.addEventListener('DOMContentLoaded', () => {
+      const g = document.getElementById('gate');
+      if (g) g.style.display = 'none';
+    });
+  }
+})();
+
+/* ============================================================
+   AUDIO ENGINE  (Web Audio API — no files needed)
+   ============================================================ */
+let audioCtx = null;
+
+function getAudioCtx() {
+  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+  return audioCtx;
+}
+
+function playTone(opts) {
+  const ctx = getAudioCtx();
+  const { type='sine', freq=440, freq2=freq, duration=0.18, gain=0.18, delay=0, attack=0.01, release=0.12 } = opts;
+  const osc  = ctx.createOscillator();
+  const gain_ = ctx.createGain();
+  osc.connect(gain_); gain_.connect(ctx.destination);
+  osc.type = type;
+  osc.frequency.setValueAtTime(freq, ctx.currentTime + delay);
+  osc.frequency.exponentialRampToValueAtTime(freq2, ctx.currentTime + delay + duration);
+  gain_.gain.setValueAtTime(0, ctx.currentTime + delay);
+  gain_.gain.linearRampToValueAtTime(gain, ctx.currentTime + delay + attack);
+  gain_.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+  osc.start(ctx.currentTime + delay);
+  osc.stop(ctx.currentTime + delay + duration + 0.05);
+}
+
+function playNoise(opts = {}) {
+  const ctx = getAudioCtx();
+  const { duration=0.12, gain=0.08, freq=800, delay=0 } = opts;
+  const bufSize = ctx.sampleRate * duration;
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+  const src    = ctx.createBufferSource();
+  const filter = ctx.createBiquadFilter();
+  const gain_  = ctx.createGain();
+  src.buffer = buf;
+  filter.type = 'bandpass'; filter.frequency.value = freq; filter.Q.value = 2;
+  src.connect(filter); filter.connect(gain_); gain_.connect(ctx.destination);
+  gain_.gain.setValueAtTime(gain, ctx.currentTime + delay);
+  gain_.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + delay + duration);
+  src.start(ctx.currentTime + delay);
+}
+
+// Sounds
+function sndButtonClick() {
+  playTone({ type:'sine',     freq:300, freq2:180, duration:0.15, gain:0.15, attack:0.005 });
+  playTone({ type:'triangle', freq:500, freq2:400, duration:0.10, gain:0.08, delay:0.03 });
+}
+
+function sndGenerating() {
+  // Rising whoosh
+  for (let i = 0; i < 6; i++) {
+    playTone({ type:'sawtooth', freq:80 + i*30, freq2:200 + i*40, duration:0.25, gain:0.04, delay:i*0.07, attack:0.02 });
+    playNoise({ duration:0.15, gain:0.03, freq:400 + i*200, delay:i*0.07 });
+  }
+}
+
+function sndBallDrop(index) {
+  // Each ball: punchy thud + bright ping
+  const pitches = [320,360,400,440,480,520];
+  const p = pitches[index % pitches.length];
+  playTone({ type:'sine',     freq:p,     freq2:p*0.6, duration:0.18, gain:0.22, attack:0.004 });
+  playTone({ type:'triangle', freq:p*2.5, freq2:p*2,   duration:0.12, gain:0.10, attack:0.005, delay:0.02 });
+  playNoise({ duration:0.06, gain:0.06, freq:2000, delay:0 });
+}
+
+function sndSpecialBall() {
+  // Red special ball — deeper + dramatic
+  playTone({ type:'sine',     freq:200, freq2:140, duration:0.28, gain:0.30, attack:0.005 });
+  playTone({ type:'triangle', freq:600, freq2:800, duration:0.20, gain:0.15, attack:0.01,  delay:0.04 });
+  playNoise({ duration:0.10, gain:0.10, freq:1200, delay:0.02 });
+}
+
+function sndComplete() {
+  // Victory fanfare chord
+  const chord = [523, 659, 784, 1046]; // C E G C
+  chord.forEach((f, i) => {
+    playTone({ type:'sine',     freq:f, freq2:f,       duration:0.6,  gain:0.12, delay:i*0.06, attack:0.02 });
+    playTone({ type:'triangle', freq:f, freq2:f*0.98,  duration:0.5,  gain:0.06, delay:i*0.06+0.08 });
+  });
+  playTone({ type:'sine', freq:1046, freq2:1200, duration:0.4, gain:0.08, delay:0.35, attack:0.01 });
+}
+
+function sndPopup() {
+  // Sparkle reveal
+  const seq = [800,1000,1200,1600,2000];
+  seq.forEach((f, i) => {
+    playTone({ type:'sine', freq:f, freq2:f*1.1, duration:0.18, gain:0.10, delay:i*0.055, attack:0.005 });
+  });
+}
+
+function sndCoinEarn() {
+  playTone({ type:'sine', freq:880, freq2:1100, duration:0.14, gain:0.15, attack:0.005 });
+  playTone({ type:'sine', freq:1100,freq2:1320, duration:0.14, gain:0.12, delay:0.12, attack:0.005 });
+}
+
+function sndClose() {
+  playTone({ type:'sine', freq:400, freq2:280, duration:0.12, gain:0.10, attack:0.005 });
+}
+
+/* ============================================================
+   DATA
+   ============================================================ */
+const AVATAR_BASE = 'https://raw.githubusercontent.com/Lucky7AIapp/Lucky7Ai-Data/main/avatars/';
+
+const BOTS = [
+  {
+    id: 'apex',
+    name: 'APEX',
+    title: 'The Predictor',
+    fullTitle: 'Advanced Predictive Engine',
+    quote: 'Calculated. Precise. Dominant.',
+    strategy: 'Balances hot frequency, odd/even ratio, sum-range filtering & consecutive avoidance.',
+    emoji: '🤖', img: AVATAR_BASE + 'Apex.png',
+    color: '#ff3c3c', glow: 'rgba(255,60,60,0.4)',
+    tagBg: 'rgba(255,60,60,0.15)', tagColor: '#ff3c3c',
+    tag: 'PREDICTIVE ENGINE', cssClass: 'bot-apex',
+  },
+  {
+    id: 'oracle',
+    name: 'ORACLE',
+    title: 'The Oracle',
+    fullTitle: 'Historical Pattern Reader',
+    quote: 'I have seen the numbers.',
+    strategy: 'Analyzes draw history, number pairs, gap cycles & archive patterns to find structure.',
+    emoji: '🔮', img: AVATAR_BASE + 'Oracle.png',
+    color: '#b44fff', glow: 'rgba(160,68,255,0.4)',
+    tagBg: 'rgba(160,68,255,0.15)', tagColor: '#b44fff',
+    tag: 'PATTERN READER', cssClass: 'bot-oracle',
+  },
+  {
+    id: 'zeus',
+    name: 'ZEUS',
+    title: 'The Enforcer',
+    fullTitle: 'Divine Architect',
+    quote: 'Order from chaos. The ratio is divine.',
+    strategy: 'Spaces every pick using the Golden Ratio φ ≈ 1.618 — mathematical elegance meets chaos.',
+    emoji: '⚡', img: AVATAR_BASE + 'Zeus.png',
+    color: '#3390ff', glow: 'rgba(51,144,255,0.4)',
+    tagBg: 'rgba(51,144,255,0.15)', tagColor: '#3390ff',
+    tag: 'DIVINE ARCHITECT', cssClass: 'bot-zeus',
+  },
+  {
+    id: 'viper',
+    name: 'VIPER',
+    title: 'The Analyzer',
+    fullTitle: 'Streak Hunter',
+    quote: 'Strike fast. Strike hot.',
+    strategy: 'Momentum strategy — hunts numbers that have hit in the last 3-5 draws.',
+    emoji: '🐍', img: AVATAR_BASE + 'Viper.png',
+    color: '#00e87a', glow: 'rgba(0,232,122,0.4)',
+    tagBg: 'rgba(0,232,122,0.15)', tagColor: '#00e87a',
+    tag: 'STREAK HUNTER', cssClass: 'bot-viper',
+  },
+  {
+    id: 'aria',
+    name: 'ARIA',
+    title: 'The Contrarian',
+    fullTitle: 'Cold Contrarian',
+    quote: 'Patience finds what others miss.',
+    strategy: 'Plays only numbers cold for 20+ draws — betting on regression to the mean.',
+    emoji: '🌸', img: AVATAR_BASE + 'Aria.png',
+    color: '#ff5ca8', glow: 'rgba(255,92,168,0.4)',
+    tagBg: 'rgba(255,92,168,0.15)', tagColor: '#ff5ca8',
+    tag: 'COLD CONTRARIAN', cssClass: 'bot-aria',
+  },
+  {
+    id: 'luna',
+    name: 'LUNA',
+    title: 'The Intuitive',
+    fullTitle: 'Mystic Numerologist',
+    quote: 'The universe chooses. I listen.',
+    strategy: 'Picks from divine roots, lucky numbers, angel sequences & lunar calendar cycles.',
+    emoji: '🌙', img: AVATAR_BASE + 'Luna.png',
+    color: '#ffb344', glow: 'rgba(255,179,68,0.4)',
+    tagBg: 'rgba(255,179,68,0.15)', tagColor: '#ffb344',
+    tag: 'MYSTIC NUMEROLOGIST', cssClass: 'bot-luna',
+  },
+];
+
+const GAMES = [
+  { id:'pb',  name:'POWERBALL',         banner:'pb-banner',  emoji:'🔴', jackpot:'$134 Million', currency:'$', mainCount:5, mainMax:69, specMax:26,  specName:'Powerball' },
+  { id:'mm',  name:'MEGA MILLIONS',     banner:'mm-banner',  emoji:'🔵', jackpot:'$256 Million', currency:'$', mainCount:5, mainMax:70, specMax:25,  specName:'Mega Ball' },
+  { id:'em',  name:'EURO MILLIONS',     banner:'em-banner',  emoji:'⭐', jackpot:'€72 Million',  currency:'€', mainCount:5, mainMax:50, specMax:12,  specName:'Lucky Star' },
+  { id:'se',  name:'SUPERENALOTTO',     banner:'se-banner',  emoji:'🍀', jackpot:'€60.1 Million',currency:'€', mainCount:6, mainMax:90, specMax:0,   specName:null },
+  { id:'ms',  name:'MEGA-SENA',         banner:'ms-banner',  emoji:'🇧🇷', jackpot:'R$45 Million', currency:'R$',mainCount:6, mainMax:60, specMax:0,   specName:null },
+  { id:'la',  name:'LOTTO AMERICA',     banner:'la-banner',  emoji:'🇺🇸', jackpot:'$22 Million',  currency:'$', mainCount:5, mainMax:52, specMax:10,  specName:'Star Ball' },
+  { id:'ml',  name:'MILLIONAIRE 4 LIFE',banner:'ml-banner',  emoji:'💎', jackpot:'$7M/Life',     currency:'$', mainCount:5, mainMax:43, specMax:43,  specName:'Life Ball' },
+  { id:'tl',  name:'TEXAS LOTTO',       banner:'tl-banner',  emoji:'⭐', jackpot:'$16 Million',  currency:'$', mainCount:6, mainMax:54, specMax:0,   specName:null },
+  { id:'cs',  name:'CA SUPERLOTTO',     banner:'cs-banner',  emoji:'🐻', jackpot:'$8 Million',   currency:'$', mainCount:5, mainMax:47, specMax:27,  specName:'Mega' },
+];
+
+/* ============================================================
+   STATE
+   ============================================================ */
+let selectedBot = BOTS[0];
+let selectedGame = GAMES[0];
+let coinCount = 7777;
+let genTotal = 0;
+
+/* ============================================================
+   PARTICLES
+   ============================================================ */
+const canvas = document.getElementById('particleCanvas');
+const ctx = canvas.getContext('2d');
+const particles = [];
+
+function resizeCanvas() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+}
+
+function initParticles() {
+  particles.length = 0;
+  for (let i = 0; i < 60; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.5 + 0.3,
+      vx: (Math.random() - 0.5) * 0.3,
+      vy: -Math.random() * 0.4 - 0.1,
+      alpha: Math.random() * 0.5 + 0.1,
+      color: Math.random() > 0.5 ? '#7c00e0' : '#f5c518',
+    });
+  }
+}
+
+function animateParticles() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  for (const p of particles) {
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+    ctx.fillStyle = p.color;
+    ctx.globalAlpha = p.alpha;
+    ctx.fill();
+    p.x += p.vx; p.y += p.vy;
+    if (p.y < -5) { p.y = canvas.height + 5; p.x = Math.random() * canvas.width; }
+    if (p.x < -5) p.x = canvas.width + 5;
+    if (p.x > canvas.width + 5) p.x = -5;
+  }
+  ctx.globalAlpha = 1;
+  requestAnimationFrame(animateParticles);
+}
+
+/* ============================================================
+   BUILD UI
+   ============================================================ */
+function buildBots() {
+  const scroll = document.getElementById('botScroll');
+  scroll.innerHTML = BOTS.map(bot => `
+    <div class="bot-card ${bot.cssClass} ${bot.id === selectedBot.id ? 'active' : ''}"
+         id="botCard_${bot.id}"
+         onclick="selectBot('${bot.id}')"
+         style="${bot.id === selectedBot.id ? `border-color:${bot.color};box-shadow:0 0 20px ${bot.glow};` : ''}">
+      <div class="bot-avatar">
+        <img src="${bot.img}" alt="${bot.name}"
+          style="width:100%;height:100%;object-fit:cover;object-position:top;"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
+        <div class="bot-avatar-inner" style="display:none;position:absolute;inset:0;">${bot.emoji}</div>
+      </div>
+      <div class="bot-info">
+        <span class="bot-name">${bot.name}</span>
+        <div class="bot-title">${bot.title}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function buildGames() {
+  const grid = document.getElementById('gamesGrid');
+  grid.innerHTML = GAMES.slice(0,6).map(g => `
+    <div class="game-card ${g.id === selectedGame.id ? 'selected' : ''}"
+         id="gameCard_${g.id}"
+         onclick="selectGame('${g.id}')">
+      <div class="game-banner ${g.banner}">
+        <div class="game-logo-text">${g.emoji}<br>${g.name}</div>
+      </div>
+      <div class="game-info">
+        <div class="jackpot-label">JACKPOT</div>
+        <div class="jackpot-amount">${g.jackpot}</div>
+      </div>
+    </div>
+  `).join('');
+
+  // Game strip
+  const strip = document.getElementById('gameStrip');
+  strip.innerHTML = GAMES.map(g => `
+    <div class="game-chip ${g.id === selectedGame.id ? 'active' : ''}"
+         id="chip_${g.id}"
+         onclick="selectGame('${g.id}')">
+      ${g.emoji} ${g.name}
+    </div>
+  `).join('');
+}
+
+function buildRecentPicks() {
+  const container = document.getElementById('recentPicks');
+  const samples = [
+    { bot: BOTS[4], game: GAMES[0], date:'Jun 7, 2025', nums:[5,17,22,34,61],  spec:6,   matched:2, prize:'$10' },
+    { bot: BOTS[1], game: GAMES[1], date:'Jun 6, 2025', nums:[12,28,33,41,47], spec:7,   matched:3, prize:'$25' },
+    { bot: BOTS[2], game: GAMES[2], date:'Jun 5, 2025', nums:[3,11,24,32,50],  spec:9,   matched:2, prize:'€15' },
+    { bot: BOTS[3], game: GAMES[3], date:'Jun 4, 2025', nums:[7,23,45,62,76,81],spec:null,matched:1, prize:'€5'  },
+    { bot: BOTS[5], game: GAMES[4], date:'Jun 3, 2025', nums:[2,11,38,44,55,60],spec:null,matched:1, prize:'R$4' },
+  ];
+  container.innerHTML = samples.map(s => `
+    <div class="pick-card">
+      <div style="height:2px;background:${s.bot.color};border-radius:999px;margin-bottom:10px;"></div>
+      <div class="pick-header">
+        <div class="pick-avatar">${s.bot.emoji}</div>
+        <div class="pick-meta">
+          <div class="pick-bot-name" style="color:${s.bot.color}">${s.bot.name}</div>
+          <div class="pick-game">${s.game.name}</div>
+        </div>
+        <div class="pick-date">${s.date}</div>
+      </div>
+      <div class="pick-balls">
+        ${s.nums.map(n => `<div class="mini-ball mini-main">${n}</div>`).join('')}
+        ${s.spec !== null ? `<div class="mini-ball mini-special">${s.spec}</div>` : ''}
+      </div>
+      <div class="pick-footer">
+        <div class="pick-stat">Matched <strong>${s.matched}</strong></div>
+        <div class="pick-prize">${s.prize}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function updateBotDesc() {
+  const b = selectedBot;
+  document.getElementById('botDesc').innerHTML = `
+    <span class="bot-desc-tag" style="background:${b.tagBg};color:${b.tagColor};border:1px solid ${b.tagColor}40;">
+      ${b.tag}
+    </span>
+    <div class="bot-desc-text"><strong>"${b.quote}"</strong> — ${b.strategy}</div>
+  `;
+}
+
+function updateGenPanel() {
+  const b = selectedBot;
+  const g = selectedGame;
+  document.getElementById('genBotName').textContent = b.name;
+  document.getElementById('genPortrait').innerHTML = `<img src="${b.img}" alt="${b.name}" style="width:100%;height:100%;object-fit:cover;object-position:top;border-radius:10px;" onerror="this.outerHTML='${b.emoji}'">`;
+  document.getElementById('strategyText').textContent = b.fullTitle;
+  document.getElementById('genCount').textContent = `✦ ${g.name} — ${g.jackpot} ✦`;
+  // Reset balls
+  const row = document.getElementById('ballsRow');
+  const allBalls = row.querySelectorAll('.ball');
+  allBalls.forEach(ball => { ball.classList.remove('visible'); ball.textContent = '?'; });
+  // Rebuild balls for game
+  rebuildBalls(g);
+}
+
+function rebuildBalls(game) {
+  const row = document.getElementById('ballsRow');
+  const count = game.mainCount + (game.specMax > 0 ? 1 : 0);
+  row.innerHTML = '';
+  for (let i = 0; i < game.mainCount; i++) {
+    const d = document.createElement('div');
+    d.className = 'ball ball-main';
+    d.id = `b${i+1}`;
+    d.textContent = '?';
+    row.appendChild(d);
+  }
+  if (game.specMax > 0) {
+    const d = document.createElement('div');
+    d.className = 'ball ball-special';
+    d.id = 'bspec';
+    d.textContent = '?';
+    row.appendChild(d);
+  }
+}
+
+/* ============================================================
+   SELECTION HANDLERS
+   ============================================================ */
+function selectBot(id) {
+  playTone({ type:'sine', freq:520, freq2:620, duration:0.10, gain:0.12, attack:0.004 });
+  selectedBot = BOTS.find(b => b.id === id);
+  // Update card styles
+  BOTS.forEach(b => {
+    const card = document.getElementById(`botCard_${b.id}`);
+    if (!card) return;
+    if (b.id === id) {
+      card.classList.add('active');
+      card.style.borderColor = b.color;
+      card.style.boxShadow = `0 0 20px ${b.glow}`;
+    } else {
+      card.classList.remove('active');
+      card.style.borderColor = '';
+      card.style.boxShadow = '';
+    }
+  });
+  updateBotDesc();
+  updateGenPanel();
+}
+
+function selectGame(id) {
+  playTone({ type:'sine', freq:440, freq2:520, duration:0.10, gain:0.10, attack:0.004 });
+  selectedGame = GAMES.find(g => g.id === id);
+  // Update game cards
+  GAMES.forEach(g => {
+    const card = document.getElementById(`gameCard_${g.id}`);
+    if (card) card.classList.toggle('selected', g.id === id);
+    const chip = document.getElementById(`chip_${g.id}`);
+    if (chip) chip.classList.toggle('active', g.id === id);
+  });
+  updateGenPanel();
+}
+
+/* ============================================================
+   NUMBER GENERATION
+   ============================================================ */
+function pickRandom(min, max, count, exclude = []) {
+  const pool = [];
+  for (let i = min; i <= max; i++) {
+    if (!exclude.includes(i)) pool.push(i);
+  }
+  const result = [];
+  while (result.length < count && pool.length > 0) {
+    const idx = Math.floor(Math.random() * pool.length);
+    result.push(pool.splice(idx, 1)[0]);
+  }
+  return result.sort((a, b) => a - b);
+}
+
+function generateByStrategy(bot, game) {
+  const { mainCount, mainMax, specMax } = game;
+  let nums = [];
+
+  switch (bot.id) {
+    case 'apex': {
+      // Balanced: odd/even mix, sum in mid-range, no consecutives
+      let tries = 0;
+      do {
+        nums = pickRandom(1, mainMax, mainCount);
+        const odds = nums.filter(n => n % 2 !== 0).length;
+        const evens = mainCount - odds;
+        const sum = nums.reduce((a, b) => a + b, 0);
+        const minSum = Math.floor(mainMax * mainCount * 0.25);
+        const maxSum = Math.floor(mainMax * mainCount * 0.65);
+        const noConsec = !nums.some((n, i) => i > 0 && n === nums[i-1]+1);
+        const balanced = Math.abs(odds - evens) <= 2;
+        if (balanced && sum >= minSum && sum <= maxSum && noConsec) break;
+        tries++;
+      } while (tries < 200);
+      break;
+    }
+    case 'oracle': {
+      // Favor "hot" ranges — skewed toward mid numbers
+      const weights = [];
+      for (let i = 1; i <= mainMax; i++) {
+        const mid = mainMax / 2;
+        const w = 1 + Math.sin((i / mainMax) * Math.PI) * 1.5;
+        weights.push({ n: i, w });
+      }
+      const selected = [];
+      while (selected.length < mainCount) {
+        const total = weights.reduce((a, b) => a + b.w, 0);
+        let r = Math.random() * total;
+        for (const item of weights) {
+          r -= item.w;
+          if (r <= 0 && !selected.includes(item.n)) { selected.push(item.n); break; }
+        }
+      }
+      nums = selected.sort((a, b) => a - b);
+      break;
+    }
+    case 'zeus': {
+      // Golden ratio spacing
+      const phi = 1.6180339887;
+      const step = mainMax / (mainCount * phi);
+      let start = Math.floor(Math.random() * step) + 1;
+      nums = [];
+      for (let i = 0; i < mainCount; i++) {
+        let n = Math.round(start + i * step * phi % mainMax);
+        n = Math.min(Math.max(n, 1), mainMax);
+        // avoid duplicates
+        while (nums.includes(n)) n = (n % mainMax) + 1;
+        nums.push(n);
+      }
+      nums = [...new Set(nums)].sort((a, b) => a - b);
+      if (nums.length < mainCount) nums = pickRandom(1, mainMax, mainCount);
+      break;
+    }
+    case 'viper': {
+      // Favor "hot" numbers — higher numbers in the range (simulating recent hits)
+      const hotStart = Math.floor(mainMax * 0.4);
+      const hot = pickRandom(hotStart, mainMax, Math.ceil(mainCount * 0.7));
+      const cold = pickRandom(1, hotStart - 1, mainCount - hot.length);
+      nums = [...hot, ...cold].sort((a, b) => a - b);
+      break;
+    }
+    case 'aria': {
+      // Cold numbers — lower range / "forgotten" numbers
+      const coldEnd = Math.floor(mainMax * 0.45);
+      const cold = pickRandom(1, coldEnd, Math.ceil(mainCount * 0.7));
+      const warm = pickRandom(coldEnd + 1, mainMax, mainCount - cold.length);
+      nums = [...cold, ...warm].sort((a, b) => a - b);
+      break;
+    }
+    case 'luna': {
+      // Numerology: multiples of 3,7,9 and lucky numbers 6,8,9
+      const lucky = [3,6,7,8,9,12,18,21,24,27,33,36,39,42,45,48,51,54,57,63,66,69,72];
+      const filtered = lucky.filter(n => n <= mainMax);
+      const fromLucky = pickRandom(1, mainMax, mainCount);
+      // bias toward numerology numbers
+      const lunaPool = [...filtered, ...filtered, ...fromLucky];
+      const seen = new Set();
+      nums = [];
+      while (nums.length < mainCount && lunaPool.length > 0) {
+        const idx = Math.floor(Math.random() * lunaPool.length);
+        const n = lunaPool[idx];
+        if (!seen.has(n) && n >= 1 && n <= mainMax) { seen.add(n); nums.push(n); }
+        lunaPool.splice(idx, 1);
+      }
+      if (nums.length < mainCount) { const extra = pickRandom(1,mainMax,mainCount-nums.length,nums); nums.push(...extra); }
+      nums = nums.sort((a, b) => a - b);
+      break;
+    }
+    default:
+      nums = pickRandom(1, mainMax, mainCount);
+  }
+
+  const spec = specMax > 0 ? Math.floor(Math.random() * specMax) + 1 : null;
+  return { nums, spec };
+}
+
+async function generateNumbers() {
+  sndButtonClick();
+  const btn = document.getElementById('genBtn');
+  btn.classList.add('loading');
+  btn.innerHTML = '<span class="spinner"></span> CALCULATING...';
+  setTimeout(sndGenerating, 80);
+
+  // Clear balls
+  const row = document.getElementById('ballsRow');
+  row.querySelectorAll('.ball').forEach(b => { b.classList.remove('visible'); b.textContent = ''; });
+
+  await sleep(600 + Math.random() * 400);
+
+  const { nums, spec } = generateByStrategy(selectedBot, selectedGame);
+
+  // Animate balls
+  const mainBalls = row.querySelectorAll('.ball-main');
+  for (let i = 0; i < mainBalls.length; i++) {
+    await sleep(i === 0 ? 0 : 130);
+    mainBalls[i].textContent = nums[i] || '?';
+    mainBalls[i].classList.add('visible', 'bounce');
+    setTimeout(() => mainBalls[i].classList.remove('bounce'), 600);
+    sndBallDrop(i);
+    spawnBallParticles();
+  }
+
+  if (spec !== null) {
+    await sleep(160);
+    const specBall = row.querySelector('.ball-special');
+    if (specBall) {
+      specBall.textContent = spec;
+      specBall.classList.add('visible', 'bounce');
+      setTimeout(() => specBall.classList.remove('bounce'), 600);
+      sndSpecialBall();
+      spawnBallParticles();
+    }
+  }
+
+  genTotal++;
+  coinCount += 50;
+  document.getElementById('coinCount').textContent = coinCount.toLocaleString();
+  sndComplete();
+  setTimeout(sndCoinEarn, 700);
+  document.getElementById('genCount').textContent = `✦ Pick #${genTotal} · +50 coins earned ✦`;
+
+  btn.classList.remove('loading');
+  btn.innerHTML = 'GENERATE NUMBERS <span class="sparkle">✦</span>';
+
+  // Start 20-second popup countdown after first generation
+  schedulePopup();
+
+  // Add to recent picks
+  addToPicks(nums, spec);
+}
+
+function addToPicks(nums, spec) {
+  const container = document.getElementById('recentPicks');
+  const b = selectedBot;
+  const g = selectedGame;
+  const today = new Date().toLocaleDateString('en-US', { month:'short', day:'numeric', year:'numeric' });
+  const newCard = document.createElement('div');
+  newCard.className = 'pick-card';
+  newCard.style.animation = 'fadeInUp 0.4s ease both';
+  newCard.innerHTML = `
+    <div style="height:2px;background:${b.color};border-radius:999px;margin-bottom:10px;"></div>
+    <div class="pick-header">
+      <div class="pick-avatar">${b.emoji}</div>
+      <div class="pick-meta">
+        <div class="pick-bot-name" style="color:${b.color}">${b.name}</div>
+        <div class="pick-game">${g.name}</div>
+      </div>
+      <div class="pick-date">${today}</div>
+    </div>
+    <div class="pick-balls">
+      ${nums.map(n => `<div class="mini-ball mini-main">${n}</div>`).join('')}
+      ${spec !== null ? `<div class="mini-ball mini-special">${spec}</div>` : ''}
+    </div>
+    <div class="pick-footer">
+      <div class="pick-stat">Matched <strong>?</strong></div>
+      <div class="pick-prize">Pending</div>
+    </div>
+  `;
+  container.prepend(newCard);
+}
+
+/* ============================================================
+   PARTICLE BURST ON BALL DROP
+   ============================================================ */
+function spawnBallParticles() {
+  const panel = document.querySelector('.generate-panel');
+  const rect = panel.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height * 0.5;
+  for (let i = 0; i < 8; i++) {
+    particles.push({
+      x: cx + (Math.random() - 0.5) * 60,
+      y: cy + (Math.random() - 0.5) * 20,
+      r: Math.random() * 2 + 1,
+      vx: (Math.random() - 0.5) * 2,
+      vy: -Math.random() * 3 - 1,
+      alpha: 0.8,
+      color: Math.random() > 0.5 ? '#f5c518' : '#a044ff',
+    });
+  }
+}
+
+/* ============================================================
+   UTILS
+   ============================================================ */
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+function toggleMenu() {
+  // Simple bounce effect
+  const btn = document.querySelector('.menu-btn');
+  btn.style.borderColor = 'var(--purple-glow)';
+  setTimeout(() => { btn.style.borderColor = ''; }, 300);
+}
+
+function showAllGames() {
+  // Expand to show all games
+  const grid = document.getElementById('gamesGrid');
+  if (grid.innerHTML.includes('data-all')) return;
+  grid.setAttribute('data-all', '1');
+  grid.innerHTML = GAMES.map(g => `
+    <div class="game-card ${g.id === selectedGame.id ? 'selected' : ''}"
+         id="gameCard_${g.id}"
+         onclick="selectGame('${g.id}')">
+      <div class="game-banner ${g.banner}">
+        <div class="game-logo-text">${g.emoji}<br>${g.name}</div>
+      </div>
+      <div class="game-info">
+        <div class="jackpot-label">JACKPOT</div>
+        <div class="jackpot-amount">${g.jackpot}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+/* ============================================================
+   PROMO POPUP
+   ============================================================ */
+let popupTimer = null;
+let popupShown = false;
+
+function schedulePopup() {
+  if (popupShown || popupTimer) return;
+  popupTimer = setTimeout(showPopup, 20000);
+}
+
+function showPopup() {
+  if (popupShown) return;
+  popupShown = true;
+  spawnConfetti();
+  sndPopup();
+  const overlay = document.getElementById('promoPopup');
+  overlay.classList.add('show');
+}
+
+function closePopup() {
+  sndClose();
+  document.getElementById('promoPopup').classList.remove('show');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('promoPopup')) closePopup();
+}
+
+function spawnConfetti() {
+  const container = document.getElementById('popupConfetti');
+  const colors = ['#f5c518','#ff6600','#a044ff','#ff3c3c','#00e87a','#ffde6a'];
+  for (let i = 0; i < 28; i++) {
+    const dot = document.createElement('div');
+    dot.className = 'confetti-dot';
+    const size = Math.random() * 6 + 3;
+    dot.style.cssText = `
+      width:${size}px; height:${size}px;
+      background:${colors[Math.floor(Math.random()*colors.length)]};
+      left:${Math.random()*100}%;
+      top:0;
+      animation-duration:${2.5 + Math.random()*2}s;
+      animation-delay:${Math.random()*1.5}s;
+      opacity:0.7;
+    `;
+    container.appendChild(dot);
+  }
+}
+
+function claimBonus() {
+  coinCount += 777;
+  document.getElementById('coinCount').textContent = coinCount.toLocaleString();
+  const btn = document.querySelector('.daily-btn');
+  btn.textContent = '+777 COINS!';
+  btn.style.background = 'linear-gradient(135deg,#c87a00,#f5c518)';
+  setTimeout(() => {
+    btn.innerHTML = 'DAILY<br>BONUS';
+    btn.style.background = '';
+  }, 2000);
+}
+
+/* ============================================================
+   INIT
+   ============================================================ */
+window.addEventListener('resize', () => { resizeCanvas(); initParticles(); });
+resizeCanvas();
+initParticles();
+animateParticles();
+
+// Set today's date
+const todayStr = new Date().toLocaleDateString('en-US', { weekday:'long', month:'long', day:'numeric', year:'numeric' });
+document.getElementById('genDate').textContent = todayStr.toUpperCase();
+
+buildBots();
+buildGames();
+buildRecentPicks();
+updateBotDesc();
+updateGenPanel();
+
+// Auto-show initial balls on load
+setTimeout(() => {
+  const { nums, spec } = generateByStrategy(selectedBot, selectedGame);
+  const row = document.getElementById('ballsRow');
+  const mainBalls = row.querySelectorAll('.ball-main');
+  mainBalls.forEach((b, i) => {
+    setTimeout(() => {
+      b.textContent = nums[i] || '?';
+      b.classList.add('visible');
+    }, i * 100);
+  });
+  if (spec !== null) {
+    const specBall = row.querySelector('.ball-special');
+    if (specBall) setTimeout(() => { specBall.textContent = spec; specBall.classList.add('visible'); }, mainBalls.length * 100);
+  }
+}, 500);
+</script>
+</body>
+</html>
