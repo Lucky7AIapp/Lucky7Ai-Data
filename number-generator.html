@@ -938,6 +938,173 @@ body::before {
 }
 .disclaimer a { color: rgba(245,197,24,0.5); text-decoration: none; }
 
+/* ============================================================
+   MEGA PICK BUTTON
+   ============================================================ */
+.mega-pick-btn {
+  width: 100%; margin-top: 10px;
+  padding: 15px;
+  border-radius: 12px; border: none; cursor: pointer;
+  background: linear-gradient(135deg, #ff6600, #ffcc00, #ff6600);
+  background-size: 200% 100%;
+  color: #1a0a00; font-family: 'Orbitron', sans-serif;
+  font-size: 12px; font-weight: 900; letter-spacing: 2px;
+  position: relative; overflow: hidden;
+  box-shadow: 0 0 30px rgba(255,150,0,0.6), 0 0 60px rgba(255,100,0,0.3);
+  animation: megaBtnPulse 1.2s ease-in-out infinite;
+}
+@keyframes megaBtnPulse {
+  0%,100% { box-shadow: 0 0 20px rgba(255,150,0,0.5), 0 0 40px rgba(255,100,0,0.2); transform: scale(1); }
+  50%      { box-shadow: 0 0 40px rgba(255,200,0,0.9), 0 0 80px rgba(255,100,0,0.5); transform: scale(1.02); }
+}
+.mega-pick-btn::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: megaShimmer 1.5s linear infinite;
+}
+@keyframes megaShimmer { from { transform: translateX(-100%); } to { transform: translateX(100%); } }
+.mega-pick-icon { display: inline-block; animation: megaIconPulse 0.6s ease-in-out infinite alternate; }
+@keyframes megaIconPulse { from { transform: scale(1); } to { transform: scale(1.4); } }
+
+/* ============================================================
+   MEGA OVERLAY
+   ============================================================ */
+#megaOverlay {
+  position: fixed; inset: 0; z-index: 50000;
+  background: #000;
+  overflow: hidden;
+}
+#megaCanvas {
+  position: absolute; inset: 0;
+  width: 100%; height: 100%;
+  pointer-events: none;
+}
+#megaContent {
+  position: absolute; inset: 0;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+}
+.mega-phase { width: 100%; display: flex; flex-direction: column; align-items: center; }
+
+/* Bot slam */
+#megaBotWrap {
+  position: relative; width: 220px; height: 220px;
+  display: flex; align-items: center; justify-content: center;
+  transform: scale(0) translateY(-100px);
+  opacity: 0;
+}
+#megaBotImg {
+  width: 200px; height: 200px;
+  object-fit: cover; object-position: top;
+  border-radius: 50%;
+  border: 4px solid rgba(255,200,0,0.8);
+  box-shadow: 0 0 60px rgba(255,150,0,0.8), 0 0 120px rgba(255,100,0,0.4);
+  position: relative; z-index: 2;
+}
+#megaBotRing {
+  position: absolute; inset: -10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,200,0,0.4);
+  animation: ringExpand 1.5s ease-out infinite;
+}
+#megaBotGlow {
+  position: absolute; inset: -30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,150,0,0.3) 0%, transparent 70%);
+  animation: glowPulse2 1s ease-in-out infinite alternate;
+}
+@keyframes ringExpand {
+  0%   { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.8); opacity: 0; }
+}
+@keyframes glowPulse2 {
+  from { transform: scale(1); opacity: 0.6; }
+  to   { transform: scale(1.3); opacity: 1; }
+}
+#megaBotLabel {
+  margin-top: 20px;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 22px; font-weight: 900; letter-spacing: 4px;
+  color: #ffcc00;
+  text-shadow: 0 0 30px rgba(255,200,0,0.8);
+  opacity: 0; transform: translateY(20px);
+}
+
+/* Phase 2 — number reveal */
+#megaTitle {
+  font-family: 'Cinzel', serif;
+  font-size: 28px; font-weight: 900;
+  background: linear-gradient(135deg, #ffcc00, #ff6600, #ffcc00);
+  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-align: center; letter-spacing: 3px;
+  filter: drop-shadow(0 0 20px rgba(255,150,0,0.8));
+  opacity: 0; transform: scale(0.5);
+  margin-bottom: 8px;
+}
+#megaSubtitle {
+  font-size: 11px; letter-spacing: 3px;
+  color: rgba(255,200,0,0.6); margin-bottom: 36px;
+  opacity: 0;
+}
+#megaBallsWrap {
+  display: flex; gap: 10px; flex-wrap: wrap;
+  justify-content: center; margin-bottom: 30px;
+  min-height: 70px;
+}
+.mega-ball {
+  width: 60px; height: 60px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Orbitron', sans-serif;
+  font-size: 18px; font-weight: 900;
+  opacity: 0; transform: translateY(-80px) rotate(-180deg);
+  transition: none;
+}
+.mega-ball-main {
+  background: radial-gradient(circle at 35% 30%, #ffe566, #f5c518 50%, #c87a00 90%);
+  box-shadow: 0 0 20px rgba(245,197,24,0.7), inset 0 3px 6px rgba(255,255,255,0.4);
+  color: #1a0a00;
+}
+.mega-ball-special {
+  background: radial-gradient(circle at 35% 30%, #ff8888, #ff2020 50%, #aa0000 90%);
+  box-shadow: 0 0 20px rgba(255,50,50,0.8), inset 0 3px 6px rgba(255,255,255,0.3);
+  color: white;
+}
+@keyframes megaBallDrop {
+  0%   { opacity: 0; transform: translateY(-120px) rotate(-180deg) scale(0.3); }
+  60%  { opacity: 1; transform: translateY(12px) rotate(10deg) scale(1.15); }
+  80%  { transform: translateY(-6px) rotate(-3deg) scale(0.95); }
+  100% { opacity: 1; transform: translateY(0) rotate(0deg) scale(1); }
+}
+#megaRevealLabel {
+  font-family: 'Orbitron', sans-serif;
+  font-size: 11px; letter-spacing: 4px;
+  color: rgba(255,200,0,0.7);
+  opacity: 0; margin-top: 10px;
+}
+
+/* shake keyframe */
+@keyframes screenShake {
+  0%,100% { transform: translate(0,0) rotate(0); }
+  15%  { transform: translate(-6px, 4px) rotate(-0.5deg); }
+  30%  { transform: translate(6px,-4px) rotate(0.5deg); }
+  45%  { transform: translate(-4px, 6px) rotate(-0.3deg); }
+  60%  { transform: translate(4px,-2px) rotate(0.3deg); }
+  75%  { transform: translate(-2px, 4px) rotate(-0.2deg); }
+}
+.shake { animation: screenShake 0.4s ease both; }
+
+/* skip button */
+#megaSkipBtn {
+  position: absolute; top: 20px; right: 20px;
+  background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  color: rgba(255,255,255,0.4); font-size: 10px; letter-spacing: 2px;
+  padding: 8px 14px; border-radius: 999px; cursor: pointer;
+  font-family: 'Orbitron', sans-serif;
+}
+#megaSkipBtn:hover { color: white; border-color: rgba(255,255,255,0.4); }
+
 /* Loading spinner */
 .spinner {
   display: inline-block; width: 14px; height: 14px;
@@ -1060,6 +1227,13 @@ body::before {
       GENERATE NUMBERS <span class="sparkle">✦</span>
     </button>
     <div class="gen-count" id="genCount">✦ Pick a lottery game below ✦</div>
+
+    <!-- MEGA PICK BUTTON — appears after 5 picks -->
+    <button class="mega-pick-btn" id="megaPickBtn" onclick="triggerMegaPick()" style="display:none;">
+      <span class="mega-pick-icon">⚡</span>
+      UNLEASH MEGA PICK
+      <span class="mega-pick-icon">⚡</span>
+    </button>
   </div>
 
   <!-- LOTTERY GAME FILTER -->
@@ -1091,6 +1265,28 @@ body::before {
     <a href="https://www.Lucky7ai.com">www.Lucky7ai.com</a>
   </div>
 
+</div>
+
+<!-- MEGA PICK CINEMATIC OVERLAY -->
+<div id="megaOverlay" style="display:none;">
+  <canvas id="megaCanvas"></canvas>
+  <div id="megaContent">
+    <div id="megaPhase1" class="mega-phase">
+      <div id="megaBotWrap">
+        <img id="megaBotImg" src="" alt="">
+        <div id="megaBotRing"></div>
+        <div id="megaBotGlow"></div>
+      </div>
+      <div id="megaBotLabel"></div>
+    </div>
+    <div id="megaPhase2" class="mega-phase" style="display:none;">
+      <div id="megaTitle">⚡ MEGA PICK ⚡</div>
+      <div id="megaSubtitle"></div>
+      <div id="megaBallsWrap"></div>
+      <div id="megaRevealLabel">NUMBERS REVEALED</div>
+    </div>
+  </div>
+  <button id="megaSkipBtn" onclick="closeMegaPick()">SKIP ✕</button>
 </div>
 
 <!-- PROMO POPUP -->
@@ -1773,6 +1969,17 @@ async function generateNumbers() {
   document.getElementById('coinCount').textContent = coinCount.toLocaleString();
   sndComplete();
   setTimeout(sndCoinEarn, 700);
+
+  // Unlock MEGA PICK after 5 generates
+  if (genTotal === 5) {
+    const mb = document.getElementById('megaPickBtn');
+    mb.style.display = 'block';
+    mb.style.animation = 'megaBtnPulse 1.2s ease-in-out infinite';
+    setTimeout(() => {
+      playTone({type:'sine',freq:600,freq2:900,duration:0.3,gain:0.2,attack:0.01});
+      playTone({type:'sine',freq:900,freq2:1200,duration:0.3,gain:0.15,delay:0.25,attack:0.01});
+    }, 400);
+  }
   document.getElementById('genCount').textContent = `✦ Pick #${genTotal} · +50 coins earned ✦`;
 
   btn.classList.remove('loading');
@@ -1848,6 +2055,258 @@ function toggleMenu() {
 function showAllGames() { /* games shown in strip */ }
 
 /* ============================================================
+   MEGA PICK ENGINE
+   ============================================================ */
+
+// ── MEGA SOUNDS ─────────────────────────────────────────────
+function sndMegaRumble() {
+  const ctx = getAudioCtx();
+  for (let i = 0; i < 4; i++) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    o.connect(g); g.connect(ctx.destination);
+    o.type = 'sawtooth'; o.frequency.setValueAtTime(30+i*8, ctx.currentTime);
+    o.frequency.linearRampToValueAtTime(60+i*12, ctx.currentTime+2.5);
+    g.gain.setValueAtTime(0, ctx.currentTime);
+    g.gain.linearRampToValueAtTime(0.12, ctx.currentTime+0.3);
+    g.gain.linearRampToValueAtTime(0.18, ctx.currentTime+2.0);
+    g.gain.linearRampToValueAtTime(0, ctx.currentTime+2.8);
+    o.start(ctx.currentTime); o.stop(ctx.currentTime+2.9);
+  }
+  for (let i = 0; i < 5; i++)
+    playTone({ type:'sawtooth', freq:200+i*60, freq2:280+i*70, duration:2.5, gain:0.03, delay:i*0.1, attack:0.4 });
+}
+
+function sndThunder() {
+  const ctx = getAudioCtx();
+  const bufSize = ctx.sampleRate * 1.2;
+  const buf = ctx.createBuffer(1, bufSize, ctx.sampleRate);
+  const data = buf.getChannelData(0);
+  for (let i = 0; i < bufSize; i++) data[i] = (Math.random()*2-1) * Math.pow(1 - i/bufSize, 1.5);
+  const src = ctx.createBufferSource();
+  const lp  = ctx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.value=300;
+  const g   = ctx.createGain();
+  src.buffer = buf; src.connect(lp); lp.connect(g); g.connect(ctx.destination);
+  g.gain.setValueAtTime(1.2, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+1.2);
+  src.start();
+}
+
+function sndBotSlam() {
+  playTone({ type:'sine',     freq:60,  freq2:30,  duration:0.6,  gain:0.5,  attack:0.002 });
+  playTone({ type:'sawtooth', freq:120, freq2:60,  duration:0.4,  gain:0.25, attack:0.002 });
+  playNoise({ duration:0.3, gain:0.3, freq:150 });
+  playTone({ type:'square',   freq:800, freq2:200, duration:0.15, gain:0.2,  attack:0.002 });
+}
+
+function sndMegaTension() {
+  const notes = [220,277,330,415,523,659,784,1046];
+  notes.forEach((f,i) => {
+    playTone({ type:'sine',     freq:f,   freq2:f*1.02, duration:0.35, gain:0.07, delay:i*0.12, attack:0.02 });
+    playTone({ type:'triangle', freq:f*2, freq2:f*2,    duration:0.2,  gain:0.04, delay:i*0.12+0.05 });
+  });
+}
+
+function sndMegaBallDrop(idx) {
+  const freqs = [200,240,280,320,360,400];
+  const f = freqs[idx % freqs.length];
+  playTone({ type:'sine',     freq:f*3, freq2:f*2,   duration:0.25, gain:0.28, attack:0.003 });
+  playTone({ type:'triangle', freq:f,   freq2:f*0.8, duration:0.35, gain:0.20, attack:0.005 });
+  playNoise({ duration:0.1, gain:0.15, freq:3000 });
+  playTone({ type:'sawtooth', freq:800, freq2:200,   duration:0.2,  gain:0.08, attack:0.01 });
+}
+
+function sndMegaFanfare() {
+  const prog = [[523,659,784],[587,740,880],[659,831,988],[784,988,1175]];
+  prog.forEach((chord,ci) => {
+    chord.forEach((f,ni) => {
+      playTone({ type:'sine',     freq:f, duration:0.8, gain:0.10, delay:ci*0.22+ni*0.03, attack:0.02 });
+      playTone({ type:'triangle', freq:f, duration:0.7, gain:0.05, delay:ci*0.22+ni*0.03+0.05 });
+    });
+  });
+  [1046,1319,1568,2093].forEach((f,i) =>
+    playTone({ type:'sine', freq:f, freq2:f*1.05, duration:0.5, gain:0.08, delay:0.9+i*0.08, attack:0.01 })
+  );
+}
+
+function sndCrowdCheer() {
+  const ctx = getAudioCtx();
+  for (let i = 0; i < 20; i++) {
+    const o = ctx.createOscillator(), g = ctx.createGain();
+    const f = 150 + Math.random()*300;
+    o.connect(g); g.connect(ctx.destination);
+    o.type = 'sawtooth';
+    o.frequency.setValueAtTime(f, ctx.currentTime+0.1);
+    o.frequency.linearRampToValueAtTime(f*(0.9+Math.random()*0.3), ctx.currentTime+1.5);
+    g.gain.setValueAtTime(0, ctx.currentTime+0.1);
+    g.gain.linearRampToValueAtTime(0.015+Math.random()*0.01, ctx.currentTime+0.4);
+    g.gain.linearRampToValueAtTime(0, ctx.currentTime+1.8);
+    o.start(ctx.currentTime+0.1); o.stop(ctx.currentTime+2);
+  }
+}
+
+// ── LIGHTNING CANVAS ─────────────────────────────────────────
+let megaCtx = null;
+
+function initMegaCanvas() {
+  const c = document.getElementById('megaCanvas');
+  c.width = window.innerWidth; c.height = window.innerHeight;
+  megaCtx = c.getContext('2d');
+}
+
+function drawLightning(x1,y1,x2,y2,branches,depth) {
+  if (depth===0) return;
+  megaCtx.beginPath(); megaCtx.moveTo(x1,y1);
+  const mx=(x1+x2)/2+(Math.random()-0.5)*120;
+  const my=(y1+y2)/2+(Math.random()-0.5)*60;
+  megaCtx.quadraticCurveTo(mx,my,x2,y2);
+  megaCtx.strokeStyle=`rgba(180,100,255,${0.3+depth*0.2})`;
+  megaCtx.lineWidth=depth*1.5;
+  megaCtx.shadowColor='#a044ff'; megaCtx.shadowBlur=20;
+  megaCtx.stroke();
+  if (branches>0&&depth>1) drawLightning(mx,my,mx+(Math.random()-0.5)*200,my+Math.random()*100,0,depth-1);
+}
+
+function flashLightning() {
+  if (!megaCtx) return;
+  const w=megaCtx.canvas.width, h=megaCtx.canvas.height;
+  let flashes=0;
+  const doFlash=()=>{
+    megaCtx.clearRect(0,0,w,h);
+    megaCtx.fillStyle=`rgba(255,255,255,${0.05+Math.random()*0.1})`;
+    megaCtx.fillRect(0,0,w,h);
+    for (let i=0;i<4;i++) drawLightning(Math.random()*w,0,Math.random()*w,h*0.6,2,4);
+    flashes++;
+    if (flashes<12) setTimeout(doFlash,80+Math.random()*60);
+    else setTimeout(()=>megaCtx.clearRect(0,0,w,h),200);
+  };
+  doFlash();
+}
+
+// ── MEGA PARTICLES ───────────────────────────────────────────
+let megaParticles=[], megaRAF=null;
+
+function burstParticles(cx,cy,count=80) {
+  const colors=['#ffcc00','#ff6600','#ff3333','#a044ff','#00e87a','#ffffff'];
+  for (let i=0;i<count;i++) {
+    const angle=Math.random()*Math.PI*2, speed=3+Math.random()*10;
+    megaParticles.push({ x:cx,y:cy, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed-3,
+      r:Math.random()*5+2, color:colors[Math.floor(Math.random()*colors.length)],
+      alpha:1, gravity:0.3, life:1 });
+  }
+}
+
+function animateMegaParticles() {
+  if (!megaCtx) return;
+  megaParticles.forEach(p=>{
+    p.x+=p.vx; p.y+=p.vy; p.vy+=p.gravity; p.life-=0.018; p.alpha=p.life;
+    megaCtx.beginPath(); megaCtx.arc(p.x,p.y,p.r,0,Math.PI*2);
+    megaCtx.fillStyle=p.color; megaCtx.globalAlpha=Math.max(0,p.alpha); megaCtx.fill();
+  });
+  megaCtx.globalAlpha=1;
+  megaParticles=megaParticles.filter(p=>p.life>0);
+  megaRAF=requestAnimationFrame(animateMegaParticles);
+}
+
+function shakeScreen(dur=400) {
+  const el=document.getElementById('megaOverlay');
+  el.classList.add('shake'); setTimeout(()=>el.classList.remove('shake'),dur);
+}
+
+// ── MAIN CINEMATIC SEQUENCE ───────────────────────────────────
+let megaRunning=false;
+
+async function triggerMegaPick() {
+  if (megaRunning) return;
+  megaRunning=true;
+
+  const overlay=document.getElementById('megaOverlay');
+  const phase1=document.getElementById('megaPhase1');
+  const phase2=document.getElementById('megaPhase2');
+  const botImg=document.getElementById('megaBotImg');
+  const botWrap=document.getElementById('megaBotWrap');
+  const botLbl=document.getElementById('megaBotLabel');
+  const title=document.getElementById('megaTitle');
+  const sub=document.getElementById('megaSubtitle');
+  const ballsW=document.getElementById('megaBallsWrap');
+  const revLbl=document.getElementById('megaRevealLabel');
+
+  phase1.style.display='flex'; phase2.style.display='none';
+  botWrap.style.transition='none';
+  botWrap.style.transform='scale(0) translateY(-100px)'; botWrap.style.opacity='0';
+  botLbl.style.transition='none'; botLbl.style.opacity='0'; botLbl.style.transform='translateY(20px)';
+  title.style.transition='none'; title.style.opacity='0'; title.style.transform='scale(0.5)';
+  sub.style.transition='none'; sub.style.opacity='0';
+  revLbl.style.transition='none'; revLbl.style.opacity='0';
+  ballsW.innerHTML=''; megaParticles=[];
+
+  botImg.src=selectedBot.img;
+  botImg.style.borderColor=selectedBot.color;
+  botImg.style.boxShadow=`0 0 60px ${selectedBot.glow},0 0 120px ${selectedBot.glow}`;
+  botLbl.textContent=selectedBot.name; botLbl.style.color=selectedBot.color;
+  sub.textContent=`${selectedBot.name} · ${selectedGame.name} · ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
+
+  overlay.style.display='block';
+  initMegaCanvas();
+  megaRAF=requestAnimationFrame(animateMegaParticles);
+
+  await sleep(200); sndMegaRumble(); await sleep(600);
+  flashLightning(); sndThunder(); shakeScreen(500); await sleep(800);
+
+  botWrap.style.transition='transform 0.35s cubic-bezier(0.34,1.56,0.64,1),opacity 0.2s';
+  botWrap.style.transform='scale(1) translateY(0)'; botWrap.style.opacity='1';
+  sndBotSlam(); shakeScreen(400);
+  const cx=window.innerWidth/2, cy=window.innerHeight*0.38;
+  burstParticles(cx,cy,60); await sleep(200);
+
+  botLbl.style.transition='opacity 0.4s,transform 0.4s';
+  botLbl.style.opacity='1'; botLbl.style.transform='translateY(0)';
+  await sleep(800); sndMegaTension(); flashLightning(); await sleep(1200);
+
+  phase1.style.display='none'; phase2.style.display='flex';
+  title.style.transition='opacity 0.3s,transform 0.4s cubic-bezier(0.34,1.56,0.64,1)';
+  title.style.opacity='1'; title.style.transform='scale(1)';
+  playTone({type:'sine',freq:300,freq2:150,duration:0.3,gain:0.3,attack:0.005});
+  shakeScreen(300); burstParticles(cx,cy*0.4,40); await sleep(300);
+  sub.style.transition='opacity 0.4s'; sub.style.opacity='1'; await sleep(600);
+
+  const {nums,spec}=generateByStrategy(selectedBot,selectedGame);
+  const allNums=[...nums.map(v=>({val:v,special:false}))];
+  if (spec!==null) allNums.push({val:spec,special:true});
+
+  for (let i=0;i<allNums.length;i++) {
+    const {val,special}=allNums[i];
+    const ball=document.createElement('div');
+    ball.className=`mega-ball ${special?'mega-ball-special':'mega-ball-main'}`;
+    ball.textContent=val; ballsW.appendChild(ball);
+    await sleep(50);
+    ball.style.animation='megaBallDrop 0.55s cubic-bezier(0.34,1.56,0.64,1) forwards';
+    sndMegaBallDrop(i); shakeScreen(250);
+    burstParticles(cx+(i-allNums.length/2)*65, window.innerHeight*0.55, 25);
+    await sleep(special?500:350);
+  }
+
+  await sleep(300); revLbl.style.transition='opacity 0.5s'; revLbl.style.opacity='1';
+  sndMegaFanfare(); flashLightning(); burstParticles(cx,cy,120); shakeScreen(600); sndCrowdCheer();
+
+  // Save to main panel
+  rebuildBalls(selectedGame); await sleep(100);
+  const row=document.getElementById('ballsRow');
+  row.querySelectorAll('.ball-main').forEach((b,i)=>{b.textContent=nums[i]||'?';b.classList.add('visible');});
+  if (spec!==null){const sp=row.querySelector('.ball-special');if(sp){sp.textContent=spec;sp.classList.add('visible');}}
+  addToPicks(nums,spec);
+
+  await sleep(3500);
+  closeMegaPick();
+}
+
+function closeMegaPick() {
+  document.getElementById('megaOverlay').style.display='none';
+  if (megaRAF){cancelAnimationFrame(megaRAF);megaRAF=null;}
+  if (megaCtx) megaCtx.clearRect(0,0,megaCtx.canvas.width,megaCtx.canvas.height);
+  megaParticles=[]; megaRunning=false; sndClose();
+}
+
+/* ============================================================
    PROMO POPUP
    ============================================================ */
 let popupTimer = null;
@@ -1859,7 +2318,7 @@ function schedulePopup() {
 }
 
 function showPopup() {
-  if (popupShown) return;
+  if (popupShown || megaRunning) return;  // don't interrupt mega pick
   popupShown = true;
   spawnConfetti();
   sndPopup();
