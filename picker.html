@@ -813,7 +813,7 @@ async function doSpin(){
 
   const rem=3-(spinCount%3);
   document.getElementById('spinCounter').textContent=
-    spinCount%3===0?'⚡ MEGA\nUNLOCKED!`:`${rem} MORE\nFOR MEGA`;
+    spinCount%3===0 ? '⚡ MEGA UNLOCKED!' : `${rem} MORE\nFOR MEGA`;
 
   if(spinCount%3===0){
     const mb=document.getElementById('megaBtn');
