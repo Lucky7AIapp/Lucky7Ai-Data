@@ -122,14 +122,35 @@ body::before{
 /* ── LEFT — BOT GRID ───────────────────────────────────── */
 #botcol{
   width:110px;flex-shrink:0;
-  display:flex;flex-direction:column;gap:5px;
-  padding:8px 6px;
+  display:flex;flex-direction:column;gap:0;
   background:rgba(0,0,0,0.4);
   backdrop-filter:blur(8px);
   border-right:1px solid rgba(255,255,255,0.08);
-  overflow-y:auto;
 }
 #botcol::-webkit-scrollbar{display:none;}
+
+/* Category tabs */
+#catTabs{
+  display:flex;flex-wrap:wrap;gap:2px;padding:4px;
+  background:rgba(0,0,0,0.3);border-bottom:1px solid rgba(255,255,255,0.08);
+  flex-shrink:0;
+}
+.cat-tab{
+  flex:1;min-width:22px;
+  padding:3px 2px;border-radius:5px;border:none;
+  background:rgba(255,255,255,0.05);
+  color:rgba(255,255,255,0.4);font-size:12px;
+  cursor:pointer;text-align:center;
+  transition:all 0.15s;
+}
+.cat-tab:hover{background:rgba(255,255,255,0.12);color:white;}
+.cat-tab.active{background:rgba(245,197,24,0.2);color:#f5c518;}
+
+#botList{
+  flex:1;overflow-y:auto;padding:5px 5px;
+  display:flex;flex-direction:column;gap:5px;
+}
+#botList::-webkit-scrollbar{display:none;}
 
 .bot-tile{
   border-radius:10px;border:2px solid rgba(255,255,255,0.1);
@@ -571,7 +592,25 @@ body::before{
   <div id="mainrow">
 
     <!-- BOT COLUMN -->
-    <div id="botcol" id="botcol"></div>
+    <div id="botcol">
+      <div id="catTabs">
+        <button class="cat-tab active" onclick="filterCat('all')" title="All">★</button>
+        <button class="cat-tab" onclick="filterCat('ai')"    title="AI Bots">🤖</button>
+        <button class="cat-tab" onclick="filterCat('dog')"   title="Dogs">🐕</button>
+        <button class="cat-tab" onclick="filterCat('cat')"   title="Cats">🐱</button>
+        <button class="cat-tab" onclick="filterCat('veggie')" title="Veggies">🥦</button>
+        <button class="cat-tab" onclick="filterCat('food')"  title="Food">🍕</button>
+        <button class="cat-tab" onclick="filterCat('wild')"  title="Wild Animals">🦁</button>
+        <button class="cat-tab" onclick="filterCat('ocean')" title="Ocean">🌊</button>
+        <button class="cat-tab" onclick="filterCat('movie')" title="Movies">🎬</button>
+        <button class="cat-tab" onclick="filterCat('bear')"  title="Care Bears">🐻</button>
+        <button class="cat-tab" onclick="filterCat('gta')"   title="GTA">🎮</button>
+        <button class="cat-tab" onclick="filterCat('space')" title="Space">🚀</button>
+        <button class="cat-tab" onclick="filterCat('legend')" title="Legends">🧙</button>
+        <button class="cat-tab" onclick="filterCat('science')" title="Scientists">🔬</button>
+      </div>
+      <div id="botList"></div>
+    </div>
 
     <!-- CENTER -->
     <div id="centercol">
@@ -628,31 +667,106 @@ const GIF = 'https://lucky7aiapp.github.io/Lucky7Ai-Data/gif/';
 // When GIFs are uploaded, change useGifs to true
 const USE_GIFS = false;
 
+const B={ai:'ai',dog:'dog',cat:'cat',veggie:'veggie',food:'food',wild:'wild',ocean:'ocean',movie:'movie',bear:'bear',gta:'gta',space:'space',legend:'legend',science:'science'};
 const BOTS = [
-  // ── AI STRATEGISTS ──────────────────────────────────────
-  { id:'apex',     name:'APEX',     emoji:'🤖', img:IMG+'Apex.png',   color:'#ff3c3c', tag:'PREDICTIVE ENGINE',   pick:g=>pickApex(g) },
-  { id:'oracle',   name:'ORACLE',   emoji:'🔮', img:IMG+'Oracle.png', color:'#b44fff', tag:'PATTERN READER',      pick:g=>pickOracle(g) },
-  { id:'zeus',     name:'ZEUS',     emoji:'⚡', img:IMG+'Zeus.png',   color:'#3390ff', tag:'DIVINE ARCHITECT',    pick:g=>pickZeus(g) },
-  { id:'viper',    name:'VIPER',    emoji:'🐍', img:IMG+'Viper.png',  color:'#00e87a', tag:'STREAK HUNTER',       pick:g=>pickViper(g) },
-  { id:'aria',     name:'ARIA',     emoji:'🌸', img:IMG+'Aria.png',   color:'#ff5ca8', tag:'COLD CONTRARIAN',     pick:g=>pickAria(g) },
-  { id:'luna',     name:'LUNA',     emoji:'🌙', img:IMG+'Luna.png',   color:'#ffb344', tag:'MYSTIC NUMEROLOGIST', pick:g=>pickLuna(g) },
+  // ── AI STRATEGISTS 🤖 ────────────────────────────────────
+  { id:'apex',     cat:B.ai,     name:'APEX',        emoji:'🤖', img:IMG+'Apex.png',   color:'#ff3c3c', tag:'Predictive Engine',   pick:g=>pickApex(g) },
+  { id:'oracle',   cat:B.ai,     name:'ORACLE',      emoji:'🔮', img:IMG+'Oracle.png', color:'#b44fff', tag:'Pattern Reader',      pick:g=>pickOracle(g) },
+  { id:'zeus',     cat:B.ai,     name:'ZEUS',        emoji:'⚡', img:IMG+'Zeus.png',   color:'#3390ff', tag:'Divine Architect',    pick:g=>pickZeus(g) },
+  { id:'viper',    cat:B.ai,     name:'VIPER',       emoji:'🐍', img:IMG+'Viper.png',  color:'#00e87a', tag:'Streak Hunter',       pick:g=>pickViper(g) },
+  { id:'aria',     cat:B.ai,     name:'ARIA',        emoji:'🌸', img:IMG+'Aria.png',   color:'#ff5ca8', tag:'Cold Contrarian',     pick:g=>pickAria(g) },
+  { id:'luna',     cat:B.ai,     name:'LUNA',        emoji:'🌙', img:IMG+'Luna.png',   color:'#ffb344', tag:'Mystic Numerologist', pick:g=>pickLuna(g) },
   // ── DOGS 🐕 ─────────────────────────────────────────────
-  { id:'biscuit',  name:'BISCUIT',  emoji:'🐕', img:null, color:'#f5c518', tag:'GOLDEN RETRIEVER',    pick:g=>pickViper(g),  desc:'Fetches the hottest numbers. Good boy!' },
-  { id:'rex',      name:'REX',      emoji:'🐕‍🦺', img:null, color:'#8888ff', tag:'GERMAN SHEPHERD',     pick:g=>pickApex(g),   desc:'Guards the most disciplined picks.' },
-  { id:'bella',    name:'BELLA',    emoji:'🐩', img:null, color:'#ff88cc', tag:'POODLE INTUITION',    pick:g=>pickLuna(g),   desc:'Prances to the beat of the moon.' },
-  { id:'max',      name:'MAX',      emoji:'🐾', img:null, color:'#cc8844', tag:'RANDOM RETRIEVER',    pick:g=>pickRandom(g), desc:'Digs up numbers from absolutely nowhere.' },
+  { id:'biscuit',  cat:B.dog,    name:'BISCUIT',     emoji:'🐕', img:null, color:'#f5c518', tag:'Golden Retriever',  pick:g=>pickViper(g) },
+  { id:'rex',      cat:B.dog,    name:'REX',         emoji:'🐕‍🦺', img:null, color:'#8888ff', tag:'German Shepherd',   pick:g=>pickApex(g) },
+  { id:'bella',    cat:B.dog,    name:'BELLA',       emoji:'🐩', img:null, color:'#ff88cc', tag:'Poodle Intuition',  pick:g=>pickLuna(g) },
+  { id:'max',      cat:B.dog,    name:'MAX',         emoji:'🐾', img:null, color:'#cc8844', tag:'Random Retriever',  pick:g=>pickRandom(g) },
+  { id:'buddy',    cat:B.dog,    name:'BUDDY',       emoji:'🦮', img:null, color:'#ffcc88', tag:'Loyal Hound',       pick:g=>pickOracle(g) },
+  { id:'spot',     cat:B.dog,    name:'SPOT',        emoji:'🐶', img:null, color:'#ffffff', tag:'Dalmatian Dots',    pick:g=>pickRandom(g) },
   // ── CATS 🐱 ─────────────────────────────────────────────
-  { id:'whiskers', name:'WHISKERS', emoji:'🐱', img:null, color:'#ff9944', tag:'CALICO CHAOS',        pick:g=>pickRandom(g), desc:'Knocks numbers off the table. Meow.' },
-  { id:'shadow',   name:'SHADOW',   emoji:'🐈‍⬛', img:null, color:'#9944ff', tag:'BLACK CAT LUCK',      pick:g=>pickAria(g),   desc:'Finds numbers others dare not touch.' },
-  { id:'mittens',  name:'MITTENS',  emoji:'🧤', img:null, color:'#44ffcc', tag:'COLD PAW METHOD',     pick:g=>pickAria(g),   desc:'Only bats at ice-cold numbers.' },
-  { id:'purrfect', name:'PURRFECT', emoji:'😺', img:null, color:'#ffcc44', tag:'GOLDEN WHISKER',      pick:g=>pickOracle(g), desc:'Studies the draw history with one eye open.' },
+  { id:'whiskers', cat:B.cat,    name:'WHISKERS',    emoji:'🐱', img:null, color:'#ff9944', tag:'Calico Chaos',      pick:g=>pickRandom(g) },
+  { id:'shadow',   cat:B.cat,    name:'SHADOW',      emoji:'🐈‍⬛', img:null, color:'#9944ff', tag:'Black Cat Luck',    pick:g=>pickAria(g) },
+  { id:'mittens',  cat:B.cat,    name:'MITTENS',     emoji:'🧤', img:null, color:'#44ffcc', tag:'Cold Paw Method',   pick:g=>pickAria(g) },
+  { id:'purrfect', cat:B.cat,    name:'PURRFECT',    emoji:'😺', img:null, color:'#ffcc44', tag:'Golden Whisker',    pick:g=>pickOracle(g) },
+  { id:'nyan',     cat:B.cat,    name:'NYAN',        emoji:'🌈', img:null, color:'#ff44ff', tag:'Rainbow Pop Tart',  pick:g=>pickRandom(g) },
+  { id:'grumpy',   cat:B.cat,    name:'GRUMPYCAT',   emoji:'😾', img:null, color:'#888888', tag:'No. Just No.',      pick:g=>pickAria(g) },
   // ── VEGGIES 🥦 ──────────────────────────────────────────
-  { id:'broccoli', name:'BROCCOLI', emoji:'🥦', img:null, color:'#44cc44', tag:'GREEN GIANT METHOD',  pick:g=>pickApex(g),   desc:'Grows picks in perfectly balanced clusters.' },
-  { id:'carrot',   name:'CARROT',   emoji:'🥕', img:null, color:'#ff8833', tag:'ROOT MATHEMATICS',    pick:g=>pickZeus(g),   desc:'Applies strict veggie math to every pick.' },
-  { id:'beet',     name:'BEET',     emoji:'🫚', img:null, color:'#cc44aa', tag:'UNDERGROUND COLD',    pick:g=>pickAria(g),   desc:'Digs up buried numbers nobody else wants.' },
-  { id:'potato',   name:'POTATO',   emoji:'🥔', img:null, color:'#ccaa66', tag:'COSMIC POTATO',       pick:g=>pickRandom(g), desc:'No strategy. No logic. Just vibes. Strangely effective.' },
-  { id:'pepper',   name:'PEPPER',   emoji:'🌶️', img:null, color:'#ff3333', tag:'HOT PEPPER PICKS',    pick:g=>pickViper(g),  desc:'Only plays the HOTTEST numbers. Spicy.' },
-  { id:'corn',     name:'CORN',     emoji:'🌽', img:null, color:'#ffee44', tag:'GOLDEN ROW METHOD',   pick:g=>pickOracle(g), desc:'Rows and patterns — corn knows structure.' },
+  { id:'broccoli', cat:B.veggie, name:'BROCCOLI',    emoji:'🥦', img:null, color:'#44cc44', tag:'Green Giant',       pick:g=>pickApex(g) },
+  { id:'carrot',   cat:B.veggie, name:'CARROT',      emoji:'🥕', img:null, color:'#ff8833', tag:'Root Mathematics',  pick:g=>pickZeus(g) },
+  { id:'beet',     cat:B.veggie, name:'BEET',        emoji:'🫚', img:null, color:'#cc44aa', tag:'Underground Cold',  pick:g=>pickAria(g) },
+  { id:'potato',   cat:B.veggie, name:'POTATO',      emoji:'🥔', img:null, color:'#ccaa66', tag:'Cosmic Vibes',      pick:g=>pickRandom(g) },
+  { id:'pepper',   cat:B.veggie, name:'PEPPER',      emoji:'🌶️', img:null, color:'#ff3333', tag:'Hot Picks Only',    pick:g=>pickViper(g) },
+  { id:'corn',     cat:B.veggie, name:'CORN',        emoji:'🌽', img:null, color:'#ffee44', tag:'Golden Row',        pick:g=>pickOracle(g) },
+  { id:'garlic',   cat:B.veggie, name:'GARLIC',      emoji:'🧄', img:null, color:'#eeeebb', tag:'Repels Bad Luck',   pick:g=>pickAria(g) },
+  { id:'mushroom', cat:B.veggie, name:'MUSHROOM',    emoji:'🍄', img:null, color:'#ff6644', tag:'Magic Spores',      pick:g=>pickLuna(g) },
+  // ── FOOD 🍕 ─────────────────────────────────────────────
+  { id:'pizza',    cat:B.food,   name:'PIZZA',       emoji:'🍕', img:null, color:'#ff6600', tag:'Hot Slice Method',  pick:g=>pickViper(g) },
+  { id:'taco',     cat:B.food,   name:'TACO',        emoji:'🌮', img:null, color:'#ffcc00', tag:'Spicy Tuesday',     pick:g=>pickRandom(g) },
+  { id:'donut',    cat:B.food,   name:'DONUT',       emoji:'🍩', img:null, color:'#ff88aa', tag:'Round Lucky Theory',pick:g=>pickZeus(g) },
+  { id:'sushi',    cat:B.food,   name:'SUSHI',       emoji:'🍣', img:null, color:'#ff4466', tag:'Precision Rolls',   pick:g=>pickApex(g) },
+  { id:'burger',   cat:B.food,   name:'BURGER',      emoji:'🍔', img:null, color:'#cc6600', tag:'Big Mac Numbers',   pick:g=>pickViper(g) },
+  { id:'coffee',   cat:B.food,   name:'COFFEE',      emoji:'☕', img:null, color:'#6633aa', tag:'Energized Picks',   pick:g=>pickApex(g) },
+  { id:'hotdog',   cat:B.food,   name:'HOTDOG',      emoji:'🌭', img:null, color:'#ff6633', tag:'Classic American',  pick:g=>pickRandom(g) },
+  // ── WILD ANIMALS 🦁 ──────────────────────────────────────
+  { id:'simba',    cat:B.wild,   name:'SIMBA',       emoji:'🦁', img:null, color:'#ffaa00', tag:'Lion King Picks',   pick:g=>pickApex(g) },
+  { id:'stripes',  cat:B.wild,   name:'STRIPES',     emoji:'🐯', img:null, color:'#ff8800', tag:'Tiger Streak',      pick:g=>pickViper(g) },
+  { id:'grizzly',  cat:B.wild,   name:'GRIZZLY',     emoji:'🐻', img:null, color:'#884422', tag:'Bear Market',       pick:g=>pickOracle(g) },
+  { id:'eagle',    cat:B.wild,   name:'EAGLE',       emoji:'🦅', img:null, color:'#88aaff', tag:'Eagle Eye',         pick:g=>pickApex(g) },
+  { id:'wolf',     cat:B.wild,   name:'WOLF',        emoji:'🐺', img:null, color:'#8888aa', tag:'Pack Leader',       pick:g=>pickOracle(g) },
+  { id:'fox',      cat:B.wild,   name:'FOX',         emoji:'🦊', img:null, color:'#ff7733', tag:'Sly Strategy',      pick:g=>pickZeus(g) },
+  { id:'gorilla',  cat:B.wild,   name:'KONG',        emoji:'🦍', img:null, color:'#554433', tag:'Knuckle Dragger',   pick:g=>pickRandom(g) },
+  { id:'panda',    cat:B.wild,   name:'PANDA',       emoji:'🐼', img:null, color:'#aaaaaa', tag:'Black & White Math',pick:g=>pickApex(g) },
+  // ── OCEAN 🌊 ─────────────────────────────────────────────
+  { id:'nemo',     cat:B.ocean,  name:'NEMO',        emoji:'🐠', img:null, color:'#ff8800', tag:'Just Keep Swimming', pick:g=>pickRandom(g) },
+  { id:'jaws',     cat:B.ocean,  name:'JAWS',        emoji:'🦈', img:null, color:'#3388ff', tag:'Deep Cold Numbers',  pick:g=>pickAria(g) },
+  { id:'inky',     cat:B.ocean,  name:'INKY',        emoji:'🐙', img:null, color:'#cc44ff', tag:'8-Arm Strategy',     pick:g=>pickApex(g) },
+  { id:'flipper',  cat:B.ocean,  name:'FLIPPER',     emoji:'🐬', img:null, color:'#44ccff', tag:'Sonar Prediction',   pick:g=>pickOracle(g) },
+  { id:'crush',    cat:B.ocean,  name:'CRUSH',       emoji:'🐢', img:null, color:'#44bb44', tag:'Dude. Just Chill.',  pick:g=>pickLuna(g) },
+  { id:'crabby',   cat:B.ocean,  name:'CRABBY',      emoji:'🦀', img:null, color:'#ff3322', tag:'Sideways Logic',     pick:g=>pickRandom(g) },
+  // ── MOVIES / POP CULTURE 🎬 ──────────────────────────────
+  { id:'doc',      cat:B.movie,  name:'DOC BROWN',   emoji:'👨‍🔬', img:null, color:'#ffffff', tag:'88mph Time Picks',   pick:g=>pickZeus(g) },
+  { id:'marty',    cat:B.movie,  name:'MARTY',       emoji:'🎸', img:null, color:'#ffcc00', tag:'Future Numbers',      pick:g=>pickViper(g) },
+  { id:'yoda',     cat:B.movie,  name:'YODA',        emoji:'🧘', img:null, color:'#44cc44', tag:'The Force Picks',     pick:g=>pickLuna(g) },
+  { id:'thanos',   cat:B.movie,  name:'THANOS',      emoji:'💜', img:null, color:'#aa44ff', tag:'Perfectly Balanced',  pick:g=>pickApex(g) },
+  { id:'neo',      cat:B.movie,  name:'NEO',         emoji:'🕶️', img:null, color:'#00ff44', tag:'There is no number',  pick:g=>pickOracle(g) },
+  { id:'gollum',   cat:B.movie,  name:'GOLLUM',      emoji:'💍', img:null, color:'#aaaaaa', tag:'My Precious Numbers', pick:g=>pickAria(g) },
+  { id:'terminator',cat:B.movie, name:'T-800',       emoji:'🤖', img:null, color:'#ff3300', tag:'I\'ll be back',       pick:g=>pickApex(g) },
+  { id:'shrek',    cat:B.movie,  name:'SHREK',       emoji:'🧅', img:null, color:'#66bb22', tag:'Ogre Odds',           pick:g=>pickRandom(g) },
+  // ── CARE BEARS 🐻 ────────────────────────────────────────
+  { id:'cheerbear',  cat:B.bear, name:'CHEER BEAR',  emoji:'🌈', img:null, color:'#ff88cc', tag:'Rainbow Picks',       pick:g=>pickApex(g) },
+  { id:'grumpybear', cat:B.bear, name:'GRUMPY BEAR', emoji:'😤', img:null, color:'#4488ff', tag:'Contrarian Bear',     pick:g=>pickAria(g) },
+  { id:'luckybear',  cat:B.bear, name:'LUCK BEAR',   emoji:'🍀', img:null, color:'#44cc88', tag:'Pure Luck Method',    pick:g=>pickRandom(g) },
+  { id:'funsunbear', cat:B.bear, name:'FUNSHINE',    emoji:'☀️', img:null, color:'#ffcc00', tag:'Sunny Hot Numbers',   pick:g=>pickViper(g) },
+  { id:'loverbear',  cat:B.bear, name:'LOVE BEAR',   emoji:'💕', img:null, color:'#ff6699', tag:'Heart Number Theory', pick:g=>pickLuna(g) },
+  { id:'bedtimebear',cat:B.bear, name:'BEDTIME',     emoji:'💤', img:null, color:'#8888cc', tag:'Sleeping Cold Picks', pick:g=>pickAria(g) },
+  { id:'tenderbear', cat:B.bear, name:'TENDER HEART',emoji:'❤️', img:null, color:'#ff4466', tag:'Warm Number Method',  pick:g=>pickOracle(g) },
+  // ── GTA 5 🎮 ─────────────────────────────────────────────
+  { id:'trevor',   cat:B.gta,    name:'TREVOR',      emoji:'🔥', img:null, color:'#ff6600', tag:'Chaos Method',        pick:g=>pickRandom(g) },
+  { id:'michael',  cat:B.gta,    name:'MICHAEL',     emoji:'💼', img:null, color:'#4488ff', tag:'Heist Strategy',      pick:g=>pickApex(g) },
+  { id:'franklin', cat:B.gta,    name:'FRANKLIN',    emoji:'🚗', img:null, color:'#44cc44', tag:'Hustle Picks',        pick:g=>pickViper(g) },
+  { id:'lester',   cat:B.gta,    name:'LESTER',      emoji:'🖥️', img:null, color:'#ffaaff', tag:'Data Analyst',        pick:g=>pickOracle(g) },
+  { id:'lamar',    cat:B.gta,    name:'LAMAR',       emoji:'😂', img:null, color:'#ffcc00', tag:'Fool You, Maaan',     pick:g=>pickRandom(g) },
+  // ── SPACE 🚀 ─────────────────────────────────────────────
+  { id:'buzz',     cat:B.space,  name:'BUZZ',        emoji:'👨‍🚀', img:null, color:'#aaccff', tag:'Orbital Numbers',    pick:g=>pickZeus(g) },
+  { id:'alien',    cat:B.space,  name:'ZORG',        emoji:'👽', img:null, color:'#44ffaa', tag:'Intergalactic Picks', pick:g=>pickRandom(g) },
+  { id:'hal',      cat:B.space,  name:'HAL-9000',    emoji:'🔴', img:null, color:'#ff3333', tag:'I\'m afraid I can\'t',pick:g=>pickApex(g) },
+  { id:'rocket',   cat:B.space,  name:'ROCKET',      emoji:'🚀', img:null, color:'#ff8800', tag:'Blast Off Numbers',   pick:g=>pickViper(g) },
+  { id:'cosmo',    cat:B.space,  name:'COSMO',       emoji:'🌌', img:null, color:'#6644ff', tag:'Dark Matter Picks',   pick:g=>pickLuna(g) },
+  { id:'asteroid', cat:B.space,  name:'ASTEROID',    emoji:'☄️', img:null, color:'#ff6600', tag:'Impact Strategy',     pick:g=>pickOracle(g) },
+  // ── LEGENDS & MYTHS 🧙 ───────────────────────────────────
+  { id:'merlin',   cat:B.legend, name:'MERLIN',      emoji:'🧙', img:null, color:'#aa66ff', tag:'Ancient Spell Picks', pick:g=>pickLuna(g) },
+  { id:'dragon',   cat:B.legend, name:'DRAGON',      emoji:'🐉', img:null, color:'#ff4400', tag:'Fire Number Method',  pick:g=>pickViper(g) },
+  { id:'unicorn',  cat:B.legend, name:'UNICORN',     emoji:'🦄', img:null, color:'#ff88ff', tag:'Rainbow Magic',       pick:g=>pickLuna(g) },
+  { id:'bigfoot',  cat:B.legend, name:'BIGFOOT',     emoji:'🦶', img:null, color:'#884422', tag:'Hidden Pattern',      pick:g=>pickAria(g) },
+  { id:'phoenix',  cat:B.legend, name:'PHOENIX',     emoji:'🔥', img:null, color:'#ff6600', tag:'Rise From Cold Ash',  pick:g=>pickAria(g) },
+  { id:'kraken',   cat:B.legend, name:'KRAKEN',      emoji:'🦑', img:null, color:'#224488', tag:'Deep Number Hunt',    pick:g=>pickAria(g) },
+  // ── SCIENTISTS 🔬 ────────────────────────────────────────
+  { id:'einstein', cat:B.science,name:'EINSTEIN',    emoji:'👴', img:null, color:'#ffffff', tag:'Theory of Lucky',     pick:g=>pickZeus(g) },
+  { id:'newton',   cat:B.science,name:'NEWTON',      emoji:'🍎', img:null, color:'#88cc44', tag:'Gravity Falls Method',pick:g=>pickApex(g) },
+  { id:'tesla',    cat:B.science,name:'TESLA',       emoji:'⚡', img:null, color:'#44ccff', tag:'Electric Frequency',  pick:g=>pickOracle(g) },
+  { id:'darwin',   cat:B.science,name:'DARWIN',      emoji:'🐒', img:null, color:'#aa8844', tag:'Survival of Luckiest',pick:g=>pickOracle(g) },
+  { id:'curie',    cat:B.science,name:'CURIE',       emoji:'☢️', img:null, color:'#88ffaa', tag:'Radioactive Picks',   pick:g=>pickApex(g) },
+  { id:'hawking',  cat:B.science,name:'HAWKING',     emoji:'🌌', img:null, color:'#4488ff', tag:'Black Hole Numbers',  pick:g=>pickAria(g) },
 ];
 
 const GAMES = {
@@ -786,9 +900,17 @@ function sndComplete(){
 function sndClick(){tone(520,620,0.08,0.12,'sine');}
 
 /* ── BUILD BOTS ──────────────────────────────────────────── */
+let activeCat = 'all';
+function filterCat(cat){
+  activeCat = cat;
+  document.querySelectorAll('.cat-tab').forEach(t=>t.classList.remove('active'));
+  event.target.classList.add('active');
+  buildBots();
+}
 function buildBots(){
-  const col = document.getElementById('botcol');
-  col.innerHTML = BOTS.map(b=>`
+  const col = document.getElementById('botList');
+  const visible = activeCat==='all' ? BOTS : BOTS.filter(b=>b.cat===activeCat);
+  col.innerHTML = visible.map(b=>`
     <div class="bot-tile ${b.id===selectedBot.id?'active':''}"
          id="tile_${b.id}" onclick="selectBot('${b.id}')"
          style="${b.id===selectedBot.id?`border-color:${b.color};box-shadow:0 0 12px ${b.color}66;`:''}">
@@ -804,7 +926,7 @@ function buildBots(){
 function selectBot(id){
   sndClick();
   selectedBot = BOTS.find(b=>b.id===id);
-  BOTS.forEach(b=>{
+  BOTS.filter(b=>b.cat===activeCat||activeCat==='all').forEach(b=>{
     const t=document.getElementById(`tile_${b.id}`);
     if(!t)return;
     if(b.id===id){
@@ -1058,7 +1180,15 @@ function setBg(i){
 /* ── DISCLAIMER ──────────────────────────────────────────── */
 function closeDisclaimer(){
   sndClick();
+  localStorage.setItem('l7_disc','1');
   document.getElementById('disclaimerModal').style.display='none';
+}
+// Auto-dismiss if already accepted
+if(localStorage.getItem('l7_disc')==='1'){
+  document.addEventListener('DOMContentLoaded',()=>{
+    const d=document.getElementById('disclaimerModal');
+    if(d) d.style.display='none';
+  });
 }
 
 /* ── MEGA PICK TRIGGER ───────────────────────────────────── */
