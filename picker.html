@@ -461,7 +461,7 @@ body::before{
       <div class="vb-title">🏆 See All 6 Bots Compete Live</div>
       <div class="vb-sub">Track which AI wins the most · Lucky7ai.com</div>
     </a>
-    <button class="result-close" onclick="closeResult()">SPIN AGAIN ↺</button>
+    <button class="result-close" onclick="closeResult()">CLOSE & KEEP SPINNING ↺</button>
     <div class="ent-only">FOR ENTERTAINMENT ONLY · NO GUARANTEE OF WINNING</div>
   </div>
 </div>
@@ -820,9 +820,7 @@ async function doSpin(){
     mb.style.display='block';
     tone(600,900,0.3,0.2,'sine');tone(900,1200,0.3,0.15,'sine',0.25);
   }
-
-  // Show result popup after short delay
-  setTimeout(()=>showResult(nums,spec),500);
+  // No popup on regular spin — numbers stay in the reels
 }
 
 /* ── PICK STRATEGIES ─────────────────────────────────────── */
@@ -901,6 +899,23 @@ function showResult(nums,spec){
   popup.style.display='flex';
   sndComplete();
 }
+
+function showMegaResult(nums, spec){
+  const popup=document.getElementById('resultPopup');
+  const g=GAMES[selectedGameId];
+  const today=new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric'});
+  document.getElementById('rTitle').innerHTML=`⚡ SUPER LUCKY SPIN ⚡`;
+  document.getElementById('rBotLine').innerHTML=
+    `<span style="color:#ffcc00;font-weight:700;">${selectedBot.name}'s Numbers of the Day</span><br>
+     <span style="font-size:9px;opacity:0.6;">${g.name} · ${today}</span>`;
+  const balls=document.getElementById('rBalls');
+  balls.innerHTML=nums.map(n=>`<div class="res-ball res-main" style="width:50px;height:50px;font-size:16px;">${n}</div>`).join('')+
+    (spec!==null?`<div class="res-ball res-special" style="width:50px;height:50px;font-size:16px;">${spec}</div>`:'');
+  popup.style.display='flex';
+  // Extra fanfare
+  [523,659,784,1046,1319].forEach((f,i)=>tone(f,f*1.05,0.5,0.1,'sine',i*0.1));
+}
+
 function closeResult(){sndClick();document.getElementById('resultPopup').style.display='none';}
 
 /* ── BG SWITCHER ─────────────────────────────────────────── */
@@ -929,20 +944,23 @@ function closeDisclaimer(){
 function triggerMega(){
   sndClick();
   document.getElementById('megaBtn').style.display='none';
-  // Re-use the existing mega pick from number-generator if needed
-  // For now: special dramatic spin with all reels at once
   if(isSpinning)return;
   isSpinning=true;
   const btn=document.getElementById('spinBtn');btn.classList.add('spinning');
   const g=GAMES[selectedGameId];
   const{nums,spec}=generatePick(selectedBot,g);
   currentNums=nums;currentSpec=spec;
-  const all=[...nums.map((n,i)=>animateReel(i,n,i*80,false))];
-  if(spec!==null)all.push(animateReel('spec',spec,nums.length*80+80,true));
+  // Fast dramatic all-at-once spin
+  const all=[...nums.map((n,i)=>animateReel(i,n,i*60,false))];
+  if(spec!==null)all.push(animateReel('spec',spec,nums.length*60+60,true));
   Promise.all(all).then(()=>{
-    sndComplete();btn.classList.remove('spinning');isSpinning=false;spinCount++;
+    sndComplete();
+    btn.classList.remove('spinning');
+    isSpinning=false;
+    spinCount++;
     document.getElementById('spinCountDisplay').textContent=spinCount;
-    setTimeout(()=>showResult(nums,spec),300);
+    // Only the MEGA spin shows the popup
+    setTimeout(()=>showMegaResult(nums,spec),600);
   });
 }
 
