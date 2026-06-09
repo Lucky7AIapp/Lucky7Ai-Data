@@ -1,0 +1,965 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Lucky7Ai — Pick Your Numbers</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Orbitron:wght@400;700;900&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+<style>
+/* ── RESET ─────────────────────────────────────────────── */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;touch-action:manipulation;}
+
+/* ── BACKGROUNDS ───────────────────────────────────────── */
+/* When images are uploaded, replace these gradients with:  */
+/* background-image: url('https://lucky7aiapp.github.io/Lucky7Ai-Data/backgrounds/bg1.jpg') */
+:root{
+  --bg1: radial-gradient(ellipse at 30% 50%, #ff6600 0%, #ffcc00 30%, #00ff88 60%, #6600ff 100%);
+  --bg2: radial-gradient(ellipse at 50% 40%, #ff9900 0%, #ff3300 40%, #6600cc 80%, #000 100%);
+  --bg3: radial-gradient(ellipse at 50% 50%, #8b0000 0%, #001f5b 50%, #8b0000 100%);
+  --bg4: radial-gradient(ellipse at 50% 30%, #2d0060 0%, #6600cc 40%, #0a0020 100%);
+  --bg5: radial-gradient(ellipse at 50% 50%, #3d2800 0%, #c87a00 40%, #ffcc00 70%, #3d2800 100%);
+  --gold:#f5c518; --red:#ff3333; --purple:#a044ff;
+  --glass:rgba(0,0,0,0.45);
+  --glass2:rgba(255,255,255,0.07);
+  --border:rgba(255,255,255,0.12);
+}
+
+/* ── MAIN STAGE ────────────────────────────────────────── */
+#stage{
+  position:fixed;inset:0;
+  background:var(--bg1);
+  background-size:cover;background-position:center;
+  transition:background 0.8s ease;
+  display:flex;flex-direction:column;
+}
+
+/* BG image overlay — set opacity so gradient shows through until image loads */
+#stage::before{
+  content:'';position:absolute;inset:0;z-index:0;
+  background-image:var(--bg-img, none);
+  background-size:cover;background-position:center;
+  transition:opacity 0.8s;
+}
+#stage::after{
+  content:'';position:absolute;inset:0;z-index:1;
+  background:rgba(0,0,0,0.38);
+  pointer-events:none;
+}
+
+/* noise */
+#stage > *{position:relative;z-index:2;}
+body::before{
+  content:'';position:fixed;inset:0;z-index:9999;pointer-events:none;
+  opacity:0.025;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:150px 150px;
+  animation:noise .1s steps(1) infinite;
+}
+@keyframes noise{
+  0%{background-position:0 0}25%{background-position:-10% 15%}
+  50%{background-position:20% -10%}75%{background-position:-15% 20%}100%{background-position:0 0}
+}
+
+/* ── TOP BAR ───────────────────────────────────────────── */
+#topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 14px 6px;
+  background:rgba(0,0,0,0.5);
+  backdrop-filter:blur(12px);
+  border-bottom:1px solid rgba(255,255,255,0.1);
+  flex-shrink:0; gap:10px;
+}
+
+.logo{
+  font-family:'Cinzel',serif;font-size:22px;font-weight:900;
+  background:linear-gradient(135deg,#ffe566,#f5c518,#c87a00,#f5c518);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  filter:drop-shadow(0 0 8px rgba(245,197,24,0.5));
+  white-space:nowrap;flex-shrink:0;
+}
+.logo span{-webkit-text-fill-color:#ff3333;font-size:28px;}
+
+/* Game selector */
+#gameSelect{
+  flex:1;max-width:220px;
+  padding:7px 10px;border-radius:8px;
+  background:rgba(0,0,0,0.6);
+  border:1px solid rgba(245,197,24,0.4);
+  color:#f5c518;font-family:'Orbitron',sans-serif;font-size:10px;
+  font-weight:700;letter-spacing:1px;
+  appearance:none;-webkit-appearance:none;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23f5c518'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 8px center;
+  padding-right:24px;cursor:pointer;
+}
+#gameSelect option{background:#1a0030;color:white;font-size:12px;}
+#gameSelect optgroup{color:#a044ff;font-style:normal;}
+
+/* BG switcher dots */
+.bg-dots{display:flex;gap:5px;align-items:center;flex-shrink:0;}
+.bg-dot{
+  width:20px;height:20px;border-radius:50%;cursor:pointer;
+  border:2px solid rgba(255,255,255,0.2);
+  transition:transform 0.2s,border-color 0.2s;
+  background-size:cover;background-position:center;
+}
+.bg-dot:nth-child(1){background:linear-gradient(135deg,#ff6600,#00ff88,#6600ff);}
+.bg-dot:nth-child(2){background:linear-gradient(135deg,#ff9900,#ff3300,#6600cc);}
+.bg-dot:nth-child(3){background:linear-gradient(135deg,#8b0000,#001f5b,#cc0000);}
+.bg-dot:nth-child(4){background:linear-gradient(135deg,#2d0060,#6600cc,#0a0020);}
+.bg-dot:nth-child(5){background:linear-gradient(135deg,#3d2800,#c87a00,#ffcc00);}
+.bg-dot.active{border-color:var(--gold);transform:scale(1.25);}
+
+/* ── MAIN ROW ──────────────────────────────────────────── */
+#mainrow{
+  flex:1;display:flex;gap:0;overflow:hidden;
+  min-height:0;
+}
+
+/* ── LEFT — BOT GRID ───────────────────────────────────── */
+#botcol{
+  width:110px;flex-shrink:0;
+  display:flex;flex-direction:column;gap:5px;
+  padding:8px 6px;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(8px);
+  border-right:1px solid rgba(255,255,255,0.08);
+  overflow-y:auto;
+}
+#botcol::-webkit-scrollbar{display:none;}
+
+.bot-tile{
+  border-radius:10px;border:2px solid rgba(255,255,255,0.1);
+  background:rgba(255,255,255,0.05);
+  cursor:pointer;overflow:hidden;
+  transition:all 0.2s;flex-shrink:0;
+  position:relative;
+}
+.bot-tile:hover{transform:scale(1.04);}
+.bot-tile.active{border-width:2px;}
+
+.bot-tile img,.bot-tile .bot-gif-placeholder{
+  width:100%;aspect-ratio:1;
+  object-fit:cover;object-position:top;
+  display:block;
+}
+.bot-gif-placeholder{
+  display:flex;align-items:center;justify-content:center;
+  font-size:36px;
+  aspect-ratio:1;
+}
+.bot-tile-label{
+  padding:3px 4px 4px;text-align:center;
+  font-family:'Orbitron',sans-serif;font-size:8px;font-weight:700;
+  letter-spacing:1px;
+  background:rgba(0,0,0,0.6);
+}
+
+/* ── CENTER — NUMBERS ──────────────────────────────────── */
+#centercol{
+  flex:1;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:8px 10px;gap:10px;
+  min-width:0;
+}
+
+.selected-bot-row{
+  display:flex;align-items:center;gap:10px;
+  padding:6px 14px;border-radius:999px;
+  background:rgba(0,0,0,0.5);
+  border:1px solid rgba(255,255,255,0.1);
+}
+.selected-bot-avatar{
+  width:32px;height:32px;border-radius:8px;overflow:hidden;
+  flex-shrink:0;
+}
+.selected-bot-avatar img,.selected-bot-avatar .mini-placeholder{
+  width:100%;height:100%;object-fit:cover;object-position:top;
+}
+.mini-placeholder{display:flex;align-items:center;justify-content:center;font-size:18px;}
+.selected-bot-name{
+  font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:2px;
+}
+.selected-bot-strategy{
+  font-size:9px;color:rgba(255,255,255,0.5);letter-spacing:0.5px;
+}
+
+/* DATE */
+.pick-date{
+  font-family:'Orbitron',sans-serif;font-size:9px;
+  color:rgba(245,197,24,0.7);letter-spacing:2px;
+}
+
+/* SLOT MACHINE DISPLAY */
+#slotDisplay{
+  display:flex;gap:6px;align-items:center;justify-content:center;
+  flex-wrap:nowrap;
+}
+
+.slot-reel{
+  width:52px;height:64px;
+  border-radius:10px;overflow:hidden;
+  background:rgba(0,0,0,0.7);
+  border:2px solid rgba(255,255,255,0.15);
+  box-shadow:inset 0 0 12px rgba(0,0,0,0.8), 0 0 8px rgba(0,0,0,0.4);
+  position:relative;display:flex;align-items:center;justify-content:center;
+}
+.slot-reel::before,.slot-reel::after{
+  content:'';position:absolute;left:0;right:0;height:18px;z-index:3;pointer-events:none;
+}
+.slot-reel::before{top:0;background:linear-gradient(to bottom,rgba(0,0,0,0.9),transparent);}
+.slot-reel::after{bottom:0;background:linear-gradient(to top,rgba(0,0,0,0.9),transparent);}
+
+.slot-reel.special{border-color:rgba(255,50,50,0.6);box-shadow:inset 0 0 12px rgba(0,0,0,0.8),0 0 16px rgba(255,50,50,0.3);}
+
+.reel-inner{
+  display:flex;flex-direction:column;align-items:center;
+  transition:none;
+  will-change:transform;
+}
+.reel-num{
+  width:52px;height:64px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',sans-serif;font-weight:900;
+  font-size:22px;color:white;flex-shrink:0;
+}
+.slot-reel-main .reel-num{color:#f5c518;text-shadow:0 0 10px rgba(245,197,24,0.6);}
+.slot-reel-special .reel-num{color:#ff6666;text-shadow:0 0 10px rgba(255,50,50,0.6);}
+
+/* separator dot */
+.slot-sep{
+  color:rgba(255,255,255,0.2);font-size:20px;flex-shrink:0;
+}
+
+/* game info pill */
+.game-info-pill{
+  padding:4px 14px;border-radius:999px;
+  background:rgba(0,0,0,0.5);border:1px solid rgba(255,255,255,0.1);
+  font-size:9px;color:rgba(255,255,255,0.5);letter-spacing:2px;
+  font-family:'Orbitron',sans-serif;
+  text-align:center;
+}
+
+/* ── RIGHT — SPIN ──────────────────────────────────────── */
+#rightcol{
+  width:100px;flex-shrink:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:8px;gap:12px;
+  background:rgba(0,0,0,0.4);
+  backdrop-filter:blur(8px);
+  border-left:1px solid rgba(255,255,255,0.08);
+}
+
+#spinBtn{
+  width:78px;height:78px;border-radius:50%;
+  border:none;cursor:pointer;
+  background:conic-gradient(from 0deg, #ff6600, #ffcc00, #00ff88, #00aaff, #aa00ff, #ff0066, #ff6600);
+  box-shadow:0 0 30px rgba(255,150,0,0.6),0 0 60px rgba(255,100,0,0.3),inset 0 2px 4px rgba(255,255,255,0.3);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:2px;
+  position:relative;overflow:hidden;
+  animation:spinBtnIdle 3s linear infinite;
+  transition:transform 0.1s,box-shadow 0.2s;
+}
+#spinBtn:active{transform:scale(0.93);}
+#spinBtn.spinning{animation:spinBtnActive 0.3s linear infinite;pointer-events:none;}
+@keyframes spinBtnIdle{
+  0%{background:conic-gradient(from 0deg,#ff6600,#ffcc00,#00ff88,#00aaff,#aa00ff,#ff0066,#ff6600);}
+  25%{background:conic-gradient(from 90deg,#ff6600,#ffcc00,#00ff88,#00aaff,#aa00ff,#ff0066,#ff6600);}
+  50%{background:conic-gradient(from 180deg,#ff6600,#ffcc00,#00ff88,#00aaff,#aa00ff,#ff0066,#ff6600);}
+  75%{background:conic-gradient(from 270deg,#ff6600,#ffcc00,#00ff88,#00aaff,#aa00ff,#ff0066,#ff6600);}
+  100%{background:conic-gradient(from 360deg,#ff6600,#ffcc00,#00ff88,#00aaff,#aa00ff,#ff0066,#ff6600);}
+}
+@keyframes spinBtnActive{to{filter:brightness(1.4) saturate(1.5);}}
+
+.spin-inner{
+  width:62px;height:62px;border-radius:50%;
+  background:rgba(0,0,0,0.75);
+  display:flex;align-items:center;justify-content:center;
+  flex-direction:column;gap:1px;
+  position:absolute;
+}
+.spin-label{
+  font-family:'Orbitron',sans-serif;font-size:9px;font-weight:900;
+  color:white;letter-spacing:1px;
+}
+.spin-icon{font-size:20px;line-height:1;}
+
+.spin-counter{
+  font-family:'Orbitron',sans-serif;font-size:8px;
+  color:rgba(255,255,255,0.4);letter-spacing:1px;text-align:center;
+}
+
+/* MEGA button */
+#megaBtn{
+  display:none;
+  width:78px;padding:8px 4px;border-radius:10px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,#ff6600,#ffcc00);
+  color:#1a0a00;font-family:'Orbitron',sans-serif;font-size:7px;font-weight:900;
+  letter-spacing:1px;text-align:center;line-height:1.4;
+  animation:megaPulse 1s ease-in-out infinite;
+  box-shadow:0 0 20px rgba(255,150,0,0.6);
+}
+@keyframes megaPulse{
+  0%,100%{box-shadow:0 0 15px rgba(255,150,0,0.5);transform:scale(1);}
+  50%{box-shadow:0 0 30px rgba(255,200,0,0.9);transform:scale(1.04);}
+}
+
+/* ── BOTTOM BAR ────────────────────────────────────────── */
+#bottombar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:5px 14px;
+  background:rgba(0,0,0,0.6);
+  border-top:1px solid rgba(255,255,255,0.08);
+  flex-shrink:0;gap:8px;
+}
+.disclaimer-text{
+  font-size:8px;color:rgba(255,255,255,0.25);letter-spacing:0.5px;
+  flex:1;
+}
+.site-invite{
+  display:flex;align-items:center;gap:6px;
+  padding:5px 10px;border-radius:999px;
+  background:rgba(245,197,24,0.1);border:1px solid rgba(245,197,24,0.3);
+  font-family:'Orbitron',sans-serif;font-size:8px;color:rgba(245,197,24,0.8);
+  text-decoration:none;letter-spacing:1px;white-space:nowrap;
+  transition:all 0.2s;flex-shrink:0;
+}
+.site-invite:hover{background:rgba(245,197,24,0.2);color:var(--gold);}
+
+/* ── DISCLAIMER POPUP ──────────────────────────────────── */
+#disclaimerModal{
+  position:fixed;inset:0;z-index:10000;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.85);backdrop-filter:blur(10px);
+  padding:20px;
+}
+.disclaimer-box{
+  max-width:380px;width:100%;
+  background:linear-gradient(160deg,#0e0025,#1c0040);
+  border:1px solid rgba(245,197,24,0.3);
+  border-radius:20px;padding:28px 24px;
+  box-shadow:0 0 60px rgba(124,0,224,0.4);
+  text-align:center;
+  animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+}
+@keyframes popIn{from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+.disclaimer-box::before{
+  content:'⚠️';display:block;font-size:36px;margin-bottom:10px;
+}
+.disclaimer-box h2{
+  font-family:'Cinzel',serif;font-size:18px;color:var(--gold);margin-bottom:12px;
+}
+.disclaimer-box p{
+  font-size:12px;color:rgba(255,255,255,0.6);line-height:1.7;margin-bottom:8px;
+}
+.disclaimer-box .highlight{color:rgba(255,255,255,0.9);font-weight:600;}
+.disclaimer-close{
+  margin-top:18px;width:100%;padding:13px;border-radius:12px;border:none;cursor:pointer;
+  background:linear-gradient(135deg,#7c00e0,#a044ff);
+  color:white;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;
+  letter-spacing:2px;box-shadow:0 4px 20px rgba(124,0,224,0.4);
+  transition:opacity 0.2s;
+}
+.disclaimer-close:hover{opacity:0.85;}
+.disclaimer-age{
+  margin-top:10px;font-size:10px;color:rgba(255,255,255,0.3);
+}
+
+/* ── RESULT POPUP ──────────────────────────────────────── */
+#resultPopup{
+  position:fixed;inset:0;z-index:9000;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.7);backdrop-filter:blur(6px);
+  padding:20px;
+}
+.result-box{
+  max-width:360px;width:100%;
+  background:linear-gradient(160deg,#0e0025,#1c0040);
+  border:1px solid rgba(245,197,24,0.3);border-radius:20px;
+  padding:24px 20px;text-align:center;
+  box-shadow:0 0 50px rgba(124,0,224,0.4);
+}
+.result-box h3{
+  font-family:'Cinzel',serif;font-size:15px;color:var(--gold);margin-bottom:4px;
+}
+.result-bot-line{font-size:11px;color:rgba(255,255,255,0.5);margin-bottom:14px;}
+.result-balls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:16px;}
+.res-ball{
+  width:44px;height:44px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Orbitron',sans-serif;font-size:14px;font-weight:900;
+}
+.res-main{background:radial-gradient(circle at 35% 30%,#ffe566,#f5c518 50%,#c87a00 90%);color:#1a0a00;box-shadow:0 0 12px rgba(245,197,24,0.5);}
+.res-special{background:radial-gradient(circle at 35% 30%,#ff8888,#ff2020 50%,#aa0000 90%);color:white;box-shadow:0 0 12px rgba(255,50,50,0.5);}
+
+.visit-banner{
+  display:block;margin-bottom:12px;
+  padding:12px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(245,197,24,0.1),rgba(124,0,224,0.1));
+  border:1px solid rgba(245,197,24,0.25);
+  text-decoration:none;
+}
+.visit-banner .vb-title{
+  font-family:'Cinzel',serif;font-size:13px;color:var(--gold);margin-bottom:3px;
+}
+.visit-banner .vb-sub{font-size:10px;color:rgba(255,255,255,0.4);}
+
+.result-close{
+  width:100%;padding:11px;border-radius:10px;border:none;cursor:pointer;
+  background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.5);
+  font-family:'Orbitron',sans-serif;font-size:10px;letter-spacing:2px;
+  transition:background 0.2s;
+}
+.result-close:hover{background:rgba(255,255,255,0.14);}
+.ent-only{font-size:8px;color:rgba(255,255,255,0.2);margin-top:10px;letter-spacing:1px;}
+
+/* ── ROLLING ANIMATION ─────────────────────────────────── */
+@keyframes reelSpin{
+  0%{transform:translateY(0);}
+  100%{transform:translateY(-66.666%);}
+}
+
+/* small screen adjustments */
+@media (max-height: 420px){
+  .logo{font-size:18px;}
+  .logo span{font-size:22px;}
+  #spinBtn{width:64px;height:64px;}
+  .spin-inner{width:50px;height:50px;}
+  .slot-reel{width:44px;height:56px;}
+  .reel-num{width:44px;height:56px;font-size:18px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ── DISCLAIMER MODAL ────────────────────────────────── -->
+<div id="disclaimerModal">
+  <div class="disclaimer-box">
+    <h2>Play Responsibly</h2>
+    <p><span class="highlight">Lucky7Ai generates lottery numbers for entertainment purposes only.</span></p>
+    <p>Our AI bots use mathematical strategies to suggest number combinations. <span class="highlight">There is no guarantee of winning.</span> Lottery games are games of chance.</p>
+    <p>You must be <span class="highlight">18 years or older</span> to participate in lottery games in most jurisdictions. Please check your local laws.</p>
+    <p style="font-size:10px;color:rgba(255,255,255,0.35);">If you or someone you know has a gambling problem, call <strong style="color:rgba(255,255,255,0.55);">1-800-522-4700</strong></p>
+    <button class="disclaimer-close" onclick="closeDisclaimer()">I UNDERSTAND — LET'S PLAY ✦</button>
+    <div class="disclaimer-age">Must be 18+ · Entertainment Only · Lucky7ai.com</div>
+  </div>
+</div>
+
+<!-- ── RESULT POPUP ────────────────────────────────────── -->
+<div id="resultPopup">
+  <div class="result-box">
+    <h3 id="rTitle">YOUR LUCKY NUMBERS</h3>
+    <div class="result-bot-line" id="rBotLine"></div>
+    <div class="result-balls" id="rBalls"></div>
+    <a class="visit-banner" href="https://www.Lucky7ai.com" target="_blank">
+      <div class="vb-title">🏆 See All 6 Bots Compete Live</div>
+      <div class="vb-sub">Track which AI wins the most · Lucky7ai.com</div>
+    </a>
+    <button class="result-close" onclick="closeResult()">SPIN AGAIN ↺</button>
+    <div class="ent-only">FOR ENTERTAINMENT ONLY · NO GUARANTEE OF WINNING</div>
+  </div>
+</div>
+
+<!-- ── MAIN STAGE ──────────────────────────────────────── -->
+<div id="stage">
+
+  <!-- TOP BAR -->
+  <div id="topbar">
+    <div class="logo">Lucky<span>7</span>Ai</div>
+
+    <select id="gameSelect" onchange="onGameChange()">
+      <optgroup label="── MULTISTATE ──">
+        <option value="pb">🔴 POWERBALL</option>
+        <option value="mm">🔵 MEGA MILLIONS</option>
+        <option value="lfl">🍀 LUCKY FOR LIFE</option>
+        <option value="c4l">💵 CASH4LIFE</option>
+        <option value="la">🇺🇸 LOTTO AMERICA</option>
+        <option value="ml">💎 MILLIONAIRE LIFE</option>
+        <option value="2x2">✌️ 2BY2</option>
+        <option value="tsm">⭐ TRI-STATE MEGA</option>
+      </optgroup>
+      <optgroup label="── STATE ──">
+        <option value="cs">🐻 CA SUPERLOTTO+</option>
+        <option value="tl">⭐ TEXAS LOTTO</option>
+        <option value="fll">🌴 FLORIDA LOTTO</option>
+        <option value="nyl">🗽 NY LOTTO</option>
+        <option value="oh">🎯 OHIO CLASSIC</option>
+        <option value="mi">🏔️ MICHIGAN 47</option>
+        <option value="il">🌾 ILLINOIS LOTTO</option>
+        <option value="nj">🌟 NJ PICK-6</option>
+        <option value="gaf">🍑 GEORGIA FANTASY 5</option>
+        <option value="co">🏔️ COLORADO LOTTO+</option>
+        <option value="az">🌵 ARIZONA THE PICK</option>
+        <option value="or">🌲 OREGON MEGABUCKS</option>
+      </optgroup>
+      <optgroup label="── INTERNATIONAL ──">
+        <option value="em">🌍 EURO MILLIONS</option>
+        <option value="se">🇮🇹 SUPERENALOTTO</option>
+        <option value="ms">🇧🇷 MEGA-SENA</option>
+      </optgroup>
+    </select>
+
+    <div class="bg-dots" id="bgDots">
+      <div class="bg-dot active" onclick="setBg(0)" title="Rainbow"></div>
+      <div class="bg-dot" onclick="setBg(1)" title="Lightning"></div>
+      <div class="bg-dot" onclick="setBg(2)" title="USA"></div>
+      <div class="bg-dot" onclick="setBg(3)" title="Cosmic"></div>
+      <div class="bg-dot" onclick="setBg(4)" title="Gold"></div>
+    </div>
+  </div>
+
+  <!-- MAIN ROW -->
+  <div id="mainrow">
+
+    <!-- BOT COLUMN -->
+    <div id="botcol" id="botcol"></div>
+
+    <!-- CENTER -->
+    <div id="centercol">
+      <div class="selected-bot-row">
+        <div class="selected-bot-avatar" id="selAvatar"></div>
+        <div>
+          <div class="selected-bot-name" id="selName" style="color:#ff3c3c;">APEX</div>
+          <div class="selected-bot-strategy" id="selStrategy">Advanced Predictive Engine</div>
+        </div>
+      </div>
+
+      <div class="pick-date" id="pickDate"></div>
+
+      <div id="slotDisplay">
+        <!-- reels injected by JS -->
+      </div>
+
+      <div class="game-info-pill" id="gameInfoPill">POWERBALL · 5/69 + PB 1/26</div>
+    </div>
+
+    <!-- RIGHT SPIN COLUMN -->
+    <div id="rightcol">
+      <div style="text-align:center;font-size:8px;color:rgba(255,255,255,0.3);letter-spacing:1px;font-family:'Orbitron',sans-serif;">PICKS</div>
+      <div style="font-family:'Orbitron',sans-serif;font-size:16px;font-weight:900;color:var(--gold);text-align:center;" id="spinCountDisplay">0</div>
+
+      <button id="spinBtn" onclick="doSpin()">
+        <div class="spin-inner">
+          <span class="spin-icon">🎰</span>
+          <span class="spin-label">SPIN</span>
+        </div>
+      </button>
+
+      <div class="spin-counter" id="spinCounter">TAP TO<br>GENERATE</div>
+
+      <button id="megaBtn" onclick="triggerMega()">⚡ MEGA<br>PICK ⚡</button>
+    </div>
+
+  </div>
+
+  <!-- BOTTOM BAR -->
+  <div id="bottombar">
+    <div class="disclaimer-text">For entertainment only · No guarantee of winning · Must be 18+ · Play responsibly</div>
+    <a class="site-invite" href="https://www.Lucky7ai.com" target="_blank">
+      🏆 SEE BOTS COMPETE → Lucky7ai.com
+    </a>
+  </div>
+
+</div>
+
+<script>
+/* ── DATA ─────────────────────────────────────────────── */
+const IMG = 'https://raw.githubusercontent.com/Lucky7AIapp/Lucky7Ai-Data/main/avatars/';
+const GIF = 'https://lucky7aiapp.github.io/Lucky7Ai-Data/gif/';
+// When GIFs are uploaded, change useGifs to true
+const USE_GIFS = false;
+
+const BOTS = [
+  { id:'apex',   name:'APEX',   emoji:'🤖', img: IMG+'Apex.png',   gif: GIF+'apex.gif',   color:'#ff3c3c', tag:'PREDICTIVE ENGINE',
+    strategy:'Balances hot frequency, odd/even ratio, sum-range & no consecutives.',
+    pick:(g)=>pickApex(g) },
+  { id:'oracle', name:'ORACLE', emoji:'🔮', img: IMG+'Oracle.png', gif: GIF+'oracle.gif', color:'#b44fff', tag:'PATTERN READER',
+    strategy:'Drills draw history, number pairs & gap cycles.',
+    pick:(g)=>pickOracle(g) },
+  { id:'zeus',   name:'ZEUS',   emoji:'⚡', img: IMG+'Zeus.png',   gif: GIF+'zeus.gif',   color:'#3390ff', tag:'DIVINE ARCHITECT',
+    strategy:'Spaces every pick using the Golden Ratio φ ≈ 1.618.',
+    pick:(g)=>pickZeus(g) },
+  { id:'viper',  name:'VIPER',  emoji:'🐍', img: IMG+'Viper.png',  gif: GIF+'viper.gif',  color:'#00e87a', tag:'STREAK HUNTER',
+    strategy:'Hunts numbers hot in the last 3-5 draws.',
+    pick:(g)=>pickViper(g) },
+  { id:'aria',   name:'ARIA',   emoji:'🌸', img: IMG+'Aria.png',   gif: GIF+'aria.gif',   color:'#ff5ca8', tag:'COLD CONTRARIAN',
+    strategy:'Only plays numbers cold for 20+ draws.',
+    pick:(g)=>pickAria(g) },
+  { id:'luna',   name:'LUNA',   emoji:'🌙', img: IMG+'Luna.png',   gif: GIF+'luna.gif',   color:'#ffb344', tag:'MYSTIC NUMEROLOGIST',
+    strategy:'Divine roots, lucky numbers & lunar cycles.',
+    pick:(g)=>pickLuna(g) },
+];
+
+const GAMES = {
+  pb:  {name:'POWERBALL',         main:5,max:69,spec:26, sname:'PB'},
+  mm:  {name:'MEGA MILLIONS',     main:5,max:70,spec:25, sname:'MB'},
+  lfl: {name:'LUCKY FOR LIFE',    main:5,max:48,spec:18, sname:'LB'},
+  c4l: {name:'CASH4LIFE',         main:5,max:60,spec:4,  sname:'CB'},
+  la:  {name:'LOTTO AMERICA',     main:5,max:52,spec:10, sname:'SB'},
+  ml:  {name:'MILLIONAIRE LIFE',  main:5,max:43,spec:43, sname:'LB'},
+  '2x2':{name:'2BY2',             main:2,max:26,spec:26, sname:'W'},
+  tsm: {name:'TRI-STATE MEGA',    main:6,max:41,spec:0,  sname:null},
+  cs:  {name:'CA SUPERLOTTO+',    main:5,max:47,spec:27, sname:'M'},
+  tl:  {name:'TEXAS LOTTO',       main:6,max:54,spec:0,  sname:null},
+  fll: {name:'FLORIDA LOTTO',     main:6,max:53,spec:0,  sname:null},
+  nyl: {name:'NY LOTTO',          main:6,max:59,spec:0,  sname:null},
+  oh:  {name:'OHIO CLASSIC',      main:6,max:49,spec:0,  sname:null},
+  mi:  {name:'MICHIGAN 47',       main:6,max:47,spec:0,  sname:null},
+  il:  {name:'ILLINOIS LOTTO',    main:6,max:52,spec:0,  sname:null},
+  nj:  {name:'NJ PICK-6',         main:6,max:49,spec:0,  sname:null},
+  gaf: {name:'GEORGIA FANTASY 5', main:5,max:42,spec:0,  sname:null},
+  co:  {name:'COLORADO LOTTO+',   main:6,max:40,spec:40, sname:'+'},
+  az:  {name:'ARIZONA THE PICK',  main:6,max:44,spec:0,  sname:null},
+  or:  {name:'OREGON MEGABUCKS',  main:6,max:48,spec:0,  sname:null},
+  em:  {name:'EURO MILLIONS',     main:5,max:50,spec:12, sname:'LS'},
+  se:  {name:'SUPERENALOTTO',     main:6,max:90,spec:0,  sname:null},
+  ms:  {name:'MEGA-SENA',         main:6,max:60,spec:0,  sname:null},
+};
+
+/* ── STATE ──────────────────────────────────────────────── */
+let selectedBot = BOTS[0];
+let selectedGameId = 'pb';
+let spinCount = 0;
+let isSpinning = false;
+let currentNums = [], currentSpec = null;
+
+const BG_GRADIENTS = [
+  'radial-gradient(ellipse at 30% 50%,#330000 0%,#003300 30%,#000033 100%)',
+  'radial-gradient(ellipse at 50% 40%,#331a00 0%,#330000 40%,#1a0033 100%)',
+  'radial-gradient(ellipse at 50% 50%,#1a0000 0%,#000033 50%,#1a0000 100%)',
+  'radial-gradient(ellipse at 50% 30%,#0d0020 0%,#1a0040 40%,#060010 100%)',
+  'radial-gradient(ellipse at 50% 50%,#1a0f00 0%,#3d2000 40%,#1a0f00 100%)',
+];
+// Background image URLs — swap these once uploaded to GitHub
+const BG_IMGS = [
+  'https://lucky7aiapp.github.io/Lucky7Ai-Data/backgrounds/bg1.jpg',
+  'https://lucky7aiapp.github.io/Lucky7Ai-Data/backgrounds/bg2.jpg',
+  'https://lucky7aiapp.github.io/Lucky7Ai-Data/backgrounds/bg3.jpg',
+  'https://lucky7aiapp.github.io/Lucky7Ai-Data/backgrounds/bg4.jpg',
+  'https://lucky7aiapp.github.io/Lucky7Ai-Data/backgrounds/bg5.jpg',
+];
+let currentBg = 0;
+
+/* ── AUDIO ───────────────────────────────────────────────── */
+let actx = null;
+function ac(){if(!actx)actx=new(window.AudioContext||window.webkitAudioContext)();return actx;}
+function tone(f,f2,dur,gain,type='sine',delay=0){
+  const ctx=ac(),o=ctx.createOscillator(),g=ctx.createGain();
+  o.connect(g);g.connect(ctx.destination);
+  o.type=type;o.frequency.setValueAtTime(f,ctx.currentTime+delay);
+  o.frequency.exponentialRampToValueAtTime(f2,ctx.currentTime+delay+dur);
+  g.gain.setValueAtTime(0,ctx.currentTime+delay);
+  g.gain.linearRampToValueAtTime(gain,ctx.currentTime+delay+0.01);
+  g.gain.exponentialRampToValueAtTime(0.001,ctx.currentTime+delay+dur);
+  o.start(ctx.currentTime+delay);o.stop(ctx.currentTime+delay+dur+0.05);
+}
+function sndSpin(){
+  for(let i=0;i<6;i++) tone(100+i*40,300+i*60,0.3,0.05,'sawtooth',i*0.06);
+}
+function sndTick(){tone(600,500,0.06,0.15,'square');}
+function sndLand(i){
+  const f=[350,400,440,490,530,600][i%6];
+  tone(f,f*0.8,0.18,0.25,'sine');
+  tone(f*2.5,f*2,0.1,0.1,'triangle',0.02);
+}
+function sndSpecial(){tone(220,140,0.3,0.35,'sine');tone(660,800,0.2,0.15,'triangle',0.05);}
+function sndComplete(){
+  [523,659,784,1046].forEach((f,i)=>tone(f,f,0.5,0.1,'sine',i*0.08));
+}
+function sndClick(){tone(520,620,0.08,0.12,'sine');}
+
+/* ── BUILD BOTS ──────────────────────────────────────────── */
+function buildBots(){
+  const col = document.getElementById('botcol');
+  col.innerHTML = BOTS.map(b=>`
+    <div class="bot-tile ${b.id===selectedBot.id?'active':''}"
+         id="tile_${b.id}" onclick="selectBot('${b.id}')"
+         style="${b.id===selectedBot.id?`border-color:${b.color};box-shadow:0 0 12px ${b.color}66;`:''}">
+      ${USE_GIFS
+        ? `<img src="${b.gif}" alt="${b.name}" onerror="this.src='${b.img}'">`
+        : `<img src="${b.img}" alt="${b.name}" onerror="this.outerHTML='<div class=bot-gif-placeholder>${b.emoji}</div>'">`
+      }
+      <div class="bot-tile-label" style="color:${b.color}">${b.name}</div>
+    </div>
+  `).join('');
+}
+
+function selectBot(id){
+  sndClick();
+  selectedBot = BOTS.find(b=>b.id===id);
+  BOTS.forEach(b=>{
+    const t=document.getElementById(`tile_${b.id}`);
+    if(!t)return;
+    if(b.id===id){
+      t.classList.add('active');
+      t.style.borderColor=b.color;
+      t.style.boxShadow=`0 0 12px ${b.color}66`;
+    }else{
+      t.classList.remove('active');
+      t.style.borderColor='';t.style.boxShadow='';
+    }
+  });
+  // Update selected display
+  const av=document.getElementById('selAvatar');
+  av.innerHTML=USE_GIFS
+    ?`<img src="${selectedBot.gif}" onerror="this.src='${selectedBot.img}'" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`
+    :`<img src="${selectedBot.img}" style="width:100%;height:100%;object-fit:cover;border-radius:6px;">`;
+  document.getElementById('selName').textContent=selectedBot.name;
+  document.getElementById('selName').style.color=selectedBot.color;
+  document.getElementById('selStrategy').textContent=selectedBot.tag;
+}
+
+/* ── BUILD REELS ─────────────────────────────────────────── */
+function buildReels(){
+  const g=GAMES[selectedGameId];
+  const total=g.main+(g.spec>0?1:0);
+  const display=document.getElementById('slotDisplay');
+  display.innerHTML='';
+  for(let i=0;i<g.main;i++){
+    if(i>0){const s=document.createElement('span');s.className='slot-sep';s.textContent='·';display.appendChild(s);}
+    const reel=document.createElement('div');
+    reel.className='slot-reel slot-reel-main';reel.id=`reel_${i}`;
+    reel.innerHTML=`<div class="reel-inner" id="ri_${i}"><div class="reel-num">?</div></div>`;
+    display.appendChild(reel);
+  }
+  if(g.spec>0){
+    const s=document.createElement('span');s.className='slot-sep';s.textContent='|';display.appendChild(s);
+    const reel=document.createElement('div');
+    reel.className='slot-reel slot-reel-special';reel.id='reel_spec';
+    reel.innerHTML=`<div class="reel-inner" id="ri_spec"><div class="reel-num">?</div></div>`;
+    display.appendChild(reel);
+  }
+  updateGamePill();
+}
+
+function updateGamePill(){
+  const g=GAMES[selectedGameId];
+  const spec=g.spec>0?` + ${g.sname} 1/${g.spec}`:'';
+  document.getElementById('gameInfoPill').textContent=`${g.name} · ${g.main}/${g.max}${spec}`;
+}
+
+function onGameChange(){
+  selectedGameId=document.getElementById('gameSelect').value;
+  buildReels();
+  sndClick();
+}
+
+/* ── SLOT SPIN ANIMATION ─────────────────────────────────── */
+async function animateReel(reelId, finalNum, delay, isSpecial){
+  await sleep(delay);
+  const ri=document.getElementById(`ri_${reelId}`);
+  if(!ri)return;
+  // Build spinning strip
+  const nums=[];
+  for(let i=0;i<14;i++) nums.push(Math.floor(Math.random()*99)+1);
+  nums.push(finalNum);
+  ri.innerHTML=nums.map(n=>`<div class="reel-num">${n}</div>`).join('');
+  // Animate scroll
+  const itemH=64;
+  const totalH=nums.length*itemH;
+  const targetY=-((nums.length-1)*itemH);
+  let start=null;
+  const duration=600+delay*0.3;
+  await new Promise(res=>{
+    function step(ts){
+      if(!start)start=ts;
+      const prog=Math.min((ts-start)/duration,1);
+      // Ease out with overshoot
+      const eased=prog<1?1-Math.pow(1-prog,3):1;
+      ri.style.transform=`translateY(${targetY*eased}px)`;
+      if(prog<1){requestAnimationFrame(step);}
+      else{
+        ri.style.transform=`translateY(${targetY}px)`;
+        ri.innerHTML=`<div class="reel-num">${finalNum}</div>`;
+        if(isSpecial)sndSpecial();else sndLand(delay/150);
+        res();
+      }
+    }
+    requestAnimationFrame(step);
+  });
+}
+
+/* ── SPIN LOGIC ──────────────────────────────────────────── */
+async function doSpin(){
+  if(isSpinning)return;
+  isSpinning=true;
+  sndSpin();
+  const btn=document.getElementById('spinBtn');
+  btn.classList.add('spinning');
+
+  const g=GAMES[selectedGameId];
+  const {nums,spec}=generatePick(selectedBot,g);
+  currentNums=nums; currentSpec=spec;
+
+  // Animate all reels
+  const promises=[];
+  nums.forEach((n,i)=>promises.push(animateReel(i,n,i*150,false)));
+  if(spec!==null) promises.push(animateReel('spec',spec,nums.length*150+100,true));
+  await Promise.all(promises);
+
+  // Tick sound during spin
+  sndComplete();
+  btn.classList.remove('spinning');
+  isSpinning=false;
+
+  spinCount++;
+  document.getElementById('spinCountDisplay').textContent=spinCount;
+
+  const rem=3-(spinCount%3);
+  document.getElementById('spinCounter').textContent=
+    spinCount%3===0?'⚡ MEGA\nUNLOCKED!`:`${rem} MORE\nFOR MEGA`;
+
+  if(spinCount%3===0){
+    const mb=document.getElementById('megaBtn');
+    mb.style.display='block';
+    tone(600,900,0.3,0.2,'sine');tone(900,1200,0.3,0.15,'sine',0.25);
+  }
+
+  // Show result popup after short delay
+  setTimeout(()=>showResult(nums,spec),500);
+}
+
+/* ── PICK STRATEGIES ─────────────────────────────────────── */
+function rnd(min,max,count,excl=[]){
+  const pool=[];for(let i=min;i<=max;i++)if(!excl.includes(i))pool.push(i);
+  const r=[];while(r.length<count&&pool.length){const i=Math.floor(Math.random()*pool.length);r.push(pool.splice(i,1)[0]);}
+  return r.sort((a,b)=>a-b);
+}
+function generatePick(bot,g){
+  const nums=bot.pick(g);
+  const spec=g.spec>0?Math.floor(Math.random()*g.spec)+1:null;
+  return{nums,spec};
+}
+function pickApex(g){
+  let n,tries=0;
+  do{n=rnd(1,g.max,g.main);
+    const odds=n.filter(x=>x%2).length,sum=n.reduce((a,b)=>a+b,0);
+    const minS=g.max*g.main*0.25,maxS=g.max*g.main*0.65;
+    const noC=!n.some((x,i)=>i>0&&x===n[i-1]+1);
+    if(Math.abs(odds-(g.main-odds))<=2&&sum>=minS&&sum<=maxS&&noC)break;
+  }while(++tries<200);return n;
+}
+function pickOracle(g){
+  const w=[];for(let i=1;i<=g.max;i++)w.push({n:i,w:1+Math.sin(i/g.max*Math.PI)*1.5});
+  const sel=[];while(sel.length<g.main){
+    const tot=w.reduce((a,b)=>a+b.w,0);let r=Math.random()*tot;
+    for(const x of w){r-=x.w;if(r<=0&&!sel.includes(x.n)){sel.push(x.n);break;}}
+  }return sel.sort((a,b)=>a-b);
+}
+function pickZeus(g){
+  const phi=1.6180339887,step=g.max/(g.main*phi);
+  let st=Math.floor(Math.random()*step)+1;
+  const n=[];
+  for(let i=0;i<g.main;i++){
+    let v=Math.round(st+i*step*phi%g.max);
+    v=Math.min(Math.max(v,1),g.max);
+    while(n.includes(v))v=(v%g.max)+1;n.push(v);
+  }
+  const u=[...new Set(n)].sort((a,b)=>a-b);
+  return u.length<g.main?rnd(1,g.max,g.main):u;
+}
+function pickViper(g){
+  const h=Math.floor(g.max*0.4);
+  const hot=rnd(h,g.max,Math.ceil(g.main*0.7));
+  const cold=rnd(1,h-1,g.main-hot.length);
+  return[...hot,...cold].sort((a,b)=>a-b);
+}
+function pickAria(g){
+  const e=Math.floor(g.max*0.45);
+  const cold=rnd(1,e,Math.ceil(g.main*0.7));
+  const warm=rnd(e+1,g.max,g.main-cold.length);
+  return[...cold,...warm].sort((a,b)=>a-b);
+}
+function pickLuna(g){
+  const lucky=[3,6,7,8,9,12,18,21,24,27,33,36,39,42,45,48,51,54,57,63,66,69,72].filter(n=>n<=g.max);
+  const pool=[...lucky,...lucky,...rnd(1,g.max,g.main)];
+  const seen=new Set(),nums=[];
+  while(nums.length<g.main&&pool.length){
+    const i=Math.floor(Math.random()*pool.length);const n=pool[i];
+    if(!seen.has(n)&&n>=1&&n<=g.max){seen.add(n);nums.push(n);}pool.splice(i,1);
+  }
+  if(nums.length<g.main)nums.push(...rnd(1,g.max,g.main-nums.length,nums));
+  return nums.sort((a,b)=>a-b);
+}
+
+/* ── RESULT POPUP ────────────────────────────────────────── */
+function showResult(nums,spec){
+  const popup=document.getElementById('resultPopup');
+  const g=GAMES[selectedGameId];
+  document.getElementById('rTitle').textContent=`${selectedBot.name}'S LUCKY NUMBERS`;
+  document.getElementById('rBotLine').textContent=
+    `${selectedBot.tag} · ${g.name} · ${new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}`;
+  const balls=document.getElementById('rBalls');
+  balls.innerHTML=nums.map(n=>`<div class="res-ball res-main">${n}</div>`).join('')+
+    (spec!==null?`<div class="res-ball res-special">${spec}</div>`:'');
+  popup.style.display='flex';
+  sndComplete();
+}
+function closeResult(){sndClick();document.getElementById('resultPopup').style.display='none';}
+
+/* ── BG SWITCHER ─────────────────────────────────────────── */
+const BG_CSS=[
+  '--bg1','--bg2','--bg3','--bg4','--bg5'
+];
+function setBg(i){
+  sndClick();
+  currentBg=i;
+  const stage=document.getElementById('stage');
+  stage.style.background=`var(${BG_CSS[i]})`;
+  // Try loading the image — if it 404s the gradient shows
+  const img=new Image();
+  img.onload=()=>{ stage.style.backgroundImage=`url('${BG_IMGS[i]}')`;stage.style.backgroundSize='cover';stage.style.backgroundPosition='center'; };
+  img.src=BG_IMGS[i];
+  document.querySelectorAll('.bg-dot').forEach((d,j)=>d.classList.toggle('active',j===i));
+}
+
+/* ── DISCLAIMER ──────────────────────────────────────────── */
+function closeDisclaimer(){
+  sndClick();
+  document.getElementById('disclaimerModal').style.display='none';
+}
+
+/* ── MEGA PICK TRIGGER ───────────────────────────────────── */
+function triggerMega(){
+  sndClick();
+  document.getElementById('megaBtn').style.display='none';
+  // Re-use the existing mega pick from number-generator if needed
+  // For now: special dramatic spin with all reels at once
+  if(isSpinning)return;
+  isSpinning=true;
+  const btn=document.getElementById('spinBtn');btn.classList.add('spinning');
+  const g=GAMES[selectedGameId];
+  const{nums,spec}=generatePick(selectedBot,g);
+  currentNums=nums;currentSpec=spec;
+  const all=[...nums.map((n,i)=>animateReel(i,n,i*80,false))];
+  if(spec!==null)all.push(animateReel('spec',spec,nums.length*80+80,true));
+  Promise.all(all).then(()=>{
+    sndComplete();btn.classList.remove('spinning');isSpinning=false;spinCount++;
+    document.getElementById('spinCountDisplay').textContent=spinCount;
+    setTimeout(()=>showResult(nums,spec),300);
+  });
+}
+
+/* ── UTILS ───────────────────────────────────────────────── */
+function sleep(ms){return new Promise(r=>setTimeout(r,ms));}
+
+/* ── INIT ────────────────────────────────────────────────── */
+document.getElementById('pickDate').textContent=
+  new Date().toLocaleDateString('en-US',{weekday:'long',month:'long',day:'numeric',year:'numeric'}).toUpperCase();
+
+buildBots();
+buildReels();
+selectBot('apex');
+
+// PWA
+if('serviceWorker' in navigator)
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+</script>
+</body>
+</html>
