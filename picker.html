@@ -888,8 +888,8 @@ async function animateReel(reelId, finalNum, delay, isSpecial){
       ri.style.transform=`translateY(${targetY*eased}px)`;
       if(prog<1){requestAnimationFrame(step);}
       else{
-        ri.style.transform=`translateY(${targetY}px)`;
         ri.innerHTML=`<div class="reel-num">${finalNum}</div>`;
+        ri.style.transform=`translateY(0)`;
         if(isSpecial)sndSpecial();else sndLand(delay/150);
         res();
       }
