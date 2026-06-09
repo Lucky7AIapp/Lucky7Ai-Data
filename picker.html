@@ -370,6 +370,7 @@ body::before{
   animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
 }
 @keyframes popIn{from{transform:scale(0.8);opacity:0;}to{transform:scale(1);opacity:1;}}
+@keyframes megaSpin{to{transform:rotate(360deg);}}
 .disclaimer-box::before{
   content:'⚠️';display:block;font-size:36px;margin-bottom:10px;
 }
@@ -472,6 +473,55 @@ body::before{
   </div>
 </div>
 
+<!-- ── CONTINUE / MEGA UNLOCK POPUP ──────────────────── -->
+<div id="continueModal" style="display:none;position:fixed;inset:0;z-index:9500;
+  display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);padding:20px;">
+  <div style="
+    max-width:340px;width:100%;text-align:center;
+    background:linear-gradient(160deg,#0a0020,#1a0040,#0a0020);
+    border-radius:24px;padding:30px 24px;
+    border:1px solid rgba(255,150,0,0.4);
+    box-shadow:0 0 60px rgba(255,100,0,0.3),0 0 120px rgba(124,0,224,0.2);
+    animation:popIn 0.4s cubic-bezier(0.34,1.56,0.64,1);
+  ">
+    <!-- Lucky 7 spinning icon -->
+    <div style="font-size:52px;margin-bottom:8px;animation:megaSpin 2s linear infinite;">🎰</div>
+    <div id="cpTitle" style="
+      font-family:'Cinzel',serif;font-size:20px;font-weight:900;
+      background:linear-gradient(135deg,#ff6600,#ffcc00,#ff6600);
+      -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+      background-clip:text;margin-bottom:6px;
+    ">⚡ MEGA PICK UNLOCKED ⚡</div>
+    <div id="cpSub" style="font-size:11px;color:rgba(255,200,0,0.7);letter-spacing:2px;margin-bottom:18px;font-family:'Orbitron',sans-serif;"></div>
+    <div style="
+      background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+      border-radius:12px;padding:12px 14px;margin-bottom:20px;
+      font-size:11px;color:rgba(255,255,255,0.5);line-height:1.7;text-align:left;
+    ">
+      ⚠️ <strong style="color:rgba(255,255,255,0.8);">Remember:</strong> Lucky7Ai generates numbers for <strong style="color:rgba(255,255,255,0.8);">entertainment only.</strong>
+      No guarantee of winning. Must be 18+. Please play responsibly.<br><br>
+      <a href="https://www.Lucky7ai.com" target="_blank" style="color:rgba(245,197,24,0.7);font-size:10px;">
+        🏆 See all bots compete at Lucky7ai.com
+      </a>
+    </div>
+    <button onclick="activateMegaPick()" style="
+      width:100%;padding:15px;border-radius:14px;border:none;cursor:pointer;
+      background:linear-gradient(135deg,#ff6600,#ffcc00,#ff6600);
+      background-size:200% 100%;
+      color:#1a0a00;font-family:'Orbitron',sans-serif;font-size:13px;font-weight:900;
+      letter-spacing:2px;
+      box-shadow:0 0 30px rgba(255,150,0,0.6);
+      animation:megaPulse 1s ease-in-out infinite;
+      margin-bottom:10px;
+    ">⚡ UNLEASH MEGA PICK ⚡</button>
+    <button onclick="dismissContinue()" style="
+      width:100%;padding:10px;border-radius:10px;border:none;cursor:pointer;
+      background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.35);
+      font-family:'Orbitron',sans-serif;font-size:9px;letter-spacing:2px;
+    ">SKIP — KEEP SPINNING NORMALLY</button>
+  </div>
+</div>
 <!-- ── RESULT POPUP ────────────────────────────────────── -->
 <div id="resultPopup">
   <div class="result-box">
@@ -853,6 +903,8 @@ let selectedGameId = 'pb';
 let spinCount = 0;
 let isSpinning = false;
 let currentNums = [], currentSpec = null;
+let megaTarget = Math.floor(Math.random()*10)+1; // random 1-10
+let spinsThisCycle = 0;                           // resets after each mega use
 
 const BG_GRADIENTS = [
   'radial-gradient(ellipse at 30% 50%,#330000 0%,#003300 30%,#000033 100%)',
@@ -1044,16 +1096,17 @@ async function doSpin(){
   isSpinning=false;
 
   spinCount++;
+  spinsThisCycle++;
   document.getElementById('spinCountDisplay').textContent=spinCount;
 
-  const rem=3-(spinCount%3);
-  document.getElementById('spinCounter').textContent=
-    spinCount%3===0 ? '⚡ MEGA UNLOCKED!' : `${rem} MORE\nFOR MEGA`;
+  const rem = megaTarget - spinsThisCycle;
+  if(rem > 0){
+    document.getElementById('spinCounter').textContent=`${rem} MORE\nFOR MEGA`;
+  }
 
-  if(spinCount%3===0){
-    const mb=document.getElementById('megaBtn');
-    mb.style.display='block';
-    tone(600,900,0.3,0.2,'sine');tone(900,1200,0.3,0.15,'sine',0.25);
+  // Unlock MEGA after random target reached
+  if(spinsThisCycle >= megaTarget){
+    showContinuePopup(); // show disclaimer + mega unlock
   }
   // No popup on regular spin — numbers stay in the reels
 }
@@ -1191,28 +1244,159 @@ if(localStorage.getItem('l7_disc')==='1'){
   });
 }
 
+/* ── CONTINUE / MEGA UNLOCK POPUP ───────────────────────── */
+function showContinuePopup(){
+  const modal = document.getElementById('continueModal');
+  const sub   = document.getElementById('cpSub');
+  sub.textContent = `${spinCount} SPINS · ${selectedBot.name} · ${GAMES[selectedGameId].name}`;
+  modal.style.display='flex';
+  // Dramatic sound buildup
+  tone(200,100,0.4,0.15,'sawtooth');
+  setTimeout(()=>{ tone(400,600,0.3,0.15,'sine'); tone(600,900,0.3,0.1,'sine',0.15); },400);
+}
+
+function activateMegaPick(){
+  document.getElementById('continueModal').style.display='none';
+  // Show mega button with fanfare
+  const mb=document.getElementById('megaBtn');
+  mb.style.display='block';
+  document.getElementById('spinCounter').textContent='⚡ MEGA\nUNLOCKED!';
+  [600,800,1000,1200].forEach((f,i)=>tone(f,f*1.1,0.25,0.15,'sine',i*0.1));
+}
+
+function dismissContinue(){
+  document.getElementById('continueModal').style.display='none';
+  // Reset cycle so it can unlock again after more spins
+  spinsThisCycle=0;
+  megaTarget=Math.floor(Math.random()*10)+1;
+  document.getElementById('spinCounter').textContent=`${megaTarget} MORE\nFOR MEGA`;
+  sndClick();
+}
+
 /* ── MEGA PICK TRIGGER ───────────────────────────────────── */
 function triggerMega(){
   sndClick();
   document.getElementById('megaBtn').style.display='none';
+  document.getElementById('spinCounter').textContent='⚡ MEGA ⚡';
   if(isSpinning)return;
   isSpinning=true;
-  const btn=document.getElementById('spinBtn');btn.classList.add('spinning');
+
+  // ── PHASE 1: Screen flash + rumble ──────────────────────
+  const flash=document.createElement('div');
+  flash.style.cssText='position:fixed;inset:0;z-index:8000;background:white;pointer-events:none;opacity:0;transition:opacity 0.1s;';
+  document.body.appendChild(flash);
+  setTimeout(()=>{flash.style.opacity='0.35';},50);
+  setTimeout(()=>{flash.style.opacity='0';},200);
+  setTimeout(()=>{flash.style.opacity='0.2';},300);
+  setTimeout(()=>{flash.style.opacity='0';document.body.removeChild(flash);},450);
+
+  // Deep rumble sound
+  tone(40,25,1.5,0.3,'sawtooth');
+  tone(80,50,1.2,0.2,'sawtooth',0.1);
+  // Rising tension
+  [220,330,440,550,660,880].forEach((f,i)=>tone(f,f*1.1,0.3,0.06,'sine',0.2+i*0.12));
+
+  // ── PHASE 2: Shake the reels ────────────────────────────
+  const center=document.getElementById('centercol');
+  let shakes=0;
+  const shakeInterval=setInterval(()=>{
+    const dx=(Math.random()-0.5)*10, dy=(Math.random()-0.5)*6;
+    center.style.transform=`translate(${dx}px,${dy}px)`;
+    if(++shakes>12){clearInterval(shakeInterval);center.style.transform='';}
+  },60);
+
+  // Glow up the reels
+  document.querySelectorAll('.slot-reel').forEach(r=>{
+    r.style.transition='box-shadow 0.3s,border-color 0.3s';
+    r.style.borderColor='rgba(255,200,0,0.8)';
+    r.style.boxShadow='0 0 20px rgba(255,150,0,0.7),0 0 40px rgba(255,100,0,0.4)';
+  });
+
+  const btn=document.getElementById('spinBtn');
+  btn.classList.add('spinning');
+
+  await sleep(1200); // let the drama build
+
+  // ── PHASE 3: Numbers slam in one by one ─────────────────
   const g=GAMES[selectedGameId];
   const{nums,spec}=generatePick(selectedBot,g);
-  currentNums=nums;currentSpec=spec;
-  // Fast dramatic all-at-once spin
-  const all=[...nums.map((n,i)=>animateReel(i,n,i*60,false))];
-  if(spec!==null)all.push(animateReel('spec',spec,nums.length*60+60,true));
-  Promise.all(all).then(()=>{
-    sndComplete();
-    btn.classList.remove('spinning');
-    isSpinning=false;
-    spinCount++;
-    document.getElementById('spinCountDisplay').textContent=spinCount;
-    // Only the MEGA spin shows the popup
-    setTimeout(()=>showMegaResult(nums,spec),600);
-  });
+  currentNums=nums; currentSpec=spec;
+
+  // Super long spin strips for mega
+  const megaAnimateReel=async(reelId,finalNum,delay,isSpec)=>{
+    await sleep(delay);
+    const ri=document.getElementById(`ri_${reelId}`);
+    if(!ri)return;
+    const strip=[];
+    for(let i=0;i<30;i++) strip.push(Math.floor(Math.random()*99)+1);
+    strip.push(finalNum);
+    ri.innerHTML=strip.map(n=>`<div class="reel-num">${n}</div>`).join('');
+    const itemH=64, targetY=-((strip.length-1)*itemH);
+    let start=null;
+    const dur=900+delay*0.2;
+    await new Promise(res=>{
+      function step(ts){
+        if(!start)start=ts;
+        const prog=Math.min((ts-start)/dur,1);
+        const eased=prog<0.7?prog*(1/0.7)*0.85: 0.85+((prog-0.7)/0.3)*0.15;
+        ri.style.transform=`translateY(${targetY*eased}px)`;
+        if(prog<1){requestAnimationFrame(step);}
+        else{
+          ri.innerHTML=`<div class="reel-num" style="color:#ffcc00;text-shadow:0 0 16px rgba(255,200,0,0.9);">${finalNum}</div>`;
+          ri.style.transform='translateY(0)';
+          // Impact flash on this reel
+          ri.closest('.slot-reel').style.boxShadow='0 0 40px rgba(255,200,0,1),0 0 80px rgba(255,100,0,0.6)';
+          if(isSpec)sndSpecial();else sndLand(delay/200);
+          // Screen mini-shake per ball
+          center.style.transform=`translate(${(Math.random()-0.5)*8}px,${(Math.random()-0.5)*5}px)`;
+          setTimeout(()=>{center.style.transform='';},120);
+          res();
+        }
+      }
+      requestAnimationFrame(step);
+    });
+  };
+
+  const all=nums.map((n,i)=>megaAnimateReel(i,n,i*300,false));
+  if(spec!==null) all.push(megaAnimateReel('spec',spec,nums.length*300+200,true));
+  await Promise.all(all);
+
+  // ── PHASE 4: VICTORY ────────────────────────────────────
+  // Big fanfare
+  [523,659,784,1046,1319,1568].forEach((f,i)=>tone(f,f*1.05,0.7,0.12,'sine',i*0.1));
+  setTimeout(()=>{
+    // Crowd cheer shimmer
+    for(let i=0;i<15;i++){
+      const o=ac().createOscillator(),gn=ac().createGain();
+      const f=150+Math.random()*400;
+      o.connect(gn);gn.connect(ac().destination);
+      o.type='sawtooth';
+      o.frequency.value=f;
+      gn.gain.setValueAtTime(0,ac().currentTime+0.1);
+      gn.gain.linearRampToValueAtTime(0.012,ac().currentTime+0.3);
+      gn.gain.linearRampToValueAtTime(0,ac().currentTime+1.5);
+      o.start(ac().currentTime+0.1);o.stop(ac().currentTime+1.6);
+    }
+  },400);
+
+  btn.classList.remove('spinning');
+  isSpinning=false;
+  spinCount++;
+  document.getElementById('spinCountDisplay').textContent=spinCount;
+
+  // Reset for next cycle
+  spinsThisCycle=0;
+  megaTarget=Math.floor(Math.random()*10)+1;
+  setTimeout(()=>{
+    document.getElementById('spinCounter').textContent=`${megaTarget} MORE\nFOR MEGA`;
+    // Restore reel colors
+    document.querySelectorAll('.slot-reel').forEach(r=>{
+      r.style.borderColor='';r.style.boxShadow='';
+    });
+  },2000);
+
+  // Show mega result popup
+  setTimeout(()=>showMegaResult(nums,spec),800);
 }
 
 /* ── UTILS ───────────────────────────────────────────────── */
