@@ -474,7 +474,7 @@ body::before{
     <div class="logo">Lucky<span>7</span>Ai</div>
 
     <select id="gameSelect" onchange="onGameChange()">
-      <optgroup label="── MULTISTATE ──">
+      <optgroup label="🇺🇸 US MULTISTATE">
         <option value="pb">🔴 POWERBALL</option>
         <option value="mm">🔵 MEGA MILLIONS</option>
         <option value="lfl">🍀 LUCKY FOR LIFE</option>
@@ -484,24 +484,77 @@ body::before{
         <option value="2x2">✌️ 2BY2</option>
         <option value="tsm">⭐ TRI-STATE MEGA</option>
       </optgroup>
-      <optgroup label="── STATE ──">
+      <optgroup label="🎯 US DAILY NUMBERS">
+        <option value="p3">🎯 PICK 3 (Generic)</option>
+        <option value="p4">🎯 PICK 4 (Generic)</option>
+        <option value="p5">🎯 PICK 5 (Generic)</option>
+        <option value="nyp3">🗽 NY NUMBERS Pick 3</option>
+        <option value="nyp4">🗽 NY WIN 4 Pick 4</option>
+        <option value="flp3">🌴 FL PICK 3</option>
+        <option value="flp4">🌴 FL PICK 4</option>
+        <option value="flp5">🌴 FL PICK 5</option>
+        <option value="txdc">⭐ TX DAILY 4</option>
+        <option value="keno">🎰 KENO (Pick 10)</option>
+      </optgroup>
+      <optgroup label="🗺️ US STATE GAMES">
         <option value="cs">🐻 CA SUPERLOTTO+</option>
         <option value="tl">⭐ TEXAS LOTTO</option>
         <option value="fll">🌴 FLORIDA LOTTO</option>
         <option value="nyl">🗽 NY LOTTO</option>
-        <option value="oh">🎯 OHIO CLASSIC</option>
-        <option value="mi">🏔️ MICHIGAN 47</option>
+        <option value="oh">🎯 OHIO CLASSIC LOTTO</option>
+        <option value="mi">🏔️ MICHIGAN LOTTO 47</option>
         <option value="il">🌾 ILLINOIS LOTTO</option>
         <option value="nj">🌟 NJ PICK-6</option>
         <option value="gaf">🍑 GEORGIA FANTASY 5</option>
         <option value="co">🏔️ COLORADO LOTTO+</option>
         <option value="az">🌵 ARIZONA THE PICK</option>
         <option value="or">🌲 OREGON MEGABUCKS</option>
+        <option value="pa">🔔 PA CASH 5</option>
+        <option value="nc">🌿 NC CASH 5</option>
+        <option value="ma">🦞 MA MASS CASH</option>
+        <option value="wa">🌲 WA LOTTO</option>
+        <option value="mn">⭐ MN NORTHSTAR CASH</option>
+        <option value="ky">🐎 KY CASH BALL</option>
+        <option value="va">🦅 VA CASH 5</option>
       </optgroup>
-      <optgroup label="── INTERNATIONAL ──">
-        <option value="em">🌍 EURO MILLIONS</option>
+      <optgroup label="🇲🇽 MEXICO">
+        <option value="mel">🇲🇽 MELATE</option>
+        <option value="rev">🇲🇽 REVANCHA</option>
+        <option value="chi">🇲🇽 CHISPAZO</option>
+        <option value="tris">🇲🇽 TRIS Pick 3</option>
+        <option value="mxkn">🇲🇽 KIEN GANA</option>
+      </optgroup>
+      <optgroup label="🌍 EUROPE">
+        <option value="em">🇪🇺 EURO MILLIONS</option>
+        <option value="ej">🇪🇺 EURO JACKPOT</option>
         <option value="se">🇮🇹 SUPERENALOTTO</option>
+        <option value="ukl">🇬🇧 UK NATIONAL LOTTERY</option>
+        <option value="irel">🇮🇪 IRISH LOTTO</option>
+        <option value="frl">🇫🇷 FRENCH LOTO</option>
+        <option value="del">🇩🇪 GERMAN LOTTO 6/49</option>
+        <option value="sp">🇪🇸 SPAIN BONOLOTO</option>
+        <option value="sppk">🇪🇸 LA PRIMITIVA</option>
+        <option value="pll">🇵🇱 POLAND LOTTO</option>
+      </optgroup>
+      <optgroup label="🌏 ASIA">
+        <option value="th">🇹🇭 THAI LOTTERY</option>
+        <option value="ph58">🇵🇭 PH ULTRA LOTTO 6/58</option>
+        <option value="ph55">🇵🇭 PH GRAND LOTTO 6/55</option>
+        <option value="ph49">🇵🇭 PH SUPER LOTTO 6/49</option>
+        <option value="ph45">🇵🇭 PH MEGA LOTTO 6/45</option>
+        <option value="ph3d">🇵🇭 PH SWERTRES 3D</option>
+        <option value="kr">🇰🇷 KOREA LOTTO 6/45</option>
+        <option value="jp6">🇯🇵 JAPAN LOTO 6</option>
+        <option value="jp7">🇯🇵 JAPAN LOTO 7</option>
+        <option value="hkm">🇭🇰 HK MARK SIX</option>
+      </optgroup>
+      <optgroup label="🌎 AMERICAS & OCEANIA">
         <option value="ms">🇧🇷 MEGA-SENA</option>
+        <option value="bq">🇧🇷 QUINA</option>
+        <option value="ca49">🇨🇦 CANADA LOTTO 6/49</option>
+        <option value="camax">🇨🇦 CANADA LOTTO MAX</option>
+        <option value="aupb">🇦🇺 AU POWERBALL</option>
+        <option value="aumw">🇦🇺 AU MONDAY LOTTO</option>
       </optgroup>
     </select>
 
@@ -576,50 +629,108 @@ const GIF = 'https://lucky7aiapp.github.io/Lucky7Ai-Data/gif/';
 const USE_GIFS = false;
 
 const BOTS = [
-  { id:'apex',   name:'APEX',   emoji:'🤖', img: IMG+'Apex.png',   gif: GIF+'apex.gif',   color:'#ff3c3c', tag:'PREDICTIVE ENGINE',
-    strategy:'Balances hot frequency, odd/even ratio, sum-range & no consecutives.',
-    pick:(g)=>pickApex(g) },
-  { id:'oracle', name:'ORACLE', emoji:'🔮', img: IMG+'Oracle.png', gif: GIF+'oracle.gif', color:'#b44fff', tag:'PATTERN READER',
-    strategy:'Drills draw history, number pairs & gap cycles.',
-    pick:(g)=>pickOracle(g) },
-  { id:'zeus',   name:'ZEUS',   emoji:'⚡', img: IMG+'Zeus.png',   gif: GIF+'zeus.gif',   color:'#3390ff', tag:'DIVINE ARCHITECT',
-    strategy:'Spaces every pick using the Golden Ratio φ ≈ 1.618.',
-    pick:(g)=>pickZeus(g) },
-  { id:'viper',  name:'VIPER',  emoji:'🐍', img: IMG+'Viper.png',  gif: GIF+'viper.gif',  color:'#00e87a', tag:'STREAK HUNTER',
-    strategy:'Hunts numbers hot in the last 3-5 draws.',
-    pick:(g)=>pickViper(g) },
-  { id:'aria',   name:'ARIA',   emoji:'🌸', img: IMG+'Aria.png',   gif: GIF+'aria.gif',   color:'#ff5ca8', tag:'COLD CONTRARIAN',
-    strategy:'Only plays numbers cold for 20+ draws.',
-    pick:(g)=>pickAria(g) },
-  { id:'luna',   name:'LUNA',   emoji:'🌙', img: IMG+'Luna.png',   gif: GIF+'luna.gif',   color:'#ffb344', tag:'MYSTIC NUMEROLOGIST',
-    strategy:'Divine roots, lucky numbers & lunar cycles.',
-    pick:(g)=>pickLuna(g) },
+  // ── AI STRATEGISTS ──────────────────────────────────────
+  { id:'apex',     name:'APEX',     emoji:'🤖', img:IMG+'Apex.png',   color:'#ff3c3c', tag:'PREDICTIVE ENGINE',   pick:g=>pickApex(g) },
+  { id:'oracle',   name:'ORACLE',   emoji:'🔮', img:IMG+'Oracle.png', color:'#b44fff', tag:'PATTERN READER',      pick:g=>pickOracle(g) },
+  { id:'zeus',     name:'ZEUS',     emoji:'⚡', img:IMG+'Zeus.png',   color:'#3390ff', tag:'DIVINE ARCHITECT',    pick:g=>pickZeus(g) },
+  { id:'viper',    name:'VIPER',    emoji:'🐍', img:IMG+'Viper.png',  color:'#00e87a', tag:'STREAK HUNTER',       pick:g=>pickViper(g) },
+  { id:'aria',     name:'ARIA',     emoji:'🌸', img:IMG+'Aria.png',   color:'#ff5ca8', tag:'COLD CONTRARIAN',     pick:g=>pickAria(g) },
+  { id:'luna',     name:'LUNA',     emoji:'🌙', img:IMG+'Luna.png',   color:'#ffb344', tag:'MYSTIC NUMEROLOGIST', pick:g=>pickLuna(g) },
+  // ── DOGS 🐕 ─────────────────────────────────────────────
+  { id:'biscuit',  name:'BISCUIT',  emoji:'🐕', img:null, color:'#f5c518', tag:'GOLDEN RETRIEVER',    pick:g=>pickViper(g),  desc:'Fetches the hottest numbers. Good boy!' },
+  { id:'rex',      name:'REX',      emoji:'🐕‍🦺', img:null, color:'#8888ff', tag:'GERMAN SHEPHERD',     pick:g=>pickApex(g),   desc:'Guards the most disciplined picks.' },
+  { id:'bella',    name:'BELLA',    emoji:'🐩', img:null, color:'#ff88cc', tag:'POODLE INTUITION',    pick:g=>pickLuna(g),   desc:'Prances to the beat of the moon.' },
+  { id:'max',      name:'MAX',      emoji:'🐾', img:null, color:'#cc8844', tag:'RANDOM RETRIEVER',    pick:g=>pickRandom(g), desc:'Digs up numbers from absolutely nowhere.' },
+  // ── CATS 🐱 ─────────────────────────────────────────────
+  { id:'whiskers', name:'WHISKERS', emoji:'🐱', img:null, color:'#ff9944', tag:'CALICO CHAOS',        pick:g=>pickRandom(g), desc:'Knocks numbers off the table. Meow.' },
+  { id:'shadow',   name:'SHADOW',   emoji:'🐈‍⬛', img:null, color:'#9944ff', tag:'BLACK CAT LUCK',      pick:g=>pickAria(g),   desc:'Finds numbers others dare not touch.' },
+  { id:'mittens',  name:'MITTENS',  emoji:'🧤', img:null, color:'#44ffcc', tag:'COLD PAW METHOD',     pick:g=>pickAria(g),   desc:'Only bats at ice-cold numbers.' },
+  { id:'purrfect', name:'PURRFECT', emoji:'😺', img:null, color:'#ffcc44', tag:'GOLDEN WHISKER',      pick:g=>pickOracle(g), desc:'Studies the draw history with one eye open.' },
+  // ── VEGGIES 🥦 ──────────────────────────────────────────
+  { id:'broccoli', name:'BROCCOLI', emoji:'🥦', img:null, color:'#44cc44', tag:'GREEN GIANT METHOD',  pick:g=>pickApex(g),   desc:'Grows picks in perfectly balanced clusters.' },
+  { id:'carrot',   name:'CARROT',   emoji:'🥕', img:null, color:'#ff8833', tag:'ROOT MATHEMATICS',    pick:g=>pickZeus(g),   desc:'Applies strict veggie math to every pick.' },
+  { id:'beet',     name:'BEET',     emoji:'🫚', img:null, color:'#cc44aa', tag:'UNDERGROUND COLD',    pick:g=>pickAria(g),   desc:'Digs up buried numbers nobody else wants.' },
+  { id:'potato',   name:'POTATO',   emoji:'🥔', img:null, color:'#ccaa66', tag:'COSMIC POTATO',       pick:g=>pickRandom(g), desc:'No strategy. No logic. Just vibes. Strangely effective.' },
+  { id:'pepper',   name:'PEPPER',   emoji:'🌶️', img:null, color:'#ff3333', tag:'HOT PEPPER PICKS',    pick:g=>pickViper(g),  desc:'Only plays the HOTTEST numbers. Spicy.' },
+  { id:'corn',     name:'CORN',     emoji:'🌽', img:null, color:'#ffee44', tag:'GOLDEN ROW METHOD',   pick:g=>pickOracle(g), desc:'Rows and patterns — corn knows structure.' },
 ];
 
 const GAMES = {
-  pb:  {name:'POWERBALL',         main:5,max:69,spec:26, sname:'PB'},
-  mm:  {name:'MEGA MILLIONS',     main:5,max:70,spec:25, sname:'MB'},
-  lfl: {name:'LUCKY FOR LIFE',    main:5,max:48,spec:18, sname:'LB'},
-  c4l: {name:'CASH4LIFE',         main:5,max:60,spec:4,  sname:'CB'},
-  la:  {name:'LOTTO AMERICA',     main:5,max:52,spec:10, sname:'SB'},
-  ml:  {name:'MILLIONAIRE LIFE',  main:5,max:43,spec:43, sname:'LB'},
-  '2x2':{name:'2BY2',             main:2,max:26,spec:26, sname:'W'},
-  tsm: {name:'TRI-STATE MEGA',    main:6,max:41,spec:0,  sname:null},
-  cs:  {name:'CA SUPERLOTTO+',    main:5,max:47,spec:27, sname:'M'},
-  tl:  {name:'TEXAS LOTTO',       main:6,max:54,spec:0,  sname:null},
-  fll: {name:'FLORIDA LOTTO',     main:6,max:53,spec:0,  sname:null},
-  nyl: {name:'NY LOTTO',          main:6,max:59,spec:0,  sname:null},
-  oh:  {name:'OHIO CLASSIC',      main:6,max:49,spec:0,  sname:null},
-  mi:  {name:'MICHIGAN 47',       main:6,max:47,spec:0,  sname:null},
-  il:  {name:'ILLINOIS LOTTO',    main:6,max:52,spec:0,  sname:null},
-  nj:  {name:'NJ PICK-6',         main:6,max:49,spec:0,  sname:null},
-  gaf: {name:'GEORGIA FANTASY 5', main:5,max:42,spec:0,  sname:null},
-  co:  {name:'COLORADO LOTTO+',   main:6,max:40,spec:40, sname:'+'},
-  az:  {name:'ARIZONA THE PICK',  main:6,max:44,spec:0,  sname:null},
-  or:  {name:'OREGON MEGABUCKS',  main:6,max:48,spec:0,  sname:null},
-  em:  {name:'EURO MILLIONS',     main:5,max:50,spec:12, sname:'LS'},
-  se:  {name:'SUPERENALOTTO',     main:6,max:90,spec:0,  sname:null},
-  ms:  {name:'MEGA-SENA',         main:6,max:60,spec:0,  sname:null},
+  // ── US MULTISTATE ────────────────────────────────────────
+  pb:   {name:'POWERBALL',          flag:'🇺🇸', main:5,max:69, spec:26, sname:'PB', draws:'Wed/Sat'},
+  mm:   {name:'MEGA MILLIONS',      flag:'🇺🇸', main:5,max:70, spec:25, sname:'MB', draws:'Tue/Fri'},
+  lfl:  {name:'LUCKY FOR LIFE',     flag:'🇺🇸', main:5,max:48, spec:18, sname:'LB', draws:'Daily'},
+  c4l:  {name:'CASH4LIFE',          flag:'🇺🇸', main:5,max:60, spec:4,  sname:'CB', draws:'Daily'},
+  la:   {name:'LOTTO AMERICA',      flag:'🇺🇸', main:5,max:52, spec:10, sname:'SB', draws:'Wed/Sat'},
+  ml:   {name:'MILLIONAIRE LIFE',   flag:'🇺🇸', main:5,max:43, spec:43, sname:'LB', draws:'Mon/Thu'},
+  '2x2':{name:'2BY2',               flag:'🇺🇸', main:2,max:26, spec:26, sname:'W',  draws:'Daily'},
+  tsm:  {name:'TRI-STATE MEGA',     flag:'🇺🇸', main:6,max:41, spec:0,  sname:null, draws:'Tue/Fri'},
+  // ── US DAILY NUMBERS (Pick 3 / Pick 4 / Pick 5) ─────────
+  p3:   {name:'PICK 3',             flag:'🎯', main:3,max:9,  spec:0,  sname:null, draws:'2x Daily', digits:true},
+  p4:   {name:'PICK 4',             flag:'🎯', main:4,max:9,  spec:0,  sname:null, draws:'2x Daily', digits:true},
+  p5:   {name:'PICK 5',             flag:'🎯', main:5,max:9,  spec:0,  sname:null, draws:'Daily',    digits:true},
+  nyp3: {name:'NY NUMBERS (Pick 3)',flag:'🗽', main:3,max:9,  spec:0,  sname:null, draws:'2x Daily', digits:true},
+  nyp4: {name:'NY WIN 4 (Pick 4)',  flag:'🗽', main:4,max:9,  spec:0,  sname:null, draws:'2x Daily', digits:true},
+  flp3: {name:'FL PICK 3',          flag:'🌴', main:3,max:9,  spec:0,  sname:null, draws:'2x Daily', digits:true},
+  flp4: {name:'FL PICK 4',          flag:'🌴', main:4,max:9,  spec:0,  sname:null, draws:'2x Daily', digits:true},
+  flp5: {name:'FL PICK 5',          flag:'🌴', main:5,max:9,  spec:0,  sname:null, draws:'Daily',    digits:true},
+  txdc: {name:'TX DAILY 4',         flag:'⭐', main:4,max:9,  spec:0,  sname:null, draws:'2x Daily', digits:true},
+  keno: {name:'KENO',               flag:'🎰', main:10,max:80,spec:0,  sname:null, draws:'Every 4min'},
+  // ── US STATE GAMES ───────────────────────────────────────
+  cs:   {name:'CA SUPERLOTTO+',     flag:'🐻', main:5,max:47, spec:27, sname:'M',  draws:'Wed/Sat'},
+  tl:   {name:'TEXAS LOTTO',        flag:'⭐', main:6,max:54, spec:0,  sname:null, draws:'Wed/Sat'},
+  fll:  {name:'FLORIDA LOTTO',      flag:'🌴', main:6,max:53, spec:0,  sname:null, draws:'Wed/Sat'},
+  nyl:  {name:'NY LOTTO',           flag:'🗽', main:6,max:59, spec:0,  sname:null, draws:'Wed/Sat'},
+  oh:   {name:'OHIO CLASSIC',       flag:'🎯', main:6,max:49, spec:0,  sname:null, draws:'Mon/Wed/Sat'},
+  mi:   {name:'MICHIGAN LOTTO 47',  flag:'🏔️', main:6,max:47, spec:0,  sname:null, draws:'Wed/Sat'},
+  il:   {name:'ILLINOIS LOTTO',     flag:'🌾', main:6,max:52, spec:0,  sname:null, draws:'Mon/Thu/Sat'},
+  nj:   {name:'NJ PICK-6',          flag:'🌟', main:6,max:49, spec:0,  sname:null, draws:'Mon/Thu'},
+  gaf:  {name:'GEORGIA FANTASY 5',  flag:'🍑', main:5,max:42, spec:0,  sname:null, draws:'Daily'},
+  co:   {name:'COLORADO LOTTO+',    flag:'🏔️', main:6,max:40, spec:40, sname:'+',  draws:'Mon/Wed/Sat'},
+  az:   {name:'ARIZONA THE PICK',   flag:'🌵', main:6,max:44, spec:0,  sname:null, draws:'Wed/Sat'},
+  or:   {name:'OREGON MEGABUCKS',   flag:'🌲', main:6,max:48, spec:0,  sname:null, draws:'Mon/Wed/Sat'},
+  pa:   {name:'PA CASH 5',          flag:'🔔', main:5,max:43, spec:0,  sname:null, draws:'Daily'},
+  nc:   {name:'NC CASH 5',          flag:'🌿', main:5,max:43, spec:0,  sname:null, draws:'Daily'},
+  ma:   {name:'MA MASS CASH',       flag:'🦞', main:5,max:35, spec:0,  sname:null, draws:'Daily'},
+  wa:   {name:'WA LOTTO',           flag:'🌲', main:6,max:49, spec:0,  sname:null, draws:'Wed/Sat'},
+  mn:   {name:'MN NORTHSTAR CASH',  flag:'⭐', main:5,max:31, spec:0,  sname:null, draws:'Daily'},
+  ky:   {name:'KY CASH BALL',       flag:'🐎', main:4,max:33, spec:4,  sname:'CB', draws:'Daily'},
+  va:   {name:'VA CASH 5',          flag:'🦅', main:5,max:41, spec:0,  sname:null, draws:'Daily'},
+  // ── MEXICO 🇲🇽 ───────────────────────────────────────────
+  mel:  {name:'MELATE',             flag:'🇲🇽', main:6,max:56, spec:0,  sname:null, draws:'Wed/Sun'},
+  rev:  {name:'REVANCHA',           flag:'🇲🇽', main:6,max:56, spec:0,  sname:null, draws:'Wed/Sun'},
+  chi:  {name:'CHISPAZO',           flag:'🇲🇽', main:5,max:28, spec:0,  sname:null, draws:'Daily'},
+  tris: {name:'TRIS (Pick 3 MX)',   flag:'🇲🇽', main:3,max:9,  spec:0,  sname:null, draws:'5x Daily', digits:true},
+  mxkn: {name:'KIEN GANA (MX)',     flag:'🇲🇽', main:5,max:39, spec:0,  sname:null, draws:'Tue/Thu/Sat'},
+  // ── EUROPE 🌍 ────────────────────────────────────────────
+  em:   {name:'EURO MILLIONS',      flag:'🇪🇺', main:5,max:50, spec:12, sname:'LS', draws:'Tue/Fri'},
+  ej:   {name:'EURO JACKPOT',       flag:'🇪🇺', main:5,max:50, spec:12, sname:'EJ', draws:'Tue/Fri'},
+  se:   {name:'SUPERENALOTTO',      flag:'🇮🇹', main:6,max:90, spec:0,  sname:null, draws:'Tue/Thu/Sat'},
+  ukl:  {name:'UK NATIONAL LOTTO',  flag:'🇬🇧', main:6,max:59, spec:1,  sname:'B',  draws:'Wed/Sat'},
+  irel: {name:'IRISH LOTTO',        flag:'🇮🇪', main:6,max:47, spec:1,  sname:'B',  draws:'Wed/Sat'},
+  frl:  {name:'FRENCH LOTO',        flag:'🇫🇷', main:5,max:49, spec:10, sname:'CN', draws:'Mon/Wed/Sat'},
+  del:  {name:'GERMAN LOTTO 6/49',  flag:'🇩🇪', main:6,max:49, spec:9,  sname:'SZ', draws:'Wed/Sat'},
+  sp:   {name:'SPAIN BONOLOTO',     flag:'🇪🇸', main:6,max:49, spec:0,  sname:null, draws:'Daily'},
+  sppk: {name:'LA PRIMITIVA (ES)',  flag:'🇪🇸', main:6,max:49, spec:10, sname:'R',  draws:'Thu/Sat'},
+  pll:  {name:'POLAND LOTTO',       flag:'🇵🇱', main:6,max:49, spec:0,  sname:null, draws:'Tue/Thu/Sat'},
+  // ── ASIA ─────────────────────────────────────────────────
+  th:   {name:'THAI LOTTERY',       flag:'🇹🇭', main:6,max:9,  spec:0,  sname:null, draws:'1st/16th', digits:true},
+  ph58: {name:'PH ULTRA LOTTO 6/58',flag:'🇵🇭', main:6,max:58, spec:0,  sname:null, draws:'Tue/Fri/Sun'},
+  ph55: {name:'PH GRAND LOTTO 6/55',flag:'🇵🇭', main:6,max:55, spec:0,  sname:null, draws:'Mon/Wed/Sat'},
+  ph49: {name:'PH SUPER LOTTO 6/49',flag:'🇵🇭', main:6,max:49, spec:0,  sname:null, draws:'Tue/Thu/Sun'},
+  ph45: {name:'PH MEGA LOTTO 6/45', flag:'🇵🇭', main:6,max:45, spec:0,  sname:null, draws:'Mon/Wed/Fri'},
+  ph3d: {name:'PH SWERTRES (3D)',   flag:'🇵🇭', main:3,max:9,  spec:0,  sname:null, draws:'3x Daily', digits:true},
+  kr:   {name:'KOREA LOTTO 6/45',   flag:'🇰🇷', main:6,max:45, spec:0,  sname:null, draws:'Saturday'},
+  jp6:  {name:'JAPAN LOTO 6',       flag:'🇯🇵', main:6,max:43, spec:0,  sname:null, draws:'Mon/Thu'},
+  jp7:  {name:'JAPAN LOTO 7',       flag:'🇯🇵', main:7,max:37, spec:2,  sname:'B',  draws:'Fri'},
+  hkm:  {name:'HK MARK SIX',       flag:'🇭🇰', main:6,max:49, spec:1,  sname:'X',  draws:'Tue/Thu/Sat'},
+  // ── AMERICAS & OCEANIA ───────────────────────────────────
+  ms:   {name:'MEGA-SENA (BR)',      flag:'🇧🇷', main:6,max:60, spec:0,  sname:null, draws:'Wed/Sat'},
+  bq:   {name:'QUINA (BR)',          flag:'🇧🇷', main:5,max:80, spec:0,  sname:null, draws:'Daily'},
+  ca49: {name:'CANADA LOTTO 6/49',  flag:'🇨🇦', main:6,max:49, spec:1,  sname:'B',  draws:'Wed/Sat'},
+  camax:{name:'CANADA LOTTO MAX',   flag:'🇨🇦', main:7,max:50, spec:0,  sname:null, draws:'Tue/Fri'},
+  aupb: {name:'AU POWERBALL',       flag:'🇦🇺', main:7,max:35, spec:20, sname:'PB', draws:'Thursday'},
+  aumw: {name:'AU MONDAY LOTTO',    flag:'🇦🇺', main:6,max:45, spec:2,  sname:'S',  draws:'Monday'},
 };
 
 /* ── STATE ──────────────────────────────────────────────── */
@@ -681,9 +792,9 @@ function buildBots(){
     <div class="bot-tile ${b.id===selectedBot.id?'active':''}"
          id="tile_${b.id}" onclick="selectBot('${b.id}')"
          style="${b.id===selectedBot.id?`border-color:${b.color};box-shadow:0 0 12px ${b.color}66;`:''}">
-      ${USE_GIFS
-        ? `<img src="${b.gif}" alt="${b.name}" onerror="this.src='${b.img}'">`
-        : `<img src="${b.img}" alt="${b.name}" onerror="this.outerHTML='<div class=bot-gif-placeholder>${b.emoji}</div>'">`
+      ${b.img
+        ? `<img src="${b.img}" alt="${b.name}" style="width:100%;aspect-ratio:1;object-fit:cover;object-position:top;" onerror="this.outerHTML='<div class=bot-gif-placeholder style=background:${b.color}22>${b.emoji}</div>'">`
+        : `<div class="bot-gif-placeholder" style="background:${b.color}22;font-size:32px;">${b.emoji}</div>`
       }
       <div class="bot-tile-label" style="color:${b.color}">${b.name}</div>
     </div>
@@ -741,7 +852,9 @@ function buildReels(){
 function updateGamePill(){
   const g=GAMES[selectedGameId];
   const spec=g.spec>0?` + ${g.sname} 1/${g.spec}`:'';
-  document.getElementById('gameInfoPill').textContent=`${g.name} · ${g.main}/${g.max}${spec}`;
+  const type=g.digits?'digits':'balls';
+  const draws=g.draws?` · ${g.draws}`:'';
+  document.getElementById('gameInfoPill').textContent=`${g.flag||''} ${g.name} · ${g.main} ${type} (0-${g.max})${spec}${draws}`;
 }
 
 function onGameChange(){
@@ -824,14 +937,22 @@ async function doSpin(){
 }
 
 /* ── PICK STRATEGIES ─────────────────────────────────────── */
+function pickRandom(g){
+  if(g.digits){
+    // Each digit independently 0-9, repeats allowed
+    const r=[];for(let i=0;i<g.main;i++)r.push(Math.floor(Math.random()*10));return r;
+  }
+  return rnd(1,g.max,g.main);
+}
 function rnd(min,max,count,excl=[]){
   const pool=[];for(let i=min;i<=max;i++)if(!excl.includes(i))pool.push(i);
   const r=[];while(r.length<count&&pool.length){const i=Math.floor(Math.random()*pool.length);r.push(pool.splice(i,1)[0]);}
   return r.sort((a,b)=>a-b);
 }
 function generatePick(bot,g){
-  const nums=bot.pick(g);
-  const spec=g.spec>0?Math.floor(Math.random()*g.spec)+1:null;
+  // Digit games (Pick 3/4, Tris, Thai etc.) always use random digits
+  const nums = g.digits ? pickRandom(g) : bot.pick(g);
+  const spec = g.spec>0 ? Math.floor(Math.random()*g.spec)+1 : null;
   return{nums,spec};
 }
 function pickApex(g){
