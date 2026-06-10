@@ -476,7 +476,7 @@ body::before{
     <p>You must be <span class="highlight">18 years or older</span> to participate in lottery games in most jurisdictions. Please check your local laws.</p>
     <p style="font-size:10px;color:rgba(255,255,255,0.35);">If you or someone you know has a gambling problem, call <strong style="color:rgba(255,255,255,0.55);">1-800-522-4700</strong></p>
     <button class="disclaimer-close" onclick="closeDisclaimer()">I UNDERSTAND — LET'S PLAY ✦</button>
-    <div class="disclaimer-age">Must be 18+ · Entertainment Only · Lucky7ai.com</div>
+    <div class="disclaimer-age" id="discTimer">Closing in 2 seconds...</div>
   </div>
 </div>
 
@@ -1244,13 +1244,14 @@ function closeDisclaimer(){
   try { localStorage.setItem('l7_disc','1'); } catch(e){}
   try { sndClick(); } catch(e){}
 }
-// Auto-dismiss if already accepted
-if(localStorage.getItem('l7_disc')==='1'){
-  document.addEventListener('DOMContentLoaded',()=>{
-    const d=document.getElementById('disclaimerModal');
-    if(d) d.style.display='none';
-  });
-}
+// Auto-dismiss disclaimer after 2 seconds
+let discSecs = 2;
+const discInterval = setInterval(()=>{
+  discSecs--;
+  const t = document.getElementById('discTimer');
+  if(t) t.textContent = discSecs > 0 ? `Closing in ${discSecs} second${discSecs>1?'s':''}...` : 'Opening...';
+  if(discSecs <= 0){ clearInterval(discInterval); closeDisclaimer(); }
+}, 1000);
 
 /* ── CONTINUE / MEGA UNLOCK POPUP ───────────────────────── */
 function showContinuePopup(){
