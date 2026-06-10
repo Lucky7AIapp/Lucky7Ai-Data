@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Lucky7AI · Control Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#FFD700;--gold2:#FFA500;--red2:#FF3333;--dark:#05070D;--card:#0C1020;--border:#1A2035;--text:#E8E8E8;--muted:#8a93a8;
+  --apex:#4CC9F0;--oracle:#A855F7;--zeus:#FFD700;--viper:#FF4444;--aria:#00FF88;--luna:#F472B6;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--dark);color:var(--text);font-family:'Rajdhani',sans-serif;line-height:1.5;min-height:100vh;
+  background:radial-gradient(ellipse at 50% 0%,#1a1305 0%,var(--dark) 55%);}
+.wrap{max-width:760px;margin:0 auto;padding:40px 18px 70px;}
+.head{text-align:center;margin-bottom:8px;}
+.brand{font-family:'Cinzel',serif;font-weight:900;font-size:30px;color:var(--gold);letter-spacing:.05em;}
+.brand span{color:var(--red2);}
+.tagline{color:var(--muted);font-size:13px;letter-spacing:.2em;text-transform:uppercase;margin-top:4px;}
+.private{display:inline-block;margin-top:12px;font-size:11px;letter-spacing:.15em;text-transform:uppercase;
+  color:var(--gold2);border:1px solid var(--border);border-radius:20px;padding:5px 14px;}
+
+.section{margin-top:34px;}
+.section-title{font-family:'Cinzel',serif;font-size:15px;color:var(--gold);letter-spacing:.08em;
+  text-transform:uppercase;margin-bottom:14px;padding-bottom:8px;border-bottom:1px solid var(--border);}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px;}
+
+.tile{position:relative;display:flex;flex-direction:column;justify-content:space-between;
+  background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 16px;
+  text-decoration:none;min-height:120px;transition:transform .15s,border-color .2s,box-shadow .2s;
+  -webkit-tap-highlight-color:transparent;}
+.tile:hover,.tile:active{transform:translateY(-3px);border-color:var(--gold);box-shadow:0 10px 28px rgba(255,215,0,.12);}
+.tile .ico{font-size:30px;margin-bottom:10px;}
+.tile .t-name{font-family:'Cinzel',serif;font-size:16px;color:#fff;font-weight:700;margin-bottom:3px;}
+.tile .t-desc{font-size:12px;color:var(--muted);line-height:1.4;}
+.tile.disabled{opacity:.55;pointer-events:none;}
+.badge{position:absolute;top:10px;right:10px;font-size:9px;font-weight:900;letter-spacing:.1em;
+  text-transform:uppercase;padding:3px 8px;border-radius:5px;}
+.badge.dev{background:rgba(255,165,0,.15);color:var(--gold2);border:1px solid rgba(255,165,0,.4);}
+.badge.soon{background:rgba(138,147,168,.12);color:var(--muted);border:1px solid var(--border);}
+.badge.live{background:rgba(0,255,136,.12);color:var(--aria);border:1px solid rgba(0,255,136,.4);}
+
+.foot{text-align:center;margin-top:40px;font-size:12px;color:var(--muted);line-height:1.7;}
+.foot a{color:var(--gold);text-decoration:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="brand">Lucky<span>7</span>AI</div>
+    <div class="tagline">Control Hub</div>
+    <div class="private">🔒 Private · Operator Tools</div>
+  </div>
+
+  <!-- GENERATORS -->
+  <div class="section">
+    <div class="section-title">🎲 Generators</div>
+    <div class="tiles">
+      <a class="tile" href="https://lucky7aiapp.github.io/Lucky7Ai-Data/number-generator.html" target="_blank" rel="noopener">
+        <span class="badge live">Live</span>
+        <div><div class="ico">🔢</div><div class="t-name">Number Generator</div></div>
+        <div class="t-desc">Clean vertical picker — the phone one</div>
+      </a>
+      <a class="tile" href="https://lucky7aiapp.github.io/Lucky7Ai-Data/picker.html" target="_blank" rel="noopener">
+        <span class="badge dev">In Progress</span>
+        <div><div class="ico">🌍</div><div class="t-name">Lotto Picker</div></div>
+        <div class="t-desc">Horizontal — countries &amp; drawings (in dev)</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- STATS & CONTENT -->
+  <div class="section">
+    <div class="section-title">📊 Stats &amp; Content</div>
+    <div class="tiles">
+      <a class="tile" href="stats-filter.html">
+        <span class="badge live">Live</span>
+        <div><div class="ico">📈</div><div class="t-name">Stats Filter</div></div>
+        <div class="t-desc">Filter bot results by day/week/month + post blurbs</div>
+      </a>
+
+    </div>
+  </div>
+
+  <!-- WORLD CUP -->
+  <div class="section">
+    <div class="section-title">⚽ World Cup 2026</div>
+    <div class="tiles">
+      <a class="tile" href="https://www.lucky7ai.com/world-cup-2026-predictions.html" target="_blank" rel="noopener">
+        <span class="badge live">Live</span>
+        <div><div class="ico">🔮</div><div class="t-name">Match Predictions</div></div>
+        <div class="t-desc">Next match's bot picks (top of page, T-24h)</div>
+      </a>
+      <a class="tile" href="https://www.lucky7ai.com/world-cup-predictor.html" target="_blank" rel="noopener">
+        <span class="badge live">Live</span>
+        <div><div class="ico">🏆</div><div class="t-name">Predictor</div></div>
+        <div class="t-desc">Click-to-rank bracket tool</div>
+      </a>
+    </div>
+  </div>
+
+  <!-- SITE -->
+  <div class="section">
+    <div class="section-title">🌐 Site</div>
+    <div class="tiles">
+      <a class="tile" href="https://www.lucky7ai.com/leaderboard.html" target="_blank" rel="noopener">
+        <span class="badge live">Live</span>
+        <div><div class="ico">🏆</div><div class="t-name">Leaderboard</div></div>
+        <div class="t-desc">Public Bot Arena standings</div>
+      </a>
+      <a class="tile" href="https://www.lucky7ai.com/articles.html" target="_blank" rel="noopener">
+        <span class="badge live">Live</span>
+        <div><div class="ico">📰</div><div class="t-name">Articles</div></div>
+        <div class="t-desc">Public article index</div>
+      </a>
+      <a class="tile" href="https://www.lucky7ai.com/index.html" target="_blank" rel="noopener">
+        <span class="badge live">Live</span>
+        <div><div class="ico">🏠</div><div class="t-name">Main Site</div></div>
+        <div class="t-desc">lucky7ai.com home</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="foot">
+    Private operator hub — not linked from the public site.<br>
+    Add or change tiles anytime. New tools slot into the sections above.
+  </div>
+
+</div>
+</body>
+</html>
