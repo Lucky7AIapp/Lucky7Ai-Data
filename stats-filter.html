@@ -128,7 +128,7 @@ body{background:var(--dark);color:var(--text);font-family:'Rajdhani',sans-serif;
   <div id="detail" style="display:none;background:var(--card);border:1px solid var(--gold);border-radius:12px;padding:16px;margin-top:18px;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
       <h3 id="detTitle" style="font-family:'Cinzel',serif;color:var(--gold);font-size:16px;letter-spacing:.05em;">Detail</h3>
-      <button onclick="document.getElementById('detail').style.display='none'" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:14px;padding:5px 12px;cursor:pointer;font-family:'Rajdhani',sans-serif;">Close ✕</button>
+      <button onclick="closeDetail()" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:14px;padding:5px 12px;cursor:pointer;font-family:'Rajdhani',sans-serif;">Close ✕</button>
     </div>
     <div id="detNote" style="font-size:12px;color:var(--muted);margin-bottom:12px;"></div>
     <div id="detBody"></div>
@@ -247,6 +247,87 @@ function buildBlurb(data){
   var tagsEN = '#Lottery #AIpredictions #Lucky7AI #PowerballNumbers';
   var tagsES = '#Loteria #PrediccionesIA #Lucky7AI #NumerosDeLaSuerte';
   var link = 'lucky7ai.com/leaderboard.html';
+  var disEN = '18+. Entertainment only. Play responsibly.';
+  var disES = 'Mayores de 18. Solo entretenimiento. Juega responsablemente.';
+
+  function gameLines(byGame, lang){
+    var keys = Object.keys(byGame||{});
+    var wonGames = keys.filter(function(g){ return (byGame[g].won||0) > 0; });
+    if(!wonGames.length) return lang==='es' ? 'Sin premios en ningún juego.' : 'No prizes in any game.';
+    return wonGames.map(function(g){
+      return '• '+g+': $'+byGame[g].won+' ('+byGame[g].winningLines+(lang==='es'?' líneas':' lines')+')';
+    }).join('\n');
+  }
+
+  if(selectedBot){
+    var b = data.bots.find(function(x){return x.name===selectedBot;});
+    if(b){
+      var gEN, gES;
+      if(lastDetail && (lastDetail.bot||'').toUpperCase() === selectedBot){
+        // single-day: build per-game lines WITH match notation (e.g. "Powerball: $4 — 1/5 + bonus")
+        function detailLines(lang){
+          var out = [];
+          (lastDetail.details||[]).forEach(function(g){
+            if((g.won||0) <= 0) return;
+            var marks = (g.lineDetails||[]).map(function(L){
+              var tot = (L.numbers||[]).length || 5;
+              return L.matches+'/'+tot+(L.bonusMatched?(lang==='es'?' +bono':' +bonus'):'');
+            }).join(', ');
+            out.push('• '+g.lottery+': $'+g.won+' ('+marks+')');
+          });
+          if(!out.length) return lang==='es' ? 'Sin premios en ningún juego.' : 'No prizes in any game.';
+          return out.join('\n');
+        }
+        gEN = detailLines('en');
+        gES = detailLines('es');
+      } else {
+        gEN = gameLines(b.byGame,'en');
+        gES = gameLines(b.byGame,'es');
+      }
+
+      POSTS['fb-en'] =
+        '🤖 BOT SPOTLIGHT: '+b.name+' — '+labelEN.toUpperCase()+'\n\n'+
+        '💵 Won $'+b.totalWins+' · spent $'+b.totalSpent+' · net '+money(b.netProfit)+'\n'+
+        '🎯 '+b.winningLines+' winning lines out of '+b.totalLines+' played ('+b.winRate+'%)\n\n'+
+        '🎰 Where the money came from:\n'+gEN+'\n\n'+
+        'Honest scoring vs real drawings. No fake wins. 👇\n🔗 '+link+'\n\n'+disEN+'\n\n'+tagsEN;
+
+      POSTS['fb-es'] =
+        '🤖 BOT DESTACADO: '+b.name+' — '+labelES.toUpperCase()+'\n\n'+
+        '💵 Ganó $'+b.totalWins+' · gastó $'+b.totalSpent+' · neto '+money(b.netProfit)+'\n'+
+        '🎯 '+b.winningLines+' líneas ganadoras de '+b.totalLines+' jugadas ('+b.winRate+'%)\n\n'+
+        '🎰 De dónde salió el dinero:\n'+gES+'\n\n'+
+        'Puntuación honesta contra sorteos reales. Sin premios falsos. 👇\n🔗 '+link+'\n\n'+disES+'\n\n'+tagsES;
+
+      POSTS['x-en'] =
+        '🤖 '+b.name+' — '+labelEN+'\n\n'+
+        '💵 Won $'+b.totalWins+' · net '+money(b.netProfit)+'\n'+
+        gEN+'\n\n'+
+        'Honest AI lottery bots. 👇\n'+link+'\n\n18+. Entertainment only.\n#Lottery #Lucky7AI';
+
+      POSTS['x-es'] =
+        '🤖 '+b.name+' — '+labelES+'\n\n'+
+        '💵 Ganó $'+b.totalWins+' · neto '+money(b.netProfit)+'\n'+
+        gES+'\n\n'+
+        'Bots de lotería honestos. 👇\n'+link+'\n\n+18. Solo entretenimiento.\n#Loteria #Lucky7AI';
+
+      showPost(currentPost);
+      document.getElementById('blurb').style.display = 'block';
+      return;
+    }
+  }
+
+  // ALL BOTS: aggregate which games got won across everyone
+  var allGames = {};
+  data.bots.forEach(function(b){
+    Object.keys(b.byGame||{}).forEach(function(g){
+      if(!allGames[g]) allGames[g] = { won:0, winningLines:0 };
+      allGames[g].won += b.byGame[g].won||0;
+      allGames[g].winningLines += b.byGame[g].winningLines||0;
+    });
+  });
+  var gAllEN = gameLines(allGames,'en');
+  var gAllES = gameLines(allGames,'es');
 
   POSTS['fb-en'] =
     '🤖 BOT ARENA — '+labelEN.toUpperCase()+'\n\n'+
@@ -255,8 +336,9 @@ function buildBlurb(data){
     '🎯 Most winning lines: '+mostWins.name+' ('+mostWins.winningLines+' lines hit)\n'+
     '📉 Toughest run: '+loser.name+' ('+money(loser.netProfit)+')\n'+
     '📊 Combined: '+combined+' across all 6\n\n'+
+    '🎰 Where the wins came from:\n'+gAllEN+'\n\n'+
     'No fake wins. No hype. Just the honest math of beating the odds. 👇\n'+
-    '🔗 Full board → '+link+'\n\n18+. Entertainment only. Play responsibly.\n\n'+tagsEN;
+    '🔗 Full board → '+link+'\n\n'+disEN+'\n\n'+tagsEN;
 
   POSTS['fb-es'] =
     '🤖 BOT ARENA — '+labelES.toUpperCase()+'\n\n'+
@@ -265,22 +347,21 @@ function buildBlurb(data){
     '🎯 Más líneas ganadoras: '+mostWins.name+' ('+mostWins.winningLines+' líneas)\n'+
     '📉 Racha más dura: '+loser.name+' ('+money(loser.netProfit)+')\n'+
     '📊 Combinado: '+combined+' entre los 6\n\n'+
+    '🎰 De dónde salieron los premios:\n'+gAllES+'\n\n'+
     'Sin victorias falsas. Sin exageraciones. Solo la matemática honesta. 👇\n'+
-    '🔗 Tabla completa → '+link+'\n\nMayores de 18. Solo entretenimiento. Juega responsablemente.\n\n'+tagsES;
+    '🔗 Tabla completa → '+link+'\n\n'+disES+'\n\n'+tagsES;
 
   POSTS['x-en'] =
     '🤖 Bot Arena — '+labelEN+'\n\n'+
     '🏆 '+top.name+' leads ('+money(top.netProfit)+')\n'+
-    '🎯 Most lines hit: '+mostWins.name+' ('+mostWins.winningLines+')\n'+
-    '📊 Combined: '+combined+'\n\n'+
-    'Honest AI lottery picks, scored vs real draws. 👇\n'+link+'\n\n18+. Entertainment only.\n#Lottery #AIpredictions #Lucky7AI';
+    '🎰 Wins by game:\n'+gAllEN+'\n\n'+
+    'Honest AI lottery picks. 👇\n'+link+'\n\n18+. Entertainment only.\n#Lottery #Lucky7AI';
 
   POSTS['x-es'] =
     '🤖 Bot Arena — '+labelES+'\n\n'+
     '🏆 '+top.name+' lidera ('+money(top.netProfit)+')\n'+
-    '🎯 Más líneas ganadoras: '+mostWins.name+' ('+mostWins.winningLines+')\n'+
-    '📊 Combinado: '+combined+'\n\n'+
-    'Predicciones de lotería con IA, evaluadas vs sorteos reales. 👇\n'+link+'\n\n+18. Solo entretenimiento.\n#Loteria #PrediccionesIA #Lucky7AI';
+    '🎰 Premios por juego:\n'+gAllES+'\n\n'+
+    'Predicciones honestas de lotería. 👇\n'+link+'\n\n+18. Solo entretenimiento.\n#Loteria #Lucky7AI';
 
   showPost(currentPost);
   document.getElementById('blurb').style.display = 'block';
@@ -289,9 +370,26 @@ function buildBlurb(data){
 function showPost(key){
   currentPost = key;
   document.getElementById('blurbTxt').textContent = POSTS[key] || '';
-  var lastData = null;
+  document.querySelectorAll('#postTabs .ptab').forEach(function(p){
+    p.classList.toggle('active', p.getAttribute('data-post')===key);
+  });
+}
+
+var lastData = null;
+var selectedBot = null;
+var lastDetail = null;
+
+function closeDetail(){
+  selectedBot = null;
+  lastDetail = null;
+  document.getElementById('detail').style.display='none';
+  if(lastData) buildBlurb(lastData);
+}
 
 function openDetail(botName){
+  selectedBot = botName;
+  lastDetail = null;
+  if(lastData) buildBlurb(lastData);
   // need a single date to show ticket-level detail; use the range only if it's one day
   var d = null;
   if(state.from && state.to && state.from === state.to) d = state.from;
@@ -328,6 +426,8 @@ function openDetail(botName){
 
   fetch(API + '?bot=' + botName + '&date=' + d).then(function(r){return r.json();}).then(function(x){
     if(x.error){ note.textContent = x.error; return; }
+    lastDetail = x;
+    if(lastData) buildBlurb(lastData);
     note.textContent = x.date + ' · spent $' + x.spent + ' · won $' + x.won + ' · net ' + money(x.net) + ' · ' + x.winningLines + ' winning line(s)';
     var html = '';
     (x.details||[]).forEach(function(dlot){
@@ -352,7 +452,8 @@ function openDetail(botName){
           if(L.bonusNumber!==undefined){
             html += '<span class="nb bonus'+(L.bonusMatched?' hit':'')+'">'+L.bonusNumber+'</span>';
           }
-          html += '</div><div style="font-size:12px;color:var(--muted);">'+L.matches+' match(es)'+(L.bonusMatched?' + bonus':'')+' → <span class="prize">$'+L.prize+'</span></div></div>';
+          var tot = (L.numbers||[]).length || 5;
+          html += '</div><div style="font-size:12px;color:var(--muted);"><b style="color:#fff;">'+L.matches+'/'+tot+'</b>'+(L.bonusMatched?' <b style="color:var(--gold);">+ bonus ball</b>':'')+' → <span class="prize">$'+L.prize+'</span></div></div>';
         });
       } else {
         html += '<div style="font-size:12px;color:var(--muted);">No winning lines this drawing.</div>';
@@ -361,11 +462,6 @@ function openDetail(botName){
     });
     body.innerHTML = html || '<div style="color:var(--muted);font-size:13px;">No detail available.</div>';
   }).catch(function(e){ note.textContent = 'Could not load detail ('+e.message+')'; });
-}
-
-document.querySelectorAll('#postTabs .ptab').forEach(function(p){
-    p.classList.toggle('active', p.getAttribute('data-post')===key);
-  });
 }
 
 function copyBlurb(){
