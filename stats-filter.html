@@ -50,6 +50,19 @@ body{background:var(--dark);color:var(--text);font-family:'Rajdhani',sans-serif;
 .row.viper .bot{color:var(--viper);} .row.aria .bot{color:var(--aria);} .row.luna .bot{color:var(--luna);}
 
 .status{text-align:center;color:var(--muted);font-size:13px;padding:24px;}
+.dlot{border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;background:var(--dark);}
+.dlot h4{font-family:'Cinzel',serif;color:#fff;font-size:14px;margin-bottom:6px;}
+.dlot .dmeta{font-size:12px;color:var(--muted);margin-bottom:8px;}
+.nums{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:4px 0;}
+.nums .lbl{font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;width:58px;}
+.nb{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  font-family:'Cinzel',serif;font-weight:900;font-size:13px;border:1.5px solid var(--border);color:var(--muted);background:#0a0e1a;}
+.nb.hit{border-color:var(--green);color:var(--green);box-shadow:0 0 8px rgba(0,255,136,.35);}
+.nb.bonus{border-color:var(--gold2);color:var(--gold2);}
+.nb.bonus.hit{border-color:var(--gold);color:var(--gold);box-shadow:0 0 8px rgba(255,215,0,.4);}
+.nb.official{border-color:#4a5575;color:#cfd6e6;}
+.dline{border-top:1px dashed var(--border);padding-top:8px;margin-top:8px;}
+.dline .prize{color:var(--green);font-weight:700;}
 .blurb{background:linear-gradient(135deg,#15110a,#0a0d16);border:1px solid var(--gold);border-radius:12px;padding:16px;margin-top:18px;}
 .blurb h3{font-family:'Cinzel',serif;color:var(--gold);font-size:14px;margin-bottom:8px;letter-spacing:.05em;}
 .blurb .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px;}
@@ -111,6 +124,15 @@ body{background:var(--dark);color:var(--text);font-family:'Rajdhani',sans-serif;
   <div class="summary" id="summary"></div>
   <div class="rows" id="rows"></div>
   <div class="status" id="status">Loading…</div>
+
+  <div id="detail" style="display:none;background:var(--card);border:1px solid var(--gold);border-radius:12px;padding:16px;margin-top:18px;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;">
+      <h3 id="detTitle" style="font-family:'Cinzel',serif;color:var(--gold);font-size:16px;letter-spacing:.05em;">Detail</h3>
+      <button onclick="document.getElementById('detail').style.display='none'" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:14px;padding:5px 12px;cursor:pointer;font-family:'Rajdhani',sans-serif;">Close ✕</button>
+    </div>
+    <div id="detNote" style="font-size:12px;color:var(--muted);margin-bottom:12px;"></div>
+    <div id="detBody"></div>
+  </div>
 
   <div class="blurb" id="blurb" style="display:none;">
     <h3>📝 Ready-to-post — tap Copy</h3>
@@ -182,23 +204,24 @@ function render(data){
   var combined = s.combinedProfit || 0;
   document.getElementById('summary').innerHTML =
     card('Leader', s.leader||'—') +
-    card('Most Wins', s.mostWins||'—') +
+    card('Most Lines Hit', s.mostWins||'—') +
     card('Combined Net', money(combined), combined<0?'red':'green') +
-    card('Total Wins', (s.totalWins||0).toLocaleString());
+    card('Lines Hit / $ Won', (s.totalWinningLines||0) + ' / $' + (s.totalDollarsWon||0));
 
   // rows
   var html='';
   data.bots.forEach(function(b,i){
     var cls = b.name.toLowerCase();
     var netCls = b.netProfit>=0?'pos':'neg';
-    html += '<div class="row '+cls+'">'+
+    html += '<div class="row '+cls+'" onclick="openDetail(\''+b.name+'\')" style="cursor:pointer;">'+
       '<div class="rank">'+(i+1)+'</div>'+
       '<div><div class="bot">'+b.name+'</div>'+
-      '<div class="botmeta">'+b.totalWins+' wins · '+b.winRate+'% · '+b.daysCounted+' days</div></div>'+
+      '<div class="botmeta">$'+b.totalWins+' won · '+b.winningLines+' lines hit · '+b.winRate+'% · '+b.daysCounted+' day'+(b.daysCounted!==1?'s':'')+'</div></div>'+
       '<div class="net '+netCls+'">'+money(b.netProfit)+'</div>'+
     '</div>';
   });
   document.getElementById('rows').innerHTML = html;
+  lastData = data;
 
   buildBlurb(data);
 }
@@ -214,7 +237,7 @@ var currentPost = 'fb-en';
 function buildBlurb(data){
   if(!data.bots.length) return;
   var top = data.bots[0];
-  var mostWins = data.bots.slice().sort(function(a,b){return b.totalWins-a.totalWins;})[0];
+  var mostWins = data.bots.slice().sort(function(a,b){return b.winningLines-a.winningLines;})[0];
   var loser = data.bots.slice().sort(function(a,b){return a.netProfit-b.netProfit;})[0];
   var combined = money(data.summary.combinedProfit);
 
@@ -229,7 +252,7 @@ function buildBlurb(data){
     '🤖 BOT ARENA — '+labelEN.toUpperCase()+'\n\n'+
     'Our 6 AI lottery bots, scored honestly against real drawings:\n\n'+
     '🏆 Leader: '+top.name+' ('+money(top.netProfit)+' net)\n'+
-    '🎯 Most winning lines: '+mostWins.name+' ('+mostWins.totalWins+')\n'+
+    '🎯 Most winning lines: '+mostWins.name+' ('+mostWins.winningLines+' lines hit)\n'+
     '📉 Toughest run: '+loser.name+' ('+money(loser.netProfit)+')\n'+
     '📊 Combined: '+combined+' across all 6\n\n'+
     'No fake wins. No hype. Just the honest math of beating the odds. 👇\n'+
@@ -239,7 +262,7 @@ function buildBlurb(data){
     '🤖 BOT ARENA — '+labelES.toUpperCase()+'\n\n'+
     'Nuestros 6 bots de lotería con IA, evaluados honestamente contra sorteos reales:\n\n'+
     '🏆 Líder: '+top.name+' ('+money(top.netProfit)+' neto)\n'+
-    '🎯 Más líneas ganadoras: '+mostWins.name+' ('+mostWins.totalWins+')\n'+
+    '🎯 Más líneas ganadoras: '+mostWins.name+' ('+mostWins.winningLines+' líneas)\n'+
     '📉 Racha más dura: '+loser.name+' ('+money(loser.netProfit)+')\n'+
     '📊 Combinado: '+combined+' entre los 6\n\n'+
     'Sin victorias falsas. Sin exageraciones. Solo la matemática honesta. 👇\n'+
@@ -248,14 +271,14 @@ function buildBlurb(data){
   POSTS['x-en'] =
     '🤖 Bot Arena — '+labelEN+'\n\n'+
     '🏆 '+top.name+' leads ('+money(top.netProfit)+')\n'+
-    '🎯 Most wins: '+mostWins.name+' ('+mostWins.totalWins+')\n'+
+    '🎯 Most lines hit: '+mostWins.name+' ('+mostWins.winningLines+')\n'+
     '📊 Combined: '+combined+'\n\n'+
     'Honest AI lottery picks, scored vs real draws. 👇\n'+link+'\n\n18+. Entertainment only.\n#Lottery #AIpredictions #Lucky7AI';
 
   POSTS['x-es'] =
     '🤖 Bot Arena — '+labelES+'\n\n'+
     '🏆 '+top.name+' lidera ('+money(top.netProfit)+')\n'+
-    '🎯 Más aciertos: '+mostWins.name+' ('+mostWins.totalWins+')\n'+
+    '🎯 Más líneas ganadoras: '+mostWins.name+' ('+mostWins.winningLines+')\n'+
     '📊 Combinado: '+combined+'\n\n'+
     'Predicciones de lotería con IA, evaluadas vs sorteos reales. 👇\n'+link+'\n\n+18. Solo entretenimiento.\n#Loteria #PrediccionesIA #Lucky7AI';
 
@@ -266,7 +289,81 @@ function buildBlurb(data){
 function showPost(key){
   currentPost = key;
   document.getElementById('blurbTxt').textContent = POSTS[key] || '';
-  document.querySelectorAll('#postTabs .ptab').forEach(function(p){
+  var lastData = null;
+
+function openDetail(botName){
+  // need a single date to show ticket-level detail; use the range only if it's one day
+  var d = null;
+  if(state.from && state.to && state.from === state.to) d = state.from;
+  else if(state.range === 'today') d = state.from;
+  var det = document.getElementById('detail');
+  var body = document.getElementById('detBody');
+  var note = document.getElementById('detNote');
+  document.getElementById('detTitle').textContent = botName + ' — Ticket Detail';
+  det.style.display = 'block';
+  det.scrollIntoView({behavior:'smooth', block:'start'});
+
+  if(!d){
+    // multi-day range: show per-game performance for the range instead of ticket detail
+    var botAgg = lastData && lastData.bots ? lastData.bots.find(function(b){return b.name===botName;}) : null;
+    note.innerHTML = 'Per-game performance for this range. For ticket-level detail (numbers + matches), set a single date (From = To) and tap the bot again.';
+    if(botAgg && botAgg.byGame && Object.keys(botAgg.byGame).length){
+      var h = '';
+      Object.keys(botAgg.byGame).forEach(function(g){
+        var gg = botAgg.byGame[g];
+        var net = (gg.won||0) - (gg.spent||0);
+        var netCls = net >= 0 ? 'color:var(--green);' : 'color:var(--red2);';
+        h += '<div class="dlot"><h4>'+g+'</h4>'+
+             '<div class="dmeta">spent $'+gg.spent+' · won $'+gg.won+' · '+gg.winningLines+' line(s) hit · '+
+             '<span style="'+netCls+'font-weight:700;">net '+(net<0?'-$'+Math.abs(net):'$'+net)+'</span></div></div>';
+      });
+      body.innerHTML = h;
+    } else {
+      body.innerHTML = '<div style="color:var(--muted);font-size:13px;">No per-game data in this range.</div>';
+    }
+    return;
+  }
+  note.textContent = 'Loading ' + d + '…';
+  body.innerHTML = '';
+
+  fetch(API + '?bot=' + botName + '&date=' + d).then(function(r){return r.json();}).then(function(x){
+    if(x.error){ note.textContent = x.error; return; }
+    note.textContent = x.date + ' · spent $' + x.spent + ' · won $' + x.won + ' · net ' + money(x.net) + ' · ' + x.winningLines + ' winning line(s)';
+    var html = '';
+    (x.details||[]).forEach(function(dlot){
+      var key = Object.keys(x.drawings||{}).find(function(k){ return (x.drawings[k].lottery||'') === dlot.lottery; });
+      var draw = key ? x.drawings[key] : null;
+      html += '<div class="dlot"><h4>'+dlot.lottery+'</h4>';
+      html += '<div class="dmeta">spent $'+dlot.spent+' · won $'+dlot.won+' · '+dlot.winningLines+' winning line(s)</div>';
+      if(draw){
+        html += '<div class="nums"><span class="lbl">Winning</span>';
+        (draw.winningNumbers||[]).forEach(function(n){ html += '<span class="nb official">'+n+'</span>'; });
+        if(draw.bonus!==undefined) html += '<span class="nb official bonus">'+draw.bonus+'</span>';
+        html += '</div>';
+      }
+      if((dlot.lineDetails||[]).length){
+        dlot.lineDetails.forEach(function(L){
+          var winset = draw ? (draw.winningNumbers||[]) : [];
+          html += '<div class="dline"><div class="nums"><span class="lbl">Line '+L.line+'</span>';
+          (L.numbers||[]).forEach(function(n){
+            var hit = winset.indexOf(n) !== -1;
+            html += '<span class="nb'+(hit?' hit':'')+'">'+n+'</span>';
+          });
+          if(L.bonusNumber!==undefined){
+            html += '<span class="nb bonus'+(L.bonusMatched?' hit':'')+'">'+L.bonusNumber+'</span>';
+          }
+          html += '</div><div style="font-size:12px;color:var(--muted);">'+L.matches+' match(es)'+(L.bonusMatched?' + bonus':'')+' → <span class="prize">$'+L.prize+'</span></div></div>';
+        });
+      } else {
+        html += '<div style="font-size:12px;color:var(--muted);">No winning lines this drawing.</div>';
+      }
+      html += '</div>';
+    });
+    body.innerHTML = html || '<div style="color:var(--muted);font-size:13px;">No detail available.</div>';
+  }).catch(function(e){ note.textContent = 'Could not load detail ('+e.message+')'; });
+}
+
+document.querySelectorAll('#postTabs .ptab').forEach(function(p){
     p.classList.toggle('active', p.getAttribute('data-post')===key);
   });
 }
