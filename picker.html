@@ -468,17 +468,6 @@ body::before{
 <body>
 
 <!-- ── DISCLAIMER MODAL ────────────────────────────────── -->
-<div id="disclaimerModal">
-  <div class="disclaimer-box">
-    <h2>Play Responsibly</h2>
-    <p><span class="highlight">Lucky7Ai generates lottery numbers for entertainment purposes only.</span></p>
-    <p>Our AI bots use mathematical strategies to suggest number combinations. <span class="highlight">There is no guarantee of winning.</span> Lottery games are games of chance.</p>
-    <p>You must be <span class="highlight">18 years or older</span> to participate in lottery games in most jurisdictions. Please check your local laws.</p>
-    <p style="font-size:10px;color:rgba(255,255,255,0.35);">If you or someone you know has a gambling problem, call <strong style="color:rgba(255,255,255,0.55);">1-800-522-4700</strong></p>
-    <button class="disclaimer-close" onclick="closeDisclaimer()">I UNDERSTAND — LET'S PLAY ✦</button>
-    <div class="disclaimer-age" id="discTimer">Closing in 2 seconds...</div>
-  </div>
-</div>
 
 <!-- ── CONTINUE / MEGA UNLOCK POPUP ──────────────────── -->
 <div id="continueModal" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;z-index:9500;
@@ -1238,20 +1227,6 @@ function setBg(i){
 }
 
 /* ── DISCLAIMER ──────────────────────────────────────────── */
-function closeDisclaimer(){
-  var m = document.getElementById('disclaimerModal');
-  m.style.display = 'none';
-  try { localStorage.setItem('l7_disc','1'); } catch(e){}
-  try { sndClick(); } catch(e){}
-}
-// Auto-dismiss disclaimer after 2 seconds
-let discSecs = 2;
-const discInterval = setInterval(()=>{
-  discSecs--;
-  const t = document.getElementById('discTimer');
-  if(t) t.textContent = discSecs > 0 ? `Closing in ${discSecs} second${discSecs>1?'s':''}...` : 'Opening...';
-  if(discSecs <= 0){ clearInterval(discInterval); closeDisclaimer(); }
-}, 1000);
 
 /* ── CONTINUE / MEGA UNLOCK POPUP ───────────────────────── */
 function showContinuePopup(){
