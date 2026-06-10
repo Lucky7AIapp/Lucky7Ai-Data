@@ -387,6 +387,7 @@ body::before{
   color:white;font-family:'Orbitron',sans-serif;font-size:11px;font-weight:700;
   letter-spacing:2px;box-shadow:0 4px 20px rgba(124,0,224,0.4);
   transition:opacity 0.2s;
+  touch-action:manipulation;-webkit-tap-highlight-color:transparent;
 }
 .disclaimer-close:hover{opacity:0.85;}
 .disclaimer-age{
@@ -461,8 +462,8 @@ body::before{
 <body>
 
 <!-- ── DISCLAIMER MODAL ────────────────────────────────── -->
-<div id="disclaimerModal">
-  <div class="disclaimer-box">
+<div id="disclaimerModal" onclick="closeDisclaimer()">
+  <div class="disclaimer-box" onclick="event.stopPropagation()">
     <h2>Play Responsibly</h2>
     <p><span class="highlight">Lucky7Ai generates lottery numbers for entertainment purposes only.</span></p>
     <p>Our AI bots use mathematical strategies to suggest number combinations. <span class="highlight">There is no guarantee of winning.</span> Lottery games are games of chance.</p>
@@ -1232,7 +1233,7 @@ function setBg(i){
 
 /* ── DISCLAIMER ──────────────────────────────────────────── */
 function closeDisclaimer(){
-  sndClick();
+  try{ sndClick(); }catch(e){}
   localStorage.setItem('l7_disc','1');
   document.getElementById('disclaimerModal').style.display='none';
 }
