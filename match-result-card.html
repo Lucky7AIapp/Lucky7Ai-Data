@@ -497,29 +497,17 @@ async function loadMatches() {
     const select = document.getElementById('matchSelect');
     select.innerHTML = '<option value="">— Select a match —</option>';
 
-    // Group by stage
-    const groups = {};
-    matchesData.forEach(m => {
-      const label = m.stage === 'group'
-        ? `Group Stage - Group ${m.group}`
-        : m.stage.replace(/_/g, ' ').replace(/\b\w/g, c => c.toUpperCase());
-      if (!groups[label]) groups[label] = [];
-      groups[label].push(m);
-    });
+    // Sort by match number
+    matchesData.sort((a, b) => (a.matchNumber || 0) - (b.matchNumber || 0));
 
-    Object.entries(groups).forEach(([groupLabel, matches]) => {
-      const og = document.createElement('optgroup');
-      og.label = groupLabel;
-      matches.forEach(m => {
-        const opt = document.createElement('option');
-        opt.value = m.id;
-        const dateStr = new Date(m.date).toLocaleDateString('en-US', { month:'short', day:'numeric' });
-        const isKnown = !m.homeTeam.toLowerCase().includes('group') && !m.homeTeam.toLowerCase().includes('winner');
-        opt.textContent = `#${m.matchNumber} ${dateStr} · ${m.homeTeam} vs ${m.awayTeam}`;
-        if (!isKnown) opt.style.color = '#6B7280';
-        og.appendChild(opt);
-      });
-      select.appendChild(og);
+    matchesData.forEach(m => {
+      const opt = document.createElement('option');
+      opt.value = m.id;
+      const dateStr = new Date(m.date).toLocaleDateString('en-US', { month:'short', day:'numeric' });
+      const isKnown = !m.homeTeam.toLowerCase().includes('group') && !m.homeTeam.toLowerCase().includes('winner');
+      opt.textContent = `#${m.matchNumber} · ${dateStr} · ${m.homeTeam} vs ${m.awayTeam}`;
+      if (!isKnown) opt.style.color = '#6B7280';
+      select.appendChild(opt);
     });
 
     document.getElementById('fetchBtn').disabled = false;
