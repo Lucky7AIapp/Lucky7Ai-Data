@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Lucky7AI · Image Archive</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --gold:#FFD700;--gold2:#FFA500;--red2:#FF3333;--dark:#05070D;--card:#0C1020;
+  --border:#1A2035;--text:#E8E8E8;--muted:#8a93a8;--green:#00FF88;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--dark);color:var(--text);font-family:'Rajdhani',sans-serif;min-height:100vh;
+  background:radial-gradient(ellipse at 50% 0%,#0a100d 0%,var(--dark) 55%);}
+.wrap{max-width:900px;margin:0 auto;padding:28px 16px 80px;}
+
+/* HEADER */
+.head{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:10px;}
+.head-left .brand{font-family:'Cinzel',serif;font-weight:900;font-size:22px;color:var(--gold);}
+.head-left .brand span{color:var(--red2);}
+.head-left .sub{font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-top:2px;}
+.btn-back{font-family:'Rajdhani',sans-serif;font-size:12px;letter-spacing:.1em;text-transform:uppercase;
+  color:var(--muted);border:1px solid var(--border);background:transparent;border-radius:8px;
+  padding:7px 14px;cursor:pointer;text-decoration:none;transition:color .15s,border-color .15s;}
+.btn-back:hover{color:var(--gold);border-color:var(--gold);}
+
+/* TABS */
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:20px;}
+.tab{font-family:'Rajdhani',sans-serif;font-size:12px;font-weight:700;letter-spacing:.1em;
+  text-transform:uppercase;padding:6px 14px;border-radius:20px;cursor:pointer;
+  border:1px solid var(--border);background:transparent;color:var(--muted);transition:all .15s;}
+.tab:hover{color:var(--text);border-color:var(--muted);}
+.tab.active{background:var(--gold);border-color:var(--gold);color:#000;}
+.count{display:inline-block;background:rgba(255,255,255,.12);border-radius:10px;
+  font-size:10px;padding:1px 6px;margin-left:4px;}
+.tab.active .count{background:rgba(0,0,0,.2);}
+
+/* GRID */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:12px;}
+.img-card{background:var(--card);border:1px solid var(--border);border-radius:12px;
+  overflow:hidden;transition:border-color .2s,transform .15s;}
+.img-card:hover{border-color:var(--gold);transform:translateY(-2px);}
+.thumb-wrap{position:relative;width:100%;height:110px;overflow:hidden;background:#080d18;cursor:pointer;}
+.thumb-wrap img{width:100%;height:100%;object-fit:cover;transition:opacity .2s;display:block;}
+.thumb-wrap img.loading{opacity:0;}
+.thumb-wrap img.loaded{opacity:1;}
+.thumb-overlay{position:absolute;inset:0;background:rgba(0,0,0,.5);opacity:0;
+  display:flex;align-items:center;justify-content:center;transition:opacity .15s;font-size:22px;}
+.thumb-wrap:hover .thumb-overlay{opacity:1;}
+.card-body{padding:8px 10px 10px;}
+.card-name{font-size:11px;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;
+  margin-bottom:6px;letter-spacing:.02em;}
+.card-foot{display:flex;align-items:center;justify-content:space-between;gap:4px;}
+.card-size{font-size:10px;color:var(--muted);}
+.dl-btn{font-family:'Rajdhani',sans-serif;font-size:10px;font-weight:700;letter-spacing:.08em;
+  text-transform:uppercase;padding:4px 10px;border-radius:6px;cursor:pointer;
+  border:1px solid var(--gold);background:transparent;color:var(--gold);
+  transition:background .15s,color .15s;white-space:nowrap;}
+.dl-btn:hover{background:var(--gold);color:#000;}
+
+/* EMPTY */
+.empty{text-align:center;padding:40px;color:var(--muted);font-size:13px;}
+
+/* LIGHTBOX */
+#lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:999;
+  display:none;align-items:center;justify-content:center;padding:20px;}
+#lightbox.open{display:flex;}
+#lb-inner{position:relative;max-width:90vw;max-height:90vh;text-align:center;}
+#lb-img{max-width:100%;max-height:80vh;border-radius:10px;box-shadow:0 20px 60px rgba(0,0,0,.8);}
+#lb-name{color:var(--muted);font-size:12px;margin-top:10px;letter-spacing:.05em;}
+#lb-close{position:absolute;top:-14px;right:-14px;width:32px;height:32px;border-radius:50%;
+  background:var(--card);border:1px solid var(--border);color:var(--text);font-size:18px;
+  cursor:pointer;display:flex;align-items:center;justify-content:center;line-height:1;}
+#lb-dl{display:inline-block;margin-top:12px;font-family:'Rajdhani',sans-serif;font-size:12px;
+  font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:8px 20px;
+  border-radius:8px;border:1px solid var(--gold);color:var(--gold);text-decoration:none;
+  transition:background .15s,color .15s;}
+#lb-dl:hover{background:var(--gold);color:#000;}
+
+@media(max-width:480px){
+  .grid{grid-template-columns:repeat(auto-fill,minmax(130px,1fr));}
+  .thumb-wrap{height:90px;}
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="head-left">
+      <div class="brand">Lucky<span>7</span>AI</div>
+      <div class="sub">🖼 Image Archive</div>
+    </div>
+    <a class="btn-back" href="hub.html">← Hub</a>
+  </div>
+
+  <div class="tabs" id="tabs"></div>
+  <div class="grid" id="grid"></div>
+  <div class="empty" id="empty" style="display:none;">No images in this category.</div>
+
+</div>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="closeLB(event)">
+  <div id="lb-inner">
+    <button id="lb-close" onclick="closeLB()">×</button>
+    <img id="lb-img" src="" alt="">
+    <div id="lb-name"></div>
+    <a id="lb-dl" href="" download="">⬇ Download</a>
+  </div>
+</div>
+
+<script>
+const BASE = 'https://lucky7aiapp.github.io/Lucky7Ai-Data/';
+
+const IMAGES = [
+  // ── BOT AVATARS ──────────────────────────────────────────────
+  { cat:'bots', file:'avatars/Viper.png',          label:'VIPER Avatar',        size:'~230KB' },
+  { cat:'bots', file:'avatars/Apex.png',           label:'APEX Avatar',         size:'~220KB' },
+  { cat:'bots', file:'avatars/Oracle.png',         label:'ORACLE Avatar',       size:'~240KB' },
+  { cat:'bots', file:'avatars/Zeus.png',           label:'ZEUS Avatar',         size:'~250KB' },
+  { cat:'bots', file:'avatars/Aria.png',           label:'ARIA Avatar',         size:'~270KB' },
+  { cat:'bots', file:'avatars/Luna.png',           label:'LUNA Avatar',         size:'~260KB' },
+  { cat:'bots', file:'analyst-avatars/viper.png',  label:'VIPER Analyst',       size:'~230KB' },
+  { cat:'bots', file:'analyst-avatars/apex.png',   label:'APEX Analyst',        size:'~230KB' },
+  { cat:'bots', file:'analyst-avatars/aria.png',   label:'ARIA Analyst',        size:'~280KB' },
+  { cat:'bots', file:'analyst-avatars/luna.png',   label:'LUNA Analyst',        size:'~270KB' },
+  { cat:'bots', file:'analyst-avatars/zeus.png',   label:'ZEUS Analyst',        size:'~260KB' },
+  { cat:'bots', file:'analyst-avatars/pythia.png', label:'PYTHIA Analyst',      size:'~250KB' },
+
+  // ── WORLD CUP ─────────────────────────────────────────────────
+  { cat:'worldcup', file:'Bot-arena.png',          label:'Bot Arena Banner',    size:'~2.7MB' },
+  { cat:'worldcup', file:'Bot-arena1.png',         label:'Bot Arena v1',        size:'GitHub' },
+  { cat:'worldcup', file:'Bot-arena2.png',         label:'Bot Arena v2',        size:'GitHub' },
+  { cat:'worldcup', file:'Who-wins.png',           label:'Who Wins Graphic',    size:'GitHub' },
+  { cat:'worldcup', file:'Play-predictor-banner.png', label:'Predictor Banner', size:'GitHub' },
+  { cat:'worldcup', file:'meet-the-bots-hero.png', label:'Meet the Bots Hero',  size:'~2.5MB' },
+  { cat:'worldcup', file:'article-heros/world-cup-opening-ceremonies-hero.png', label:'Opening Ceremonies Hero', size:'~3.6MB' },
+  { cat:'worldcup', file:'article-heros/world-cup-top-scorers-hero.png',        label:'Top Scorers Hero',        size:'~3.5MB' },
+  { cat:'worldcup', file:'article-heros/world-cup-winner-predictions-hero.png', label:'Winner Predictions Hero', size:'GitHub' },
+  { cat:'worldcup', file:'article-heros/mexico-quinto-partido-hero.png',        label:'Mexico Quinto Partido',   size:'~3MB' },
+  { cat:'worldcup', file:'article-heros/groups-a-d-thumb.png',  label:'Groups A–D Thumb',  size:'~1.7MB' },
+  { cat:'worldcup', file:'article-heros/groups-e-h-thumb.png',  label:'Groups E–H Thumb',  size:'~1.7MB' },
+  { cat:'worldcup', file:'article-heros/groups-i-l-thumb.png',  label:'Groups I–L Thumb',  size:'~1.5MB' },
+  { cat:'worldcup', file:'article-inline/winner-predictions-ai.png',         label:'Winner Predictions AI',      size:'~2.9MB' },
+  { cat:'worldcup', file:'article-inline/mexico-fans-cielito-lindo.png',     label:'Mexico Fans',                size:'~3.1MB' },
+  { cat:'worldcup', file:'article-inline/mexico-heartbreak-stadium.png',     label:'Mexico Heartbreak Stadium',  size:'~2.7MB' },
+  { cat:'worldcup', file:'article-inline/ranking-points-confidence.png',     label:'Ranking Points Chart',       size:'GitHub' },
+  { cat:'worldcup', file:'article-inline/viper-alert-casino-millions-2689.png', label:'VIPER Alert',             size:'GitHub' },
+
+  // ── BRAND ─────────────────────────────────────────────────────
+  { cat:'brand', file:'hero.png',           label:'Main Hero',        size:'GitHub' },
+  { cat:'brand', file:'icon-192.png',       label:'App Icon 192px',   size:'~27KB'  },
+  { cat:'brand', file:'icon-512.png',       label:'App Icon 512px',   size:'~163KB' },
+  { cat:'brand', file:'apple-touch-icon.png', label:'Apple Touch Icon', size:'~24KB' },
+  { cat:'brand', file:'Lucky7Ai-Data.png',  label:'Lucky7AI Logo',    size:'GitHub' },
+
+  // ── ARTICLES ──────────────────────────────────────────────────
+  { cat:'articles', file:'biggest-mistakes-hero.png',            label:'Biggest Mistakes Hero',        size:'~2.6MB' },
+  { cat:'articles', file:'powerball-winner.png',                 label:'Powerball Winner Hero',        size:'~3.2MB' },
+  { cat:'articles', file:'scientist-mandel-hero.png',            label:'Scientist Hero',               size:'~3MB'   },
+  { cat:'articles', file:'scientist-mandel-process.png',         label:'Scientist Process',            size:'GitHub' },
+  { cat:'articles', file:'won-twice-hero.png',                   label:'Won Twice Hero',               size:'GitHub' },
+  { cat:'articles', file:'golden-ratio-hero.png',                label:'Golden Ratio Hero',            size:'~2.9MB' },
+  { cat:'articles', file:'golden-ratio-og.png',                  label:'Golden Ratio OG',              size:'~2.5MB' },
+  { cat:'articles', file:'golden-ratio-diagram.png',             label:'Golden Ratio Diagram',         size:'GitHub' },
+  { cat:'articles', file:'golden-ratio-lottery-balls.png',       label:'Golden Ratio Lottery Balls',   size:'GitHub' },
+  { cat:'articles', file:'golden-ratio-nature.png',              label:'Golden Ratio Nature',          size:'GitHub' },
+  { cat:'articles', file:'golden-ratio-parthenon.png',           label:'Golden Ratio Parthenon',       size:'GitHub' },
+  { cat:'articles', file:'article-heros/lump-sum-vs-annuity-thumb.png', label:'Lump Sum Thumb',       size:'~2MB'   },
+  { cat:'articles', file:'article-heros/gear-ball.png',          label:'Gear Ball',                    size:'~2.6MB' },
+  { cat:'articles', file:'article-heros/gear-book.png',          label:'Gear Book',                    size:'~2.5MB' },
+  { cat:'articles', file:'article-heros/gear-jersey.png',        label:'Gear Jersey',                  size:'~2.7MB' },
+  { cat:'articles', file:'article-heros/gear-lucky-tee.png',     label:'Gear Lucky Tee',               size:'~0.5MB' },
+  { cat:'articles', file:'article-heros/gear-organizer.png',     label:'Gear Organizer',               size:'~2.8MB' },
+  { cat:'articles', file:'article-heros/gear-party.png',         label:'Gear Party',                   size:'~2.5MB' },
+  { cat:'articles', file:'article-heros/gear-ticket-holder.png', label:'Gear Ticket Holder',           size:'~2.9MB' },
+  { cat:'articles', file:'article-heros/crash-site/2008-crash-hero.png', label:'2008 Crash Hero',      size:'~3.4MB' },
+];
+
+const CATS = [
+  { id:'all',      label:'All',        emoji:'🖼' },
+  { id:'bots',     label:'Bot Avatars',emoji:'🤖' },
+  { id:'worldcup', label:'World Cup',  emoji:'⚽' },
+  { id:'brand',    label:'Brand',      emoji:'🔑' },
+  { id:'articles', label:'Articles',   emoji:'📰' },
+];
+
+let activeCat = 'all';
+
+function countFor(cat) {
+  return cat === 'all' ? IMAGES.length : IMAGES.filter(i => i.cat === cat).length;
+}
+
+function buildTabs() {
+  const tabs = document.getElementById('tabs');
+  tabs.innerHTML = CATS.map(c => `
+    <button class="tab ${c.id === activeCat ? 'active' : ''}" onclick="setTab('${c.id}')">
+      ${c.emoji} ${c.label}<span class="count">${countFor(c.id)}</span>
+    </button>
+  `).join('');
+}
+
+function setTab(cat) {
+  activeCat = cat;
+  buildTabs();
+  buildGrid();
+}
+
+function buildGrid() {
+  const filtered = activeCat === 'all' ? IMAGES : IMAGES.filter(i => i.cat === activeCat);
+  const grid = document.getElementById('grid');
+  const empty = document.getElementById('empty');
+
+  if (!filtered.length) {
+    grid.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  grid.innerHTML = filtered.map(img => {
+    const url = BASE + img.file;
+    const filename = img.file.split('/').pop();
+    return `
+      <div class="img-card">
+        <div class="thumb-wrap" onclick="openLB('${url}','${img.label}','${filename}')">
+          <img src="${url}" alt="${img.label}" class="loading"
+               onload="this.classList.remove('loading');this.classList.add('loaded');"
+               onerror="this.parentElement.style.background='#111620';this.style.display='none';">
+          <div class="thumb-overlay">🔍</div>
+        </div>
+        <div class="card-body">
+          <div class="card-name" title="${img.label}">${img.label}</div>
+          <div class="card-foot">
+            <span class="card-size">${img.size}</span>
+            <button class="dl-btn" onclick="dlImage('${url}','${filename}')">⬇</button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function dlImage(url, filename) {
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = filename;
+  a.target = '_blank';
+  a.click();
+}
+
+function openLB(url, label, filename) {
+  document.getElementById('lb-img').src = url;
+  document.getElementById('lb-name').textContent = label + ' · ' + filename;
+  document.getElementById('lb-dl').href = url;
+  document.getElementById('lb-dl').download = filename;
+  document.getElementById('lightbox').classList.add('open');
+}
+
+function closeLB(e) {
+  if (!e || e.target === document.getElementById('lightbox') || e.currentTarget.id === 'lb-close') {
+    document.getElementById('lightbox').classList.remove('open');
+  }
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLB({target:document.getElementById('lightbox')}); });
+
+buildTabs();
+buildGrid();
+</script>
+</body>
+</html>
