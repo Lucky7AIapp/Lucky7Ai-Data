@@ -565,7 +565,11 @@ async function fetchMatchData() {
     } else if (hasScore) {
       setStatus('warn', `✓ Score loaded · Predictions: ${predsData.message || predsData.status || 'not available'}`);
     } else if (hasPreds) {
-      setStatus('warn', `Predictions loaded · Score: ${resultData.message || resultData.status || 'not available yet'}`);
+      let debugInfo = '';
+      if (resultData.availableMatches?.length) {
+        debugInfo = ' | API returned: ' + resultData.availableMatches.map(m => `${m.home} vs ${m.away}`).join(', ');
+      }
+      setStatus('warn', `Predictions loaded · Score not matched.${debugInfo}`);
     } else {
       setStatus('warn', `Data loaded — ${predsData.message || resultData.message || 'some data unavailable'}`);
     }
