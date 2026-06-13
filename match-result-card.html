@@ -418,6 +418,22 @@ select option { background: var(--dark); }
     </div>
   </div>
 
+  <!-- Manual score override — appears when auto-fill can't get the score -->
+  <div id="manualScoreRow" style="display:none;margin-bottom:16px;">
+    <div style="font-size:11px;color:var(--gold);font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:10px;">✏️ Enter Score Manually</div>
+    <div style="display:flex;gap:10px;align-items:flex-end;">
+      <div class="form-group" style="flex:1;">
+        <label id="manualHomeLabel">Home</label>
+        <input type="number" id="manualHomeScore" min="0" max="20" placeholder="0" style="text-align:center;font-size:22px;font-weight:700;">
+      </div>
+      <div style="font-size:28px;color:var(--muted);padding-bottom:8px;flex-shrink:0;">—</div>
+      <div class="form-group" style="flex:1;">
+        <label id="manualAwayLabel">Away</label>
+        <input type="number" id="manualAwayScore" min="0" max="20" placeholder="0" style="text-align:center;font-size:22px;font-weight:700;">
+      </div>
+    </div>
+  </div>
+
   <!-- Bot predictions auto-filled from Redis -->
   <div id="botsSection" style="display:none">
     <div class="controls-title" style="margin-bottom:12px">🤖 BOT PREDICTIONS <span style="font-size:10px;color:var(--muted);font-weight:400;font-family:Rajdhani">(auto-loaded from Redis)</span></div>
@@ -560,6 +576,18 @@ async function fetchMatchData() {
     const hasScore = resultData.result?.homeScore !== null && resultData.result?.homeScore !== undefined;
     const hasPreds = predsData.predictions?.length > 0;
 
+    // Show manual score row when auto-fill couldn't get the score
+    const manualRow = document.getElementById('manualScoreRow');
+    if (!hasScore) {
+      document.getElementById('manualHomeLabel').textContent = currentMatch.homeTeam;
+      document.getElementById('manualAwayLabel').textContent = currentMatch.awayTeam;
+      document.getElementById('manualHomeScore').value = '';
+      document.getElementById('manualAwayScore').value = '';
+      manualRow.style.display = 'block';
+    } else {
+      manualRow.style.display = 'none';
+    }
+
     if (hasScore && hasPreds) {
       setStatus('success', `✓ Score + predictions loaded — ready to generate`);
     } else if (hasScore) {
@@ -569,7 +597,7 @@ async function fetchMatchData() {
       if (resultData.availableMatches?.length) {
         debugInfo = ' | API returned: ' + resultData.availableMatches.map(m => `${m.home} vs ${m.away}`).join(', ');
       }
-      setStatus('warn', `Predictions loaded · Score not matched.${debugInfo}`);
+      setStatus('warn', `Score not in API — enter manually below.${debugInfo}`);
     } else {
       setStatus('warn', `Data loaded — ${predsData.message || resultData.message || 'some data unavailable'}`);
     }
@@ -653,8 +681,9 @@ function generateCard() {
   const af = document.getElementById('awayFlag').value || FLAG_MAP[away] || '🏳️';
 
   const r = currentResult?.result || {};
-  const hs = r.homeScore ?? 0;
-  const as = r.awayScore ?? 0;
+  const hasApiScore = r.homeScore !== null && r.homeScore !== undefined;
+  const hs = hasApiScore ? r.homeScore : parseInt(document.getElementById('manualHomeScore').value || '0', 10);
+  const as = hasApiScore ? r.awayScore : parseInt(document.getElementById('manualAwayScore').value || '0', 10);
   const hPoss = r.stats?.homePossession;
   const aPoss = r.stats?.awayPossession;
   const hShots = r.stats?.homeShots;
