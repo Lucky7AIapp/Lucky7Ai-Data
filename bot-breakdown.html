@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Lucky7AI · Bot Breakdown</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--gold:#FFD700;--gold2:#FFA500;--red2:#FF3333;--dark:#05070D;--card:#0C1020;--border:#1A2035;--text:#E8E8E8;--muted:#8a93a8;
+  --apex:#4CC9F0;--oracle:#A855F7;--zeus:#FFD700;--viper:#FF4444;--aria:#00FF88;--luna:#F472B6;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--dark);color:var(--text);font-family:'Rajdhani',sans-serif;line-height:1.5;min-height:100vh;
+  background:radial-gradient(ellipse at 50% 0%,#1a1305 0%,var(--dark) 55%);}
+.wrap{max-width:820px;margin:0 auto;padding:36px 18px 70px;}
+
+.head{text-align:center;margin-bottom:28px;}
+.brand{font-family:'Cinzel',serif;font-weight:900;font-size:26px;color:var(--gold);letter-spacing:.05em;}
+.brand span{color:var(--red2);}
+.page-title{font-family:'Cinzel',serif;font-size:20px;color:#fff;margin-top:8px;}
+.back{display:inline-block;margin-top:12px;font-size:12px;color:var(--muted);text-decoration:none;letter-spacing:.1em;}
+.back:hover{color:var(--gold);}
+
+/* Bot selector */
+.bot-row{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-bottom:28px;}
+.bot-btn{font-family:'Rajdhani',sans-serif;font-weight:700;font-size:14px;letter-spacing:.1em;
+  padding:10px 22px;border-radius:10px;border:2px solid var(--border);background:var(--card);
+  color:var(--muted);cursor:pointer;transition:all .15s;text-transform:uppercase;}
+.bot-btn:hover{border-color:var(--gold);color:#fff;}
+.bot-btn.active{color:#000;border-color:transparent;}
+.bot-btn[data-bot="APEX"].active{background:var(--apex);color:#000;}
+.bot-btn[data-bot="ORACLE"].active{background:var(--oracle);color:#fff;}
+.bot-btn[data-bot="ZEUS"].active{background:var(--zeus);color:#000;}
+.bot-btn[data-bot="VIPER"].active{background:var(--viper);color:#fff;}
+.bot-btn[data-bot="ARIA"].active{background:var(--aria);color:#000;}
+.bot-btn[data-bot="LUNA"].active{background:var(--luna);color:#000;}
+
+/* Summary bar */
+.summary{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-bottom:24px;}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px 22px;text-align:center;min-width:90px;}
+.stat-num{font-family:'Cinzel',serif;font-size:26px;font-weight:900;}
+.stat-num.correct{color:var(--aria);}
+.stat-num.exact{color:var(--gold);}
+.stat-num.wrong{color:var(--red2);}
+.stat-num.pct{color:#fff;}
+.stat-label{font-size:11px;color:var(--muted);letter-spacing:.1em;text-transform:uppercase;margin-top:2px;}
+
+/* Table */
+.table-wrap{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:14px;}
+thead th{font-family:'Cinzel',serif;font-size:11px;letter-spacing:.1em;color:var(--muted);
+  text-transform:uppercase;padding:10px 12px;border-bottom:1px solid var(--border);text-align:left;white-space:nowrap;}
+tbody tr{border-bottom:1px solid rgba(26,32,53,.6);transition:background .1s;}
+tbody tr:hover{background:rgba(255,215,0,.03);}
+tbody td{padding:11px 12px;vertical-align:middle;}
+.td-date{color:var(--muted);font-size:12px;white-space:nowrap;}
+.td-match{font-weight:600;}
+.td-pred{color:var(--muted);}
+.td-actual{color:#ccc;}
+.result-badge{display:inline-block;font-size:11px;font-weight:900;letter-spacing:.08em;
+  padding:3px 10px;border-radius:6px;text-transform:uppercase;white-space:nowrap;}
+.result-badge.EXACT{background:rgba(255,215,0,.15);color:var(--gold);border:1px solid rgba(255,215,0,.4);}
+.result-badge.CORRECT{background:rgba(0,255,136,.12);color:var(--aria);border:1px solid rgba(0,255,136,.35);}
+.result-badge.WRONG{background:rgba(255,51,51,.12);color:var(--red2);border:1px solid rgba(255,51,51,.35);}
+
+.loading{text-align:center;padding:50px 0;color:var(--muted);font-size:15px;letter-spacing:.1em;}
+.empty{text-align:center;padding:40px 0;color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="head">
+    <div class="brand">Lucky<span>7</span>AI</div>
+    <div class="page-title">Bot Match Breakdown</div>
+    <a class="back" href="hub.html">← Back to Hub</a>
+  </div>
+
+  <div class="bot-row" id="botRow">
+    <button class="bot-btn active" data-bot="APEX">APEX</button>
+    <button class="bot-btn" data-bot="ORACLE">ORACLE</button>
+    <button class="bot-btn" data-bot="ZEUS">ZEUS</button>
+    <button class="bot-btn" data-bot="VIPER">VIPER</button>
+    <button class="bot-btn" data-bot="ARIA">ARIA</button>
+    <button class="bot-btn" data-bot="LUNA">LUNA</button>
+  </div>
+
+  <div class="summary" id="summary" style="display:none">
+    <div class="stat-box"><div class="stat-num correct" id="sCorrect">—</div><div class="stat-label">Correct</div></div>
+    <div class="stat-box"><div class="stat-num exact" id="sExact">—</div><div class="stat-label">Exact</div></div>
+    <div class="stat-box"><div class="stat-num wrong" id="sWrong">—</div><div class="stat-label">Wrong</div></div>
+    <div class="stat-box"><div class="stat-num" id="sTotal">—</div><div class="stat-label">Played</div></div>
+    <div class="stat-box"><div class="stat-num pct" id="sAcc">—</div><div class="stat-label">Accuracy</div></div>
+  </div>
+
+  <div id="content"><div class="loading">Loading...</div></div>
+
+</div>
+
+<script>
+let currentBot = 'APEX';
+
+document.getElementById('botRow').addEventListener('click', e => {
+  const btn = e.target.closest('.bot-btn');
+  if (!btn) return;
+  document.querySelectorAll('.bot-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  currentBot = btn.dataset.bot;
+  load(currentBot);
+});
+
+async function load(bot) {
+  document.getElementById('content').innerHTML = '<div class="loading">Loading ' + bot + '...</div>';
+  document.getElementById('summary').style.display = 'none';
+
+  try {
+    const res = await fetch('https://www.lucky7ai.com/api/score-cron?botdetail=' + bot);
+    const data = await res.json();
+
+    const wrong = data.total - data.correct;
+    document.getElementById('sCorrect').textContent = data.correct;
+    document.getElementById('sExact').textContent = data.exact;
+    document.getElementById('sWrong').textContent = wrong;
+    document.getElementById('sTotal').textContent = data.total;
+    document.getElementById('sAcc').textContent = data.accuracy + '%';
+    document.getElementById('summary').style.display = 'flex';
+
+    if (!data.matches || !data.matches.length) {
+      document.getElementById('content').innerHTML = '<div class="empty">No matches scored yet.</div>';
+      return;
+    }
+
+    const rows = data.matches.map(m => `
+      <tr>
+        <td class="td-date">${m.date}</td>
+        <td class="td-match">${m.match}</td>
+        <td class="td-pred">${m.predicted}</td>
+        <td class="td-actual">${m.actual}</td>
+        <td><span class="result-badge ${m.result}">${m.result === 'EXACT' ? '🎯 Exact' : m.result === 'CORRECT' ? '✅ Correct' : '❌ Wrong'}</span></td>
+      </tr>`).join('');
+
+    document.getElementById('content').innerHTML = `
+      <div class="table-wrap">
+        <table>
+          <thead><tr>
+            <th>Date</th><th>Match</th><th>Predicted</th><th>Actual</th><th>Result</th>
+          </tr></thead>
+          <tbody>${rows}</tbody>
+        </table>
+      </div>`;
+  } catch(e) {
+    document.getElementById('content').innerHTML = '<div class="empty">Error loading data.</div>';
+  }
+}
+
+load(currentBot);
+</script>
+</body>
+</html>
