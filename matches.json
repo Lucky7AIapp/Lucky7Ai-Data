@@ -1283,8 +1283,8 @@
       "stage": "third_place",
       "date": "2026-07-18",
       "time": "TBD",
-      "homeTeam": "Runner-up Match 101",
-      "awayTeam": "Runner-up Match 102",
+      "homeTeam": "France",
+      "awayTeam": "England",
       "venue": "Miami Stadium",
       "status": "scheduled"
     },
@@ -1294,8 +1294,8 @@
       "stage": "final",
       "date": "2026-07-19",
       "time": "TBD",
-      "homeTeam": "Winner Match 101",
-      "awayTeam": "Winner Match 102",
+      "homeTeam": "Spain",
+      "awayTeam": "Argentina",
       "venue": "New York New Jersey Stadium",
       "status": "scheduled"
     }
