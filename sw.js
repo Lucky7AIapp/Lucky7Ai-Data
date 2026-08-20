@@ -1,4 +1,4 @@
-const CACHE = 'lucky7ai-v1';
+const CACHE = 'lucky7ai-v2';
 const ASSETS = [
   '/Lucky7Ai-Data/number-generator.html',
   '/Lucky7Ai-Data/manifest.json',
@@ -22,7 +22,15 @@ self.addEventListener('activate', e => {
 self.addEventListener('fetch', e => {
   // Skip cross-origin requests (e.g. lucky7ai.com API calls)
   if (!e.request.url.startsWith(self.location.origin)) return;
+  // Network-first so edits to cached assets (e.g. this HTML file) show up
+  // immediately instead of being masked by a stale cache indefinitely.
   e.respondWith(
-    caches.match(e.request).then(cached => cached || fetch(e.request))
+    fetch(e.request)
+      .then(res => {
+        const copy = res.clone();
+        caches.open(CACHE).then(c => c.put(e.request, copy));
+        return res;
+      })
+      .catch(() => caches.match(e.request))
   );
 });
